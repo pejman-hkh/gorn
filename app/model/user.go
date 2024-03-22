@@ -13,9 +13,14 @@ import (
 
 type User struct {
 	BaseModel
-	Name     string `gorm:"size:255" form:"name" binding:"required"`
-	Email    string `gorm:"type:varchar(100);index:idx_email" form:"email" binding:"required"`
-	Password string `gorm:"size:255" json:"-" form:"password" binding:"required"`
+	Name            string `gorm:"size:255"`
+	Email           string `gorm:"type:varchar(100);index:idx_email"`
+	Password        string `gorm:"size:255" json:"-"`
+	EmailVerifiedAt time.Time
+	IsAdmin         uint8
+	UserID          uint `gorm:"index"`
+	GroupID         uint `gorm:"index"`
+	Group           Group
 }
 
 func MakePassword(password string) (string, error) {
@@ -24,8 +29,6 @@ func MakePassword(password string) (string, error) {
 }
 
 func (u *User) BeforeSave(tx *gorm.DB) (err error) {
-	fmt.Println("before update")
-	fmt.Println(u.Password)
 
 	if u.Password != "" {
 		hash, err := MakePassword(u.Password)
@@ -35,12 +38,7 @@ func (u *User) BeforeSave(tx *gorm.DB) (err error) {
 		tx.Statement.SetColumn("Password", hash)
 	}
 
-	fmt.Println(u.Password)
 	return
-}
-
-func (u *User) Migirate() {
-	gorn.DB.AutoMigrate(&User{})
 }
 
 func (u *User) Login(email string, password string) (string, error) {
