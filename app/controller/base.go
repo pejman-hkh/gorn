@@ -13,7 +13,7 @@ type BaseController struct {
 	authUser *model.User
 }
 
-//this is an middleware
+//this is a middleware
 func (c *BaseController) Auth(ctx *gin.Context) bool {
 
 	if c.authUser.ID == 0 {

@@ -18,10 +18,6 @@ func (c *UserController) InitRoutes(r *gin.Engine) {
 	r.POST("/register", gorn.HandleJson(c, "RegisterPost"))
 	r.POST("/login", gorn.HandleJson(c, "LoginPost"))
 	r.GET("/panel", gorn.HandleJson(c, "LoginPost", "Auth"))
-	user := model.User{}
-	user.Migirate(user)
-	group := model.Group{}
-	group.Migirate(group)
 }
 
 func (c *UserController) Register(ctx *gin.Context) any {
@@ -36,12 +32,12 @@ func (c *UserController) Login(ctx *gin.Context) any {
 func (c *UserController) RegisterPost(ctx *gin.Context) any {
 	var body struct {
 		Name     string `form:"name" binding:"required"`
-		Email    string `form:"email" binding:"required"`
+		Email    string `form:"email" binding:"required,email"`
 		Password string `form:"password" binding:"required"`
 	}
 
 	if err := ctx.ShouldBind(&body); err != nil {
-		return c.Flash(fmt.Sprintf("bad request: %v", err), 0)
+		return c.Flash(fmt.Sprintf("%v", err), 0)
 	}
 
 	user := &model.User{}
@@ -66,12 +62,12 @@ func (c *UserController) RegisterPost(ctx *gin.Context) any {
 
 func (c *UserController) LoginPost(ctx *gin.Context) any {
 	var body struct {
-		Email    string `form:"email" binding:"required"`
+		Email    string `form:"email" binding:"required,email"`
 		Password string `form:"password" binding:"required"`
 	}
 
 	if err := ctx.ShouldBind(&body); err != nil {
-		return c.Flash(fmt.Sprintf("bad request: %v", err), 0)
+		return c.Flash(fmt.Sprintf("%v", err), 0)
 	}
 
 	user := model.User{}
