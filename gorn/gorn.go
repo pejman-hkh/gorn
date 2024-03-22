@@ -1,10 +1,12 @@
 package gorn
 
 import (
+	"fmt"
 	"net/http"
 	"reflect"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gofor-little/env"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -16,7 +18,12 @@ type Gorn struct {
 var DB *gorm.DB
 
 func (gr *Gorn) Init() {
-	dsn := "root:12c@tcp(127.0.0.1:3306)/gorn?charset=utf8mb4&parseTime=True&loc=Local"
+	if err := env.Load(".env"); err != nil {
+		panic(err)
+	}
+
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?charset=utf8mb4&parseTime=True&loc=Local", env.Get("DATABASE_USER", "root"), env.Get("DATABASE_PASSWORD", ""), env.Get("DATABASE_HOST", "localhost"), env.Get("DATABASE_NAME", "gorn"))
+
 	DB, _ = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 }
 
