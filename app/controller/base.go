@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"gorn/app/model"
 	"gorn/gorn"
 	"net/http"
@@ -34,7 +33,7 @@ func (c *BaseController) Init(ctx *gin.Context) {
 		} else {
 			auth = ctx.PostForm("auth")
 		}
-		fmt.Printf("auth is %s", auth)
+
 		authUser.Check(auth)
 	}
 	c.authUser = authUser
