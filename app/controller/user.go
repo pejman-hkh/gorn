@@ -19,7 +19,9 @@ func (c *UserController) InitRoutes(r *gin.Engine) {
 	r.POST("/login", gorn.HandleJson(c, "LoginPost"))
 	r.GET("/panel", gorn.HandleJson(c, "LoginPost", "Auth"))
 	user := model.User{}
-	user.Migirate()
+	user.Migirate(user)
+	group := model.Group{}
+	group.Migirate(group)
 }
 
 func (c *UserController) Register(ctx *gin.Context) any {
@@ -56,9 +58,10 @@ func (c *UserController) RegisterPost(ctx *gin.Context) any {
 	if save.Error != nil {
 		return c.Flash(fmt.Sprintf("Error on save: %v", save.Error), 0)
 	}
-	user.Login(user.Email, body.Password)
 
-	return c.Flash("ok")
+	auth, _ := user.Login(user.Email, body.Password)
+	c.Set("auth", auth)
+	return c.Flash("Registered successfully")
 }
 
 func (c *UserController) LoginPost(ctx *gin.Context) any {
@@ -79,5 +82,5 @@ func (c *UserController) LoginPost(ctx *gin.Context) any {
 	}
 
 	c.Set("jwt", jwt)
-	return c.Flash("Logined successfully", 1)
+	return c.Flash("Logined successfully")
 }
