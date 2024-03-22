@@ -17,3 +17,7 @@ func (b *BaseModel) Init() {
 func (b *BaseModel) Save(m any) *gorm.DB {
 	return gorn.DB.Save(m)
 }
+
+func (u *BaseModel) Migirate(model any) {
+	gorn.DB.AutoMigrate(model)
+}
