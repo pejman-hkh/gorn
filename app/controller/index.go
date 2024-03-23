@@ -11,18 +11,18 @@ type IndexController struct {
 	BaseController
 }
 
-func newIndexController(method string) func(*gin.Context) {
+func newIndexMethod(method string) func(*gin.Context) {
 	return func(ctx *gin.Context) {
 		gorn.HandleJson(ctx, &IndexController{}, method)
 	}
 }
 
 func (c *IndexController) InitRoutes(r *gin.Engine) {
-	r.GET("/", newIndexController("Index"))
-	r.GET("/home", newIndexController("Index"))
-	r.GET("/about", newIndexController("About"))
-	r.GET("/contact", newIndexController("Contact"))
-	r.POST("/contact", newIndexController("ContactPost"))
+	r.GET("/", newIndexMethod("Index"))
+	r.GET("/home", newIndexMethod("Index"))
+	r.GET("/about", newIndexMethod("About"))
+	r.GET("/contact", newIndexMethod("Contact"))
+	r.POST("/contact", newIndexMethod("ContactPost"))
 }
 
 func (c *IndexController) Index(ctx *gin.Context) any {
