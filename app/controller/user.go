@@ -24,7 +24,7 @@ func (c *UserController) InitRoutes(r *gin.Engine) {
 	r.POST("/register", newUserMethod("RegisterPost"))
 	r.POST("/login", newUserMethod("LoginPost"))
 	r.GET("/panel", func(ctx *gin.Context) {
-		gorn.HandleJson(ctx, &IndexController{}, "Panel", "Auth")
+		gorn.HandleJson(ctx, &UserController{}, "Panel", "Auth")
 	})
 }
 
