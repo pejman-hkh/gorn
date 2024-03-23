@@ -12,12 +12,24 @@ type UserController struct {
 	BaseController
 }
 
+func newUserController(method string) func(*gin.Context) {
+	return func(ctx *gin.Context) {
+		gorn.HandleJson(ctx, &IndexController{}, method)
+	}
+}
+
 func (c *UserController) InitRoutes(r *gin.Engine) {
-	r.GET("/login", gorn.HandleJson(c, "Login"))
-	r.GET("/register", gorn.HandleJson(c, "Register"))
-	r.POST("/register", gorn.HandleJson(c, "RegisterPost"))
-	r.POST("/login", gorn.HandleJson(c, "LoginPost"))
-	r.GET("/panel", gorn.HandleJson(c, "LoginPost", "Auth"))
+	r.GET("/login", newUserController("Login"))
+	r.GET("/register", newUserController("Register"))
+	r.POST("/register", newUserController("RegisterPost"))
+	r.POST("/login", newUserController("LoginPost"))
+	r.GET("/panel", func(ctx *gin.Context) {
+		gorn.HandleJson(ctx, &IndexController{}, "Panel", "Auth")
+	})
+}
+
+func (c *UserController) Panel(ctx *gin.Context) any {
+	return c.Flash("ok")
 }
 
 func (c *UserController) Register(ctx *gin.Context) any {

@@ -5,11 +5,11 @@ type Controller struct {
 }
 
 func (c *Controller) Set(key string, value any) {
-	if c.sets == nil {
-		c.sets = make(map[string]any)
-	}
-
 	c.sets[key] = value
+}
+
+func (c *Controller) Init() {
+	c.sets = make(map[string]any)
 }
 
 func (c *Controller) Get() map[string]any {

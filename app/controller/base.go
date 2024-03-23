@@ -23,7 +23,7 @@ func (c *BaseController) Auth(ctx *gin.Context) bool {
 	return c.authUser.ID != 0
 }
 
-func (c *BaseController) Init(ctx *gin.Context) {
+func (c *BaseController) BeforeApp(ctx *gin.Context) {
 
 	authUser := &model.User{}
 	if ctx.PostForm("auth") != "" || ctx.Query("auth") != "" {

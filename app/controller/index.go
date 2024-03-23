@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"gorn/app/model"
 	"gorn/gorn"
 
 	"github.com/gin-gonic/gin"
@@ -10,17 +11,26 @@ type IndexController struct {
 	BaseController
 }
 
+func newIndexController(method string) func(*gin.Context) {
+	return func(ctx *gin.Context) {
+		gorn.HandleJson(ctx, &IndexController{}, method)
+	}
+}
+
 func (c *IndexController) InitRoutes(r *gin.Engine) {
-	r.GET("/", gorn.HandleJson(c, "Index"))
-	r.GET("/home", gorn.HandleJson(c, "Index"))
-	r.GET("/about", gorn.HandleJson(c, "About"))
-	r.GET("/contact", gorn.HandleJson(c, "Contact"))
-	r.POST("/contact", gorn.HandleJson(c, "ContactPost"))
+	r.GET("/", newIndexController("Index"))
+	r.GET("/home", newIndexController("Index"))
+	r.GET("/about", newIndexController("About"))
+	r.GET("/contact", newIndexController("Contact"))
+	r.POST("/contact", newIndexController("ContactPost"))
 }
 
 func (c *IndexController) Index(ctx *gin.Context) any {
-
-	c.Set("data", "test")
+	users := []model.User{}
+	result := gorn.DB.Find(&users)
+	if result.Error == nil {
+		c.Set("users", users)
+	}
 
 	return c.Flash("ok", 1)
 }

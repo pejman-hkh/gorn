@@ -7,6 +7,7 @@ require (
 	github.com/gofor-little/env v1.0.17
 	github.com/golang-jwt/jwt/v5 v5.2.1
 	golang.org/x/crypto v0.9.0
+	golang.org/x/exp v0.0.0-20240318143956-a85f2c67cd81
 	gorm.io/driver/mysql v1.5.6
 	gorm.io/gorm v1.25.8
 )

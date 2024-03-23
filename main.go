@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"gorn/app/controller"
 	"gorn/app/model"
 	"gorn/gorn"
@@ -10,6 +11,12 @@ import (
 )
 
 func main() {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println("Recovered in f", r)
+		}
+	}()
+
 	var mflag bool
 	flag.BoolVar(&mflag, "m", false, "migrates")
 	flag.Parse()
