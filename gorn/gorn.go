@@ -2,10 +2,8 @@ package gorn
 
 import (
 	"fmt"
-	"net/http"
 	"reflect"
 
-	"github.com/gin-gonic/gin"
 	"github.com/gofor-little/env"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -41,25 +39,5 @@ func Invoke(obj any, name string, args ...any) []reflect.Value {
 	return reflect.ValueOf(obj).MethodByName(name).Call(inputs)
 }
 
-func HandleJson(args ...any) {
-
-	ctx := args[0].(*gin.Context)
-	obj := args[1]
-	method := args[2]
-
-	Invoke(obj, "Init")
-	Invoke(obj, "BeforeApp", ctx)
-	if len(args) == 4 {
-		middle := args[2]
-		middleFn := Invoke(obj, middle.(string), ctx)
-		resFn := middleFn[0].Interface().(bool)
-		if !resFn {
-			return
-		}
-	}
-
-	rf := Invoke(obj, method.(string), ctx)
-	res := rf[0].Interface().(any)
-	ctx.JSON(http.StatusOK, res)
-
+type Routes struct {
 }

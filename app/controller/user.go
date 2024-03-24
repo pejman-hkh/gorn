@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"gorn/app/model"
 	"gorn/gorn"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,36 +13,27 @@ type UserController struct {
 	BaseController
 }
 
-func newUserMethod(method string) func(*gin.Context) {
-	return func(ctx *gin.Context) {
-		gorn.HandleJson(ctx, &UserController{}, method)
-	}
-}
-
 func (c *UserController) InitRoutes(r *gin.Engine) {
-	r.GET("/login", newUserMethod("Login"))
-	r.GET("/register", newUserMethod("Register"))
-	r.POST("/register", newUserMethod("RegisterPost"))
-	r.POST("/login", newUserMethod("LoginPost"))
-	r.GET("/panel", func(ctx *gin.Context) {
-		gorn.HandleJson(ctx, &UserController{}, "Panel", "Auth")
-	})
+	r.GET("/login", c.Login)
+	r.GET("/register", c.Register)
+	r.POST("/register", c.RegisterPost)
+	r.POST("/login", c.LoginPost)
+	r.GET("/panel", c.Panel)
 }
 
-func (c *UserController) Panel(ctx *gin.Context) any {
-	return c.Flash("ok")
+func (c *UserController) Panel(ctx *gin.Context) {
+	ctx.JSON(http.StatusOK, gin.H{"status": 1})
 }
 
-func (c *UserController) Register(ctx *gin.Context) any {
-	return c.Flash("ok")
+func (c *UserController) Register(ctx *gin.Context) {
+	ctx.JSON(http.StatusOK, gin.H{"status": 1})
 }
 
-func (c *UserController) Login(ctx *gin.Context) any {
-
-	return c.Flash("ok")
+func (c *UserController) Login(ctx *gin.Context) {
+	ctx.JSON(http.StatusOK, gin.H{"status": 1})
 }
 
-func (c *UserController) RegisterPost(ctx *gin.Context) any {
+func (c *UserController) RegisterPost(ctx *gin.Context) {
 	var body struct {
 		Name     string `form:"name" binding:"required"`
 		Email    string `form:"email" binding:"required,email"`
@@ -49,14 +41,16 @@ func (c *UserController) RegisterPost(ctx *gin.Context) any {
 	}
 
 	if err := ctx.ShouldBind(&body); err != nil {
-		return c.Flash(fmt.Sprintf("%v", err), 0)
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": err})
+		return
 	}
 
 	user := &model.User{}
 	check := gorn.DB.First(user, "email = ?", body.Email)
 
 	if check.RowsAffected != 0 {
-		return c.Flash("This user exists !", 0)
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": "This user exists !"})
+		return
 	}
 
 	user.Name = body.Name
@@ -64,31 +58,33 @@ func (c *UserController) RegisterPost(ctx *gin.Context) any {
 	user.Password = body.Password
 	save := user.Save(user)
 	if save.Error != nil {
-		return c.Flash(fmt.Sprintf("Error on save: %v", save.Error), 0)
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": fmt.Sprintf("Error on save: %v", save.Error)})
+		return
 	}
 
 	auth, _ := user.Login(user.Email, body.Password)
-	c.Set("auth", auth)
-	return c.Flash("Registered successfully")
+
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": "Registered successfully", "data": map[string]any{"auth": auth}})
 }
 
-func (c *UserController) LoginPost(ctx *gin.Context) any {
+func (c *UserController) LoginPost(ctx *gin.Context) {
 	var body struct {
 		Email    string `form:"email" binding:"required,email"`
 		Password string `form:"password" binding:"required"`
 	}
 
 	if err := ctx.ShouldBind(&body); err != nil {
-		return c.Flash(fmt.Sprintf("%v", err), 0)
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": fmt.Sprintf("%v", err)})
+		return
 	}
 
 	user := model.User{}
 
-	jwt, err := user.Login(body.Email, body.Password)
+	auth, err := user.Login(body.Email, body.Password)
 	if err != nil {
-		return c.Flash("Fail login!", 0)
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": "Fail login!"})
+		return
 	}
 
-	c.Set("jwt", jwt)
-	return c.Flash("Logined successfully")
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": "Logined successfully", "data": map[string]any{"auth": auth}})
 }

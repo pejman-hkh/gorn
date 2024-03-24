@@ -3,6 +3,7 @@ package controller
 import (
 	"gorn/app/model"
 	"gorn/gorn"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,42 +12,24 @@ type IndexController struct {
 	BaseController
 }
 
-func newIndexMethod(method string) func(*gin.Context) {
-	return func(ctx *gin.Context) {
-		gorn.HandleJson(ctx, &IndexController{}, method)
-	}
+func InitIndex(r *gin.Engine) {
+	index := &IndexController{}
+	index.InitRoutes(r)
 }
 
 func (c *IndexController) InitRoutes(r *gin.Engine) {
-	r.GET("/", newIndexMethod("Index"))
-	r.GET("/home", newIndexMethod("Index"))
-	r.GET("/about", newIndexMethod("About"))
-	r.GET("/contact", newIndexMethod("Contact"))
-	r.POST("/contact", newIndexMethod("ContactPost"))
+	r.GET("/", c.Index)
+	r.GET("/home", c.Index)
+
 }
 
-func (c *IndexController) Index(ctx *gin.Context) any {
+func (c *IndexController) Index(ctx *gin.Context) {
 	users := []model.User{}
 	result := gorn.DB.Find(&users)
-	if result.Error == nil {
-		c.Set("users", users)
+	if result.Error != nil {
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": result.Error})
+		return
 	}
 
-	return c.Flash("ok", 1)
-}
-
-func (c *IndexController) About(ctx *gin.Context) any {
-	ret := make(map[string]string)
-	ret["data"] = "test"
-	return c.Flash(ret)
-}
-
-func (c *IndexController) Contact(ctx *gin.Context) any {
-	return c.Flash("ok")
-}
-
-func (c *IndexController) ContactPost(ctx *gin.Context) any {
-	ret := make(map[string]string)
-	ret["data"] = "test"
-	return ret
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "data": map[string]any{"users": users}})
 }

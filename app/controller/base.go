@@ -36,8 +36,8 @@ func (c *BaseController) BeforeApp(ctx *gin.Context) {
 
 		authUser.Check(auth)
 	}
-	c.authUser = authUser
+	//c.authUser = authUser
 	if authUser.ID != 0 {
-		c.Set("authUser", authUser)
+		//c.Set("authUser", authUser)
 	}
 }

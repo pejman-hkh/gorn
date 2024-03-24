@@ -32,11 +32,9 @@ func main() {
 	r := gin.Default()
 	r.Static("/assets", "./public")
 
-	index := &controller.IndexController{}
-	index.InitRoutes(r)
-
-	user := &controller.UserController{}
-	user.InitRoutes(r)
+	controller.InitIndex(r)
+	// user := &controller.UserController{}
+	// user.InitRoutes(r)
 
 	r.Run(":8090")
 
