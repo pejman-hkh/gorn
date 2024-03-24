@@ -38,6 +38,3 @@ func Invoke(obj any, name string, args ...any) []reflect.Value {
 
 	return reflect.ValueOf(obj).MethodByName(name).Call(inputs)
 }
-
-type Routes struct {
-}

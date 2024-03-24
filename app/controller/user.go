@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"gorn/app/middle"
 	"gorn/app/model"
 	"gorn/gorn"
 	"net/http"
@@ -13,12 +14,40 @@ type UserController struct {
 	BaseController
 }
 
+func InitUser(r *gin.Engine) {
+	a := &UserController{}
+	a.InitRoutes(r)
+}
+
 func (c *UserController) InitRoutes(r *gin.Engine) {
+
+	g := r.Group("/users")
+	g.Use(middle.AuthRequired())
+	{
+		g.GET("/", c.Index)
+		g.GET("/index", c.Index)
+
+	}
+
 	r.GET("/login", c.Login)
 	r.GET("/register", c.Register)
 	r.POST("/register", c.RegisterPost)
 	r.POST("/login", c.LoginPost)
 	r.GET("/panel", c.Panel)
+}
+
+func (c *UserController) Index(ctx *gin.Context) {
+	list := []model.User{}
+	var p gorn.Paginator
+
+	result := gorn.DB.Scopes(p.Paginate(ctx, &list)).Find(&list)
+
+	if result.Error != nil {
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": result.Error})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "data": map[string]any{"list": list, "paginate": p}})
 }
 
 func (c *UserController) Panel(ctx *gin.Context) {

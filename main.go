@@ -33,6 +33,8 @@ func main() {
 	r.Static("/assets", "./public")
 
 	controller.InitIndex(r)
+	controller.InitUser(r)
+	controller.InitMenu(r)
 	// user := &controller.UserController{}
 	// user.InitRoutes(r)
 
