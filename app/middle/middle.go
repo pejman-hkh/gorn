@@ -12,13 +12,12 @@ func AuthRequired() gin.HandlerFunc {
 		authUser := &model.User{}
 		if ctx.PostForm("auth") != "" || ctx.Query("auth") != "" {
 			var auth string
-			if ctx.Request.Method == "GET" {
-				auth = ctx.Query("auth")
-			} else {
-				auth = ctx.PostForm("auth")
-			}
 
-			authUser.Check(auth)
+			auth = ctx.Query("auth")
+
+			if auth != "" {
+				authUser.Check(auth)
+			}
 		}
 
 		if authUser.ID != 0 {
