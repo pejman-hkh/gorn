@@ -14,6 +14,7 @@ func (b *BaseModel) Migirations() {
 	gorn.DB.AutoMigrate(User{})
 	gorn.DB.AutoMigrate(Group{})
 	gorn.DB.AutoMigrate(Menu{})
+	gorn.DB.AutoMigrate(Permission{})
 }
 
 func (b *BaseModel) Init() {

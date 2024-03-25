@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"gorn/gorn"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -26,6 +27,32 @@ type User struct {
 func MakePassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	return string(bytes), err
+}
+
+func (u *User) HasPermission(route string) bool {
+	pr := strings.Split(route, "/")
+	access := ""
+	model := pr[1]
+	if pr[2] == ":id" {
+		access = "update"
+	} else if pr[2] == "create" {
+		access = "create"
+	} else if pr[2] == "index" || pr[2] == "" {
+		access = "list"
+	}
+
+	p := &Permission{}
+	gorn.DB.First(p, "model = ? ", model)
+
+	if access == "create" && p.Create {
+		return true
+	} else if access == "edit" && p.Update {
+		return true
+	} else if access == "list" && p.List {
+		return true
+	}
+
+	return false
 }
 
 func (u *User) BeforeSave(tx *gorm.DB) (err error) {
