@@ -11,8 +11,8 @@ import (
 )
 
 type MenuForm struct {
-	Title  string `binding:"required"`
-	Url    string `binding:"required"`
+	Title  string `form:"title" binding:"required"`
+	Url    string `form:"url" binding:"required"`
 	MenuId uint
 }
 
@@ -31,7 +31,7 @@ func (c *MenuController) InitRoutes(r *gin.Engine) {
 	{
 		g.GET("/", c.Index)
 		g.GET("/index", c.Index)
-		g.GET("/store", c.Store)
+		g.POST("/create", c.Store)
 	}
 }
 
@@ -52,15 +52,19 @@ func (c *MenuController) Store(ctx *gin.Context) {
 	var body MenuForm
 
 	if err := ctx.ShouldBind(&body); err != nil {
-		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": err})
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": err.Error()})
 		return
 	}
 
-	menu := &model.Menu{}
+	user, _ := ctx.Get("authUser")
 
-	menu.Title = body.Title
-	menu.Url = body.Url
-	menu.MenuId = body.MenuId
+	menu := &model.Menu{
+		Title:  body.Title,
+		Url:    body.Url,
+		MenuId: body.MenuId,
+		UserId: user.(*model.User).ID,
+		Status: 1,
+	}
 	save := menu.Save(menu)
 	if save.Error != nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": fmt.Sprintf("Error on save: %v", save.Error)})
