@@ -20,7 +20,7 @@ func (b *BaseModel) Init() {
 
 }
 
-func (a *BaseModel) Save(body any) *gorm.DB {
+func (a *BaseModel) Save(model any) *gorm.DB {
 
-	return gorn.DB.Save(body)
+	return gorn.DB.Save(model)
 }

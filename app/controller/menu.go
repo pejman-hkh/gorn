@@ -14,6 +14,7 @@ type MenuForm struct {
 	Title  string `form:"title" binding:"required"`
 	Url    string `form:"url" binding:"required"`
 	MenuId uint
+	Status uint8
 }
 
 type MenuController struct {
@@ -31,6 +32,9 @@ func (c *MenuController) InitRoutes(r *gin.Engine) {
 	{
 		g.GET("/", c.Index)
 		g.GET("/index", c.Index)
+		g.GET("/create", c.Create)
+		g.GET("/:id/edit", c.Edit)
+		g.POST("/:id", c.Update)
 		g.POST("/create", c.Store)
 	}
 }
@@ -48,6 +52,43 @@ func (c *MenuController) Index(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"status": 1, "data": map[string]any{"list": list, "paginate": p}})
 }
 
+func (c *MenuController) Edit(ctx *gin.Context) {
+	menu := model.Menu{}
+	gorn.DB.First(&menu, ctx.Param("id"))
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "data": map[string]any{"model": model.Menu{}, "menu": menu}})
+}
+
+func (c *MenuController) Update(ctx *gin.Context) {
+	var body MenuForm
+
+	if err := ctx.ShouldBind(&body); err != nil {
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": err.Error()})
+		return
+	}
+
+	user, _ := ctx.Get("authUser")
+	menu := model.Menu{}
+	gorn.DB.First(&menu, ctx.Param("id"))
+
+	menu.Title = body.Title
+	menu.Url = body.Url
+	menu.MenuId = body.MenuId
+	menu.UserId = user.(*model.User).ID
+	menu.Status = body.Status
+
+	save := menu.Save(menu)
+	if save.Error != nil {
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": fmt.Sprintf("Error on save: %v", save.Error)})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": "Saved successfully"})
+}
+
+func (c *MenuController) Create(ctx *gin.Context) {
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "data": map[string]any{"model": model.Menu{}}})
+}
+
 func (c *MenuController) Store(ctx *gin.Context) {
 	var body MenuForm
 
@@ -58,13 +99,13 @@ func (c *MenuController) Store(ctx *gin.Context) {
 
 	user, _ := ctx.Get("authUser")
 
-	menu := &model.Menu{
-		Title:  body.Title,
-		Url:    body.Url,
-		MenuId: body.MenuId,
-		UserId: user.(*model.User).ID,
-		Status: 1,
-	}
+	menu := &model.Menu{}
+	menu.Title = body.Title
+	menu.Url = body.Url
+	menu.MenuId = body.MenuId
+	menu.UserId = user.(*model.User).ID
+	menu.Status = body.Status
+
 	save := menu.Save(menu)
 	if save.Error != nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": fmt.Sprintf("Error on save: %v", save.Error)})

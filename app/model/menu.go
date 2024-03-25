@@ -11,4 +11,5 @@ type Menu struct {
 	Priority uint
 	Position uint8
 	Status   uint8
+	User     User
 }
