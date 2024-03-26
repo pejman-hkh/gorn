@@ -41,21 +41,12 @@ func (c *MenuController) InitRoutes(r *gin.Engine) {
 
 func (c *MenuController) Index(ctx *gin.Context) {
 	list := []model.Menu{}
-	var p gorn.Paginator
-
-	result := gorn.DB.Scopes(p.Paginate(ctx, &list)).Find(&list)
-	if result.Error != nil {
-		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": result.Error})
-		return
-	}
-
-	ctx.JSON(http.StatusOK, gin.H{"status": 1, "data": map[string]any{"list": list, "paginate": p}})
+	c.parentIndex(ctx, list)
 }
 
 func (c *MenuController) Edit(ctx *gin.Context) {
-	menu := model.Menu{}
-	gorn.DB.First(&menu, ctx.Param("id"))
-	ctx.JSON(http.StatusOK, gin.H{"status": 1, "data": map[string]any{"model": model.Menu{}, "menu": menu}})
+	model := model.Menu{}
+	c.parentEdit(ctx, &model)
 }
 
 func (c *MenuController) Update(ctx *gin.Context) {
@@ -113,4 +104,8 @@ func (c *MenuController) Store(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": "Saved successfully"})
+}
+
+func (c *MenuController) Destroy(ctx *gin.Context) {
+
 }
