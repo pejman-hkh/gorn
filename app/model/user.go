@@ -18,7 +18,8 @@ type User struct {
 	Email           string `gorm:"type:varchar(100);index:idx_email"`
 	Password        string `gorm:"size:255" json:"-"`
 	EmailVerifiedAt time.Time
-	IsAdmin         uint8
+	IsAdmin         bool
+	IsMain          bool
 	UserID          uint `gorm:"index"`
 	GroupID         uint `gorm:"index"`
 	Group           Group
@@ -42,7 +43,7 @@ func (u *User) HasPermission(route string) bool {
 	}
 
 	p := &Permission{}
-	gorn.DB.First(p, "model = ? ", model)
+	gorn.DB.First(p, "model = ? and group_id = ? ", model, u.GroupID)
 
 	if access == "create" && p.Create {
 		return true
