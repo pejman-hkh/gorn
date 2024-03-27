@@ -6,6 +6,7 @@ require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/gofor-little/env v1.0.17
 	github.com/golang-jwt/jwt/v5 v5.2.1
+	github.com/jinzhu/copier v0.4.0
 	golang.org/x/crypto v0.9.0
 	golang.org/x/exp v0.0.0-20240318143956-a85f2c67cd81
 	gorm.io/driver/mysql v1.5.6
