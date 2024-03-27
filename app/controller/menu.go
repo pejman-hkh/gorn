@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/copier"
 )
 
 type MenuForm struct {
@@ -61,11 +62,8 @@ func (c *MenuController) Update(ctx *gin.Context) {
 	menu := model.Menu{}
 	gorn.DB.First(&menu, ctx.Param("id"))
 
-	menu.Title = body.Title
-	menu.Url = body.Url
-	menu.MenuId = body.MenuId
+	copier.Copy(menu, body)
 	menu.UserId = user.(*model.User).ID
-	menu.Status = body.Status
 
 	save := menu.Save(menu)
 	if save.Error != nil {
@@ -91,11 +89,8 @@ func (c *MenuController) Store(ctx *gin.Context) {
 	user, _ := ctx.Get("authUser")
 
 	menu := &model.Menu{}
-	menu.Title = body.Title
-	menu.Url = body.Url
-	menu.MenuId = body.MenuId
+	copier.Copy(menu, body)
 	menu.UserId = user.(*model.User).ID
-	menu.Status = body.Status
 
 	save := menu.Save(menu)
 	if save.Error != nil {
