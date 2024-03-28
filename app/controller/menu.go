@@ -34,9 +34,10 @@ func (c *MenuController) InitRoutes(r *gin.Engine) {
 		g.GET("/", c.Index)
 		g.GET("/index", c.Index)
 		g.GET("/create", c.Create)
+		g.POST("/create", c.Store)
 		g.GET("/:id/edit", c.Edit)
 		g.POST("/:id", c.Update)
-		g.POST("/create", c.Store)
+		g.DELETE("/:id", c.Destroy)
 	}
 }
 
@@ -62,7 +63,7 @@ func (c *MenuController) Update(ctx *gin.Context) {
 	menu := model.Menu{}
 	gorn.DB.First(&menu, ctx.Param("id"))
 
-	copier.Copy(menu, body)
+	copier.Copy(&menu, &body)
 	menu.UserId = user.(*model.User).ID
 
 	save := menu.Save(menu)
@@ -102,5 +103,8 @@ func (c *MenuController) Store(ctx *gin.Context) {
 }
 
 func (c *MenuController) Destroy(ctx *gin.Context) {
-
+	menu := model.Menu{}
+	gorn.DB.First(&menu, ctx.Param("id"))
+	gorn.DB.Delete(&menu)
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": "Deleted successfully"})
 }

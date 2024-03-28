@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -30,12 +31,20 @@ func MakePassword(password string) (string, error) {
 	return string(bytes), err
 }
 
-func (u *User) HasPermission(route string) bool {
+func (u *User) HasPermission(ctx *gin.Context) bool {
+
+	route := ctx.FullPath()
+
 	pr := strings.Split(route, "/")
 	access := ""
 	model := pr[1]
 	if pr[2] == ":id" {
-		access = "update"
+		if ctx.Request.Method == "POST" {
+			access = "update"
+		} else if ctx.Request.Method == "DELETE" {
+			access = "delete"
+		}
+
 	} else if pr[2] == "create" {
 		access = "create"
 	} else if pr[2] == "index" || pr[2] == "" {
@@ -46,6 +55,8 @@ func (u *User) HasPermission(route string) bool {
 	gorn.DB.First(p, "model = ? and group_id = ? ", model, u.GroupID)
 
 	if access == "create" && p.Create {
+		return true
+	} else if access == "delete" && p.Update {
 		return true
 	} else if access == "edit" && p.Update {
 		return true

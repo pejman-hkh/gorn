@@ -28,9 +28,7 @@ func IsAdmin() gin.HandlerFunc {
 
 			if !authUser.IsMain {
 
-				route := ctx.FullPath()
-
-				if !authUser.HasPermission(route) {
+				if !authUser.HasPermission(ctx) {
 					AccessDenied(ctx)
 					return
 				}
