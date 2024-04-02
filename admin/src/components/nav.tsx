@@ -14,8 +14,8 @@ export default function Nav() {
                         </svg>
                     </button>
                     <a href="" className="flex ml-2 md:mr-24">
-                        <img src="images/logo.svg" className="h-8 mr-3" alt="FlowBite Logo" />
-                        <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Flowbite</span>
+                        <img src="images/logo.svg" className="h-8 mr-3" alt="Gorn Logo" />
+                        <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Gorn</span>
                     </a>
                     <form action="#" method="GET" className="hidden lg:block lg:pl-3.5">
                         <label htmlFor="topbar-search" className="sr-only">Search</label>
@@ -229,16 +229,16 @@ export default function Nav() {
                         <div>
                             <button type="button" className="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" id="user-menu-button-2" aria-expanded="false" data-dropdown-toggle="dropdown-2">
                                 <span className="sr-only">Open user menu</span>
-                                <img className="w-8 h-8 rounded-full" src="https://flowbite.com/docs/images/people/profile-picture-5.jpg" alt="user photo" />
+                                <img className="w-8 h-8 rounded-full" src="" alt="user photo" />
                             </button>
                         </div>
                         <div className="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600" id="dropdown-2">
                             <div className="px-4 py-3" role="none">
                                 <p className="text-sm text-gray-900 dark:text-white" role="none">
-                                    Neil Sims
+                                    pejman khaleghi
                                 </p>
                                 <p className="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
-                                    neil.sims@flowbite.com
+                                    pejman.hkh@gmail.com
                                 </p>
                             </div>
                             <ul className="py-1" role="none">
