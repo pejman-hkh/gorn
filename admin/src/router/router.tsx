@@ -12,7 +12,8 @@ export function useRouterUpdateDataContext() {
 
 function getPathName() {
   let pathName = window.location.pathname
-  if (pathName.substr(0, -1) != '/')
+
+  if (pathName.substr(-1) != '/')
     pathName += '/'
   return pathName
 }
