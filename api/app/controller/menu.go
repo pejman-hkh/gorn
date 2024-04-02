@@ -72,7 +72,7 @@ func (c *MenuController) Update(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": "Saved successfully"})
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": "Saved successfully", "data": map[string]any{"model": menu}})
 }
 
 func (c *MenuController) Create(ctx *gin.Context) {

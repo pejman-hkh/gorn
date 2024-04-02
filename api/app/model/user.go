@@ -104,7 +104,7 @@ func (u *User) Login(email string, password string) (string, error) {
 }
 
 func (u *User) Check(tokenString string) bool {
-	token, _ := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+	token, error := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
@@ -112,6 +112,10 @@ func (u *User) Check(tokenString string) bool {
 
 		return []byte(os.Getenv("SECRET")), nil
 	})
+
+	if error != nil {
+		return false
+	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if ok && token.Valid {

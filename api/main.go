@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"gorn/app/controller"
+	"gorn/app/middle"
 	"gorn/app/model"
 	"gorn/gorn"
 
@@ -31,7 +32,7 @@ func main() {
 
 	r := gin.Default()
 	r.Static("/assets", "./public")
-
+	r.Use(middle.Cors())
 	controller.InitIndex(r)
 	controller.InitUser(r)
 	controller.InitMenu(r)

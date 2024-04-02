@@ -12,6 +12,7 @@ type Paginator struct {
 	Start uint
 	End   uint
 	Count int64
+	Size  int
 	Next  uint
 	Prev  uint
 }
@@ -33,6 +34,7 @@ func (p *Paginator) Paginate(r *gin.Context, model any) func(db *gorm.DB) *gorm.
 		DB.Model(model).Count(&totalRows)
 
 		p.Count = totalRows
+		p.Size = pageSize
 		p.Start = 1
 		end := uint(math.Ceil(float64(totalRows) / float64(pageSize)))
 		if end <= 0 {
