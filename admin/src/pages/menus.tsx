@@ -37,9 +37,7 @@ export function MenuForm({ ...props}) {
 
 export function Index() {
     const [data, setData] = useContext(DataContext);
-    // useEffect(function() {
-    //     alert('test')
-    // },[data])
+
 
     const [edit, setEdit] = useState('')
     const editHandler = (e, item) => {

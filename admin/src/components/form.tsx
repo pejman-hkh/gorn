@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouterUpdateDataContext } from "../router/router";
-import MainScript from "../scripts/scripts";
 
 export function Alert({ children, ...props }) {
 	var className = 'hidden'

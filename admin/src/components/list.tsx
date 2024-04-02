@@ -71,7 +71,7 @@ export function ButtonEdit({ children, ...props }) {
 
 export function ButtonDelete({ children, ...props }) {
     const handler = (e) => {
-        props.onClick()
+       
         let ddb = document.getElementById('delete-user-modal')
         ddb.classList.toggle('hidden')
         ddb.previousSibling.classList.toggle('hidden')
