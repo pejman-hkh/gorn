@@ -17,7 +17,7 @@ export function useRouterUpdateDataContext() {
 function getPathName() {
   let pathName = window.location.pathname
 
-  if (pathName.substring(-1) != '/')
+  if (pathName.substr(-1) != '/')
     pathName += '/'
   return pathName
 }
@@ -74,7 +74,7 @@ export default function useRouter(Routes: any, props: any) {
   for (let route in Routes) {
     let val = Routes[route]
 
-    if (route.substring(-1) != '/')
+    if (route.substr(-1) != '/')
       route += '/'
 
     if (path == route) {
