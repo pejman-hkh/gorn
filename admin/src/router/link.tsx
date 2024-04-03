@@ -1,5 +1,12 @@
-export default function Link({ to, children, ...props }) {
-     function handleClick( e ) {
+type props = {
+    to:string,
+    className?:string
+    children:any,
+    props?:any
+}
+
+export default function Link({ className, to, children, ...props }:props) {
+     function handleClick( e :React.MouseEvent<HTMLAnchorElement>) {
   
         if( window.location.href != to)
             history.pushState({}, "", to);

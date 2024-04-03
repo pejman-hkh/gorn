@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { DataContext } from "./data";
 import Api from "./api";
 
-function RouteTo(Layout, Component) {
+function RouteTo(Layout:any, Component:any) {
   return <Layout><Component /></Layout>
 }
 
@@ -17,7 +17,7 @@ function getPathName() {
     pathName += '/'
   return pathName
 }
-export default function useRouter(Routes, props) {
+export default function useRouter(Routes:any, props:any) {
   const ref = useRef(false);
 
   const [data, setData] = useState(props.data)
@@ -30,15 +30,15 @@ export default function useRouter(Routes, props) {
 
     if (!ref.current) {
 
-      history.pushState = (f => function pushState() {
-        var ret = f.apply(this, arguments);
+      history.pushState = ((f:any) => function pushState(this:any, ...args) {
+        var ret = f.apply(this, [...args]);
         window.dispatchEvent(new Event('pushstate'));
         window.dispatchEvent(new Event('locationchange'));
         return ret;
       })(history.pushState);
 
-      history.replaceState = (f => function replaceState() {
-        var ret = f.apply(this, arguments);
+      history.replaceState = ((f:any) => function replaceState(this:any, ...args) {
+        var ret = f.apply(this, [...args]);
         window.dispatchEvent(new Event('replacestate'));
         window.dispatchEvent(new Event('locationchange'));
         return ret;
@@ -49,13 +49,13 @@ export default function useRouter(Routes, props) {
       });
 
 
-      window.addEventListener("updatedatacontext", (event) => {
+      window.addEventListener("updatedatacontext", () => {
         Api(window.location.pathname).then(function (fetchData) {
           setData(fetchData)
         })
       })
 
-      window.addEventListener("locationchange", (event) => {
+      window.addEventListener("locationchange", () => {
         Api(window.location.pathname).then(function (fetchData) {
           setData(fetchData)
           setPath(getPathName())
@@ -70,7 +70,7 @@ export default function useRouter(Routes, props) {
   for (let route in Routes) {
     let val = Routes[route]
 
-    if (route.substr(-1) != '/')
+    if (route.substring(-1) != '/')
       route += '/'
 
     if (path == route) {

@@ -4,7 +4,7 @@ import * as Actions from "../components/actions"
 import Pagination from "../components/pagination"
 import * as List from "../components/list"
 import * as Grid from "../components/grid"
-import Form, { Alert, Input, Select, Textarea } from "../components/form"
+import Form, { Input, Select, Textarea } from "../components/form"
 import { useContext, useRef, useState } from "react"
 import { DataContext } from "../router/data"
 import Button from "../components/button"
@@ -48,7 +48,7 @@ function Head({...props}) {
 
         <Actions.Wrapper>
             <Actions.LeftSide>
-                <Actions.SearchForm></Actions.SearchForm>
+                <Actions.SearchForm />
                 <Actions.Tasks></Actions.Tasks>
             </Actions.LeftSide>
 
@@ -60,15 +60,15 @@ function Head({...props}) {
     </Breadcrumb.Wrapper>
 }
 export function Index() {
-    const [data, setData] = useContext(DataContext);
+    const dataContext = useContext(DataContext) as Array<any>;
+    const data = dataContext[0]
 
-
-    const [edit, setEdit] = useState('')
-    const editHandler = (e, item) => {
+    const [edit, setEdit] = useState({id:0})
+    const editHandler = (item:any) => {
         setEdit(item)
     }
 
-    const searchModal = useRef(0)
+    const searchModal = useRef<HTMLDivElement>(null)
 
     return <main>
         <Head title="Menu" link="/menus"></Head>
@@ -89,7 +89,7 @@ export function Index() {
                 </tr>
             </List.Thead>
             <List.Tbody>
-                {data?.data?.list?.map((item) => (
+                {data?.data?.list?.map((item:any) => (
                     <List.Tr>
                         <List.TdCheckbox>
                             <List.CheckboxTd id="checkbox-1" aria-describedby="checkbox-1">checkbox</List.CheckboxTd>
@@ -110,7 +110,7 @@ export function Index() {
                         </List.Td>
                         <List.Td>{item.created_at}</List.Td>
                         <List.TdAction>
-                            <List.ButtonEdit onClick={() => editHandler(e, item)}>
+                            <List.ButtonEdit onClick={() => editHandler(item)}>
                                 Edit
                             </List.ButtonEdit>
                             <List.ButtonDelete>
@@ -156,7 +156,7 @@ export function Index() {
               
                     <MenuForm />
                 </Modal.Content>
-                <Modal.Footer><Button type="submit" onClick={function() {searchModal.current.classList.add('hidden');searchModal.current.previousSibling.classList.add('hidden')}}>Search</Button></Modal.Footer>
+                <Modal.Footer><Button type="submit" onClick={function() {searchModal.current?.classList?.add('hidden');searchModal.current?.previousElementSibling?.classList?.add('hidden')}}>Search</Button></Modal.Footer>
             </Form>
         </Modal.Modal>
 

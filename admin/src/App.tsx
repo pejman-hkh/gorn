@@ -13,8 +13,6 @@ import Scripts from "./scripts/scripts";
 
 import useRouter from "./router/router";
 
-window.apiUrl = 'http://localhost:8090';
-
 let Routes = {
   '/': [Guest, Login],
   '/menus': [Layout, Menus.Index],

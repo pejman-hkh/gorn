@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouterUpdateDataContext } from "../router/router";
 
-export function Alert({ children, ...props }) {
+export function Alert({ children, ...props }:any) {
 	var className = 'hidden'
 	if (props.type == "danger") {
 		className = 'alert m-4 p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400'
@@ -11,31 +11,31 @@ export function Alert({ children, ...props }) {
 	return <div className={className} role="alert">{children}</div>
 }
 
-export function Label({children, ...props}) {
-	return <label htmlFor={props.htmlFor} class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{children}</label>
+export function Label({children, ...props}:any) {
+	return <label htmlFor={props.htmlFor} className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{children}</label>
 }
 
-export function Select({ children, ...props }) {
-	const select = useRef(0)
+export function Select({ children, ...props }:any) {
+	const select = useRef<HTMLSelectElement>(null)
 	useEffect(function() {
-		select.current.value = props.defaultValue
+		select.current!.value = props?.defaultValue
 	}, [props.value])
-	return <><Label htmlFor={props.id}>{props.title}</Label><select ref={select} {...props} class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+	return <><Label htmlFor={props.id}>{props.title}</Label><select ref={select} {...props} className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
 		{children}
 	</select></>
 }
-export function Input({ children, ...props }) {
+export function Input({ children, ...props }:any) {
 	return <><Label htmlFor={props.id}>{children}</Label>
 		<input {...props} className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder={children} /></>
 }
 
-export function Textarea({ children, ...props }) {
+export function Textarea({ children, ...props }:any) {
 
 	return <><Label htmlFor={props.id}>{children}</Label>
 		<textarea {...props} className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" /></>
 }
 
-export default function Form({ children, ...props }) {
+export default function Form({ children, ...props }:any) {
 	const [alertText, setAlertText] = useState(null)
 	const [alertType, setAlertType] = useState('')
 
@@ -43,14 +43,14 @@ export default function Form({ children, ...props }) {
 
 	let submitted = true;
 	const alertElement = useRef(0);
-	function submitHandler(e) {
+	function submitHandler(e:any) {
 		e.preventDefault();
 		const dataForm = new FormData(e.target);
 		if (!submitted)
 		return;
 
 		if( props.method?.toLowerCase() == "get" ) {
-			let to = props.action+'?'+new URLSearchParams(dataForm)
+			let to = props.action+'?'+new URLSearchParams((dataForm as any)||{})
 			
 			history.pushState({}, "", to);
 			return
@@ -66,7 +66,7 @@ export default function Form({ children, ...props }) {
 		if( action.substr(0,1) != '/')
 			action = '/'+action
 		
-		fetch(apiUrl + action + '?'+new URLSearchParams({ auth : localStorage.getItem('auth') }),
+		fetch(import.meta.env.VITE_API_URL + action + '?'+new URLSearchParams({ auth : localStorage.getItem('auth') } as any),
 			{
 				method: "POST",
 				body: dataForm
@@ -99,5 +99,5 @@ export default function Form({ children, ...props }) {
 			})
 	}
 
-	return <form {...props} className="mt-8 space-y-6" onSubmit={submitHandler}><Alert ref={alertElement} type={alertType}>{alertText}</Alert>{children}</form>
+	return <form {...props} className={props?.className?props?.className:" mt-8 space-y-6"} onSubmit={submitHandler}><Alert ref={alertElement} type={alertType}>{alertText}</Alert>{children}</form>
 }
