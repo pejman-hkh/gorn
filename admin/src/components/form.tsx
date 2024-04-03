@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useRouterUpdateDataContext } from "../router/router";
+import { useGoTo, useRouterUpdateDataContext } from "../router/router";
 
 export function Alert({ children, ...props }:any) {
 	var className = 'hidden'
@@ -94,7 +94,10 @@ export default function Form({ children, ...props }:any) {
 					if( props?.onSuccess != null ) {
 						props.onSuccess()
 					}
+				}
 
+				if(fetchData.data?.redirect ) {
+					useGoTo(fetchData.data?.redirect)
 				}
 			})
 	}
