@@ -1,8 +1,7 @@
 package controller
 
 import (
-	"gorn/app/model"
-	"gorn/gorn"
+	"gorn/app/middle"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -18,18 +17,19 @@ func InitIndex(r *gin.Engine) {
 }
 
 func (c *IndexController) InitRoutes(r *gin.Engine) {
+	g := r.Group("admin/")
+	g.Use(middle.IsAdmin())
+	{
+		u := UserController{}
+		g.GET("/", c.Index)
+		g.POST("/", u.LoginPost)
+	}
+
 	r.GET("/", c.Index)
 	r.GET("/home", c.Index)
 
 }
 
 func (c *IndexController) Index(ctx *gin.Context) {
-	users := []model.User{}
-	result := gorn.DB.Find(&users)
-	if result.Error != nil {
-		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": result.Error})
-		return
-	}
-
-	ctx.JSON(http.StatusOK, gin.H{"status": 1, "data": map[string]any{"users": users}})
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "data": map[string]any{}})
 }

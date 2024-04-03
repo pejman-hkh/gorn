@@ -21,7 +21,7 @@ func InitUser(r *gin.Engine) {
 
 func (c *UserController) InitRoutes(r *gin.Engine) {
 
-	g := r.Group("/users")
+	g := r.Group("admin/users")
 	g.Use(middle.IsAdmin())
 	{
 		g.GET("/", c.Index)
@@ -115,5 +115,5 @@ func (c *UserController) LoginPost(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": "Logined successfully", "data": map[string]any{"auth": auth}})
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": "Logined successfully", "data": map[string]any{"auth": auth, "redirect": "/dashboard"}})
 }

@@ -28,7 +28,7 @@ func InitMenu(r *gin.Engine) {
 }
 
 func (c *MenuController) InitRoutes(r *gin.Engine) {
-	g := r.Group("/menus")
+	g := r.Group("admin/menus")
 	g.Use(middle.IsAdmin())
 	{
 		g.GET("/", c.Index)
