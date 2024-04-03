@@ -31,7 +31,7 @@ func (p *Paginator) Paginate(r *gin.Context, model any) func(db *gorm.DB) *gorm.
 			pageSize = 20
 		}
 
-		DB.Model(model).Count(&totalRows)
+		db.Session(&gorm.Session{}).Model(model).Count(&totalRows)
 
 		p.Count = totalRows
 		p.Size = pageSize
