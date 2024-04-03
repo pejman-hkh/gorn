@@ -1,4 +1,6 @@
 import * as Modal from "../components/modal"
+import * as Breadcrumb from "../components/breadcrumb"
+import * as Actions from "../components/actions"
 import Pagination from "../components/pagination"
 import * as List from "../components/list"
 import * as Grid from "../components/grid"
@@ -7,15 +9,15 @@ import { useContext, useRef, useState } from "react"
 import { DataContext } from "../router/data"
 import Button from "../components/button"
 
-export function MenuForm({ ...props}) {
+export function MenuForm({ ...props }) {
     let edit = props.edit
 
     return <Grid.Wrapper key={edit?.id} {...props}>
         <Grid.Col6>
-            <Input type="text" name="title" defaultValue={edit?.title} required>Title</Input>
+            <Input type="text" name="title" defaultValue={edit?.title}>Title</Input>
         </Grid.Col6>
         <Grid.Col6>
-            <Input type="text" name="url" defaultValue={edit?.url} required>Url</Input>
+            <Input type="text" name="url" defaultValue={edit?.url}>Url</Input>
         </Grid.Col6>
         <Grid.Col6>
             <Input type="text" name="icon" defaultValue={edit?.icon}>Icon</Input>
@@ -25,7 +27,7 @@ export function MenuForm({ ...props}) {
                 <option value="">Select</option>
                 <option value="1">Top</option>
             </Select>
-      
+
         </Grid.Col6>
 
         <Grid.Span6>
@@ -35,6 +37,28 @@ export function MenuForm({ ...props}) {
     </Grid.Wrapper>
 }
 
+function Head({...props}) {
+    return <Breadcrumb.Wrapper>
+        <Breadcrumb.Main>
+            <Breadcrumb.ItemHome></Breadcrumb.ItemHome>
+            <Breadcrumb.Item to="/dashboard">Cms</Breadcrumb.Item>
+            <Breadcrumb.Item to={props.link}>{props.title}</Breadcrumb.Item>
+        </Breadcrumb.Main>
+        <Breadcrumb.Title>All {props.title}s</Breadcrumb.Title>
+
+        <Actions.Wrapper>
+            <Actions.LeftSide>
+                <Actions.SearchForm></Actions.SearchForm>
+                <Actions.Tasks></Actions.Tasks>
+            </Actions.LeftSide>
+
+            <Actions.RightSide>
+                <Actions.AddButton>Add {props.title}</Actions.AddButton>
+                <Actions.ExportButton>Export</Actions.ExportButton>
+            </Actions.RightSide>
+        </Actions.Wrapper>
+    </Breadcrumb.Wrapper>
+}
 export function Index() {
     const [data, setData] = useContext(DataContext);
 
@@ -44,10 +68,10 @@ export function Index() {
         setEdit(item)
     }
 
-    const editModal = useRef(0)
+    const searchModal = useRef(0)
 
     return <main>
-        <List.Breadcrumbs title="Menu" link="/menus"></List.Breadcrumbs>
+        <Head title="Menu" link="/menus"></Head>
 
         <List.Table>
             <List.Thead>
@@ -99,9 +123,9 @@ export function Index() {
             </List.Tbody>
         </List.Table>
         <Pagination pagination={data?.data?.pagination} module="/menus"></Pagination>
-        {/* Edit User Modal */}
-        <Modal.Modal title="Edit Menu" id="edit-user-modal">
-            <Form action={"menus/"+edit?.id}>
+        {/* Edit Modal */}
+        <Modal.Modal title="Edit Menu" id="edit-modal">
+            <Form action={"menus/" + edit?.id}>
                 <Modal.Content>
 
                     <MenuForm edit={edit}></MenuForm>
@@ -113,18 +137,30 @@ export function Index() {
             </Form>
         </Modal.Modal>
 
-        {/* Add User Modal */}
-        <Modal.Modal title="Add Menu" id="add-user-modal">
+        {/* Add Modal */}
+        <Modal.Modal title="Add Menu" id="add-modal">
             <Form action="menus/create">
                 <Modal.Content>
-                    <Alert />
+                
                     <MenuForm />
                 </Modal.Content>
                 <Modal.Footer><Button type="submit">Save</Button></Modal.Footer>
             </Form>
         </Modal.Modal>
 
+        {/* Search Modal */}
+        <Modal.Modal title="Search Menu" id="search-modal" pref={searchModal}>
+            <Form method="get" action="menus">
+                <input type="hidden" name="asearch" />
+                <Modal.Content>
+              
+                    <MenuForm />
+                </Modal.Content>
+                <Modal.Footer><Button type="submit" onClick={function() {searchModal.current.classList.add('hidden');searchModal.current.previousSibling.classList.add('hidden')}}>Search</Button></Modal.Footer>
+            </Form>
+        </Modal.Modal>
+
         {/* Delete User Modal */}
-        <Modal.Delete>Are you sure you want to delete this menu?</Modal.Delete>
+        <Modal.Delete id="delete-modal" title="Delete Menu">Are you sure you want to delete this menu?</Modal.Delete>
     </main >
 }
