@@ -2,8 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import { DataContext } from "./data";
 import Api from "./api";
 
-function RouteTo(Layout:any, Component:any) {
+function RouteTo(Layout: any, Component: any) {
   return <Layout><Component /></Layout>
+}
+
+export function useGoTo(to: string) {
+  history.pushState({}, "", to);
 }
 
 export function useRouterUpdateDataContext() {
@@ -13,11 +17,11 @@ export function useRouterUpdateDataContext() {
 function getPathName() {
   let pathName = window.location.pathname
 
-  if (pathName.substr(-1) != '/')
+  if (pathName.substring(-1) != '/')
     pathName += '/'
   return pathName
 }
-export default function useRouter(Routes:any, props:any) {
+export default function useRouter(Routes: any, props: any) {
   const ref = useRef(false);
 
   const [data, setData] = useState(props.data)
@@ -30,14 +34,14 @@ export default function useRouter(Routes:any, props:any) {
 
     if (!ref.current) {
 
-      history.pushState = ((f:any) => function pushState(this:any, ...args) {
+      history.pushState = ((f: any) => function pushState(this: any, ...args) {
         var ret = f.apply(this, [...args]);
         window.dispatchEvent(new Event('pushstate'));
         window.dispatchEvent(new Event('locationchange'));
         return ret;
       })(history.pushState);
 
-      history.replaceState = ((f:any) => function replaceState(this:any, ...args) {
+      history.replaceState = ((f: any) => function replaceState(this: any, ...args) {
         var ret = f.apply(this, [...args]);
         window.dispatchEvent(new Event('replacestate'));
         window.dispatchEvent(new Event('locationchange'));
@@ -78,9 +82,9 @@ export default function useRouter(Routes:any, props:any) {
       routeFound = true
       break
     }
-    
+
   }
-  if( !routeFound && Routes["*"] ) {
+  if (!routeFound && Routes["*"]) {
     let val = Routes["*"]
     content = RouteTo(val[0], val[1])
   }
