@@ -1,7 +1,7 @@
 export default function Link({ to, children, ...props }) {
      function handleClick( e ) {
   
-        if( window.location.pathname != to)
+        if( window.location.href != to)
             history.pushState({}, "", to);
 
          e.preventDefault();
