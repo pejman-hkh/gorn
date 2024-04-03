@@ -66,15 +66,23 @@ export default function useRouter(Routes, props) {
   }, [])
 
   let content
-  for (let x in Routes) {
-    let route = Routes[x][0]
-    if (route.substr(0, -1) != '/')
+  let routeFound = false
+  for (let route in Routes) {
+    let val = Routes[route]
+
+    if (route.substr(-1) != '/')
       route += '/'
 
     if (path == route) {
-      content = RouteTo(Routes[x][1], Routes[x][2])
+      content = RouteTo(val[0], val[1])
+      routeFound = true
       break
     }
+    
+  }
+  if( !routeFound && Routes["*"] ) {
+    let val = Routes["*"]
+    content = RouteTo(val[0], val[1])
   }
 
   return <DataContext.Provider value={value}>{content}</DataContext.Provider>
