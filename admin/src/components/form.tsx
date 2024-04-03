@@ -49,7 +49,7 @@ export default function Form({ children, ...props }) {
 		if (!submitted)
 		return;
 
-		if( props.method.toLowerCase() == "get" ) {
+		if( props.method?.toLowerCase() == "get" ) {
 			let to = props.action+'?'+new URLSearchParams(dataForm)
 			
 			history.pushState({}, "", to);
