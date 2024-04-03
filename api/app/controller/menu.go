@@ -43,7 +43,7 @@ func (c *MenuController) InitRoutes(r *gin.Engine) {
 
 func (c *MenuController) Index(ctx *gin.Context) {
 	list := []model.Menu{}
-	c.parentIndex(ctx, list)
+	c.parentIndex(ctx, list, []string{"title", "url"}, map[string]string{"title": "like", "url": "like"})
 }
 
 func (c *MenuController) Edit(ctx *gin.Context) {
