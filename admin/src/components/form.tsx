@@ -47,8 +47,14 @@ export default function Form({ children, ...props }) {
 		e.preventDefault();
 		const dataForm = new FormData(e.target);
 		if (!submitted)
-			return;
+		return;
 
+		if( props.method.toLowerCase() == "get" ) {
+			let to = props.action+'?'+new URLSearchParams(dataForm)
+			
+			history.pushState({}, "", to);
+			return
+		}
 		let submit = e.target.querySelector("button[type='submit']");
 
 		const submitHtml = submit.innerHTML;
