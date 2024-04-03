@@ -1,20 +1,14 @@
-type props = {
-    to:string,
-    className?:string
-    children:any,
-    props?:any
-}
 
-export default function Link({ className, to, children, ...props }:props) {
+export default function Link({ children, ...props }:any) {
      function handleClick( e :React.MouseEvent<HTMLAnchorElement>) {
   
-        if( window.location.href != to)
-            history.pushState({}, "", to);
+        if( window.location.href != props.to)
+            history.pushState({}, "", props.to);
 
          e.preventDefault();
  
      }
 
-     return <a href={to} {...props} onClick={(e) => handleClick(e)}>{children}</a>;
+     return <a href={props.to} {...props} onClick={(e) => handleClick(e)}>{children}</a>;
  }
  
