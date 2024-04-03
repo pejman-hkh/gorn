@@ -5,9 +5,11 @@ import Dashboard from './pages/dashboard'
 import NoPage from './pages/nopage'
 import Login from './pages/login'
 import './App.css'
+import './scripts/nodelist'
+import Main from './scripts/main'
 
-import { useEffect } from "react";
-import MainScript from "./scripts/scripts";
+import { useEffect, useRef } from "react";
+import Scripts from "./scripts/scripts";
 
 import useRouter from "./router/router";
 
@@ -23,9 +25,14 @@ let Routes = {
 
 export default function App({ ...props }) {
   const content = useRouter(Routes, props)
+  const mainRef = useRef(false)
 
   useEffect(function () {
-    MainScript()
+    Scripts()
+    if( mainRef.current == false ) {
+      Main()
+      mainRef.current = true
+    }
   }, [window.location.pathname])
 
   return content
