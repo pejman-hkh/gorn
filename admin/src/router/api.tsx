@@ -3,14 +3,14 @@ export default function Api(path: string) {
 
         let res = {};
         try {
-            if (path.substring(0, 1) !== '/')
+            if (path.substr(0, 1) !== '/')
                 path = '/' + path
             console.log(import.meta.env)
             let url = import.meta.env.VITE_API_URL + path
 
-            if (url.substring(-1) !== '/')
+            if (url.substr(-1) !== '/')
                 url += '/'
-            let search = window.location.search.substring(1)
+            let search = window.location.search.substr(1)
             if (search)
                 search = '&' + search
 
