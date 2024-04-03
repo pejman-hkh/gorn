@@ -44,15 +44,6 @@ NodeList.prototype.each = function (callback: any): NodeList {
     return this;
 };
 
-function myTest() {
-   
-}
-
-myTest.prototype["testFunc"] = function(callback:any) {
-    callback("Test")
-};
-
-
 //add all events to nodelist
 ["focusin", "focusout", "load", "beforeunload", "unload", "change", "click", "dblclick", "focus", "blur", "reset", "submit", "resize", "scroll", "mouseover", "mouseout", "mouseup", "mousedown", "mouseenter", "mousemove", "mouseleave", "contextmenu", "wheel", "keydown", "keypress", "keyup", "select"].forEach(function (name: string) {
 
