@@ -1,30 +1,3 @@
-import * as Breadcrumb from "./breadcrumb"
-import * as Actions from "./actions"
-import { handler } from "@tailwindcss/aspect-ratio"
-import { useState } from "react"
-
-export function Breadcrumbs({ children, ...props }) {
-    return <Breadcrumb.Wrapper>
-        <Breadcrumb.Main>
-            <Breadcrumb.ItemHome></Breadcrumb.ItemHome>
-            <Breadcrumb.Item to="/dashboard">Cms</Breadcrumb.Item>
-            <Breadcrumb.Item to={props.link}>{props.title}</Breadcrumb.Item>
-        </Breadcrumb.Main>
-        <Breadcrumb.Title>All {props.title}s</Breadcrumb.Title>
-
-        <Actions.Wrapper>
-            <Actions.LeftSide>
-                <Actions.SearchForm></Actions.SearchForm>
-                <Actions.Tasks></Actions.Tasks>
-            </Actions.LeftSide>
-
-            <Actions.RightSide>
-                <Actions.AddButton>Add {props.title}</Actions.AddButton>
-                <Actions.ExportButton>Export</Actions.ExportButton>
-            </Actions.RightSide>
-        </Actions.Wrapper>
-    </Breadcrumb.Wrapper>
-}
 
 export function Wrapper({ children, ...props }) {
     return <div className="flex flex-col">
@@ -61,7 +34,7 @@ export function ButtonEdit({ children, ...props }) {
 
     const handler = (e) => {
         props.onClick()
-        let ddb = document.getElementById('edit-user-modal')
+        let ddb = document.getElementById('edit-modal')
         ddb.classList.toggle('hidden')
         ddb.previousSibling.classList.toggle('hidden')
     }
@@ -72,7 +45,7 @@ export function ButtonEdit({ children, ...props }) {
 export function ButtonDelete({ children, ...props }) {
     const handler = (e) => {
        
-        let ddb = document.getElementById('delete-user-modal')
+        let ddb = document.getElementById('delete-modal')
         ddb.classList.toggle('hidden')
         ddb.previousSibling.classList.toggle('hidden')
     }
