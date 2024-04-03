@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"gorn/app/model"
 	"gorn/gorn"
 	"net/http"
@@ -57,8 +56,6 @@ func (c *BaseController) AdvancedSearch(ctx *gin.Context, list any, asearch map[
 			pre = " and "
 		}
 
-		fmt.Printf("\n\n\n%s\n\n\n", sql)
-		fmt.Printf("\n\n\n%v\n\n\n", bind)
 		if sql != "" {
 			return db.Where(sql, bind)
 		}
