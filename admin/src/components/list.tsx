@@ -67,7 +67,7 @@ export function TdCheckbox({ children, ...props }:any) {
 export function Checkbox({ children, ...props }:any) {
     const handler = function(e:any) {
      
-        document.querySelectorAll("[td-checkbox]")?.forEach(function(this:any) {
+        document.querySelectorAll("[td-checkbox]")?.each(function(this:any) {
             if( this == e.target )
                 return
 
