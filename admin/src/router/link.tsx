@@ -1,14 +1,18 @@
+import { useContext } from "react";
+import { DataContext } from "./data";
 
-export default function Link({ children, ...props }:any) {
-     function handleClick( e :React.MouseEvent<HTMLAnchorElement>) {
-  
-        if( window.location.href != props.to)
-            history.pushState({}, "", props.to);
+export default function Link({ children, ...props }: any) {
+    const dataContext = useContext(DataContext) as Array<any>
+    const baseUri = dataContext[2]?.baseUri
 
-         e.preventDefault();
- 
-     }
+    function handleClick(e: any) {
 
-     return <a href={props.to} {...props} onClick={(e) => handleClick(e)}>{children}</a>;
- }
- 
+        if (window.location.href != baseUri+props.to)
+            history.pushState({}, "", baseUri+props.to);
+
+        e.preventDefault();
+
+    }
+
+    return <a href={baseUri+props.to} {...props} onClick={(e) => handleClick(e)}>{children}</a>;
+}
