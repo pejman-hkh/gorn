@@ -67,7 +67,7 @@ func (c *BaseController) parentIndex(ctx *gin.Context, list any, search []string
 
 	var p gorn.Paginator
 
-	result := gorn.DB.Scopes(c.Search(ctx, &list, search)).Scopes(c.AdvancedSearch(ctx, &list, asearch)).Scopes(p.Paginate(ctx, &list)).Find(&list)
+	result := gorn.DB.Scopes(c.Search(ctx, &list, search)).Scopes(c.AdvancedSearch(ctx, &list, asearch)).Scopes(p.Paginate(ctx, &list)).Order("Id desc").Find(&list)
 	if result.Error != nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": result.Error})
 		return
