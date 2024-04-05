@@ -22,12 +22,12 @@ type MenuController struct {
 	BaseController
 }
 
-func InitMenu(r *gin.Engine) {
+func InitMenu(r *gin.RouterGroup) {
 	index := &MenuController{}
 	index.InitRoutes(r)
 }
 
-func (c *MenuController) InitRoutes(r *gin.Engine) {
+func (c *MenuController) InitRoutes(r *gin.RouterGroup) {
 	g := r.Group("admin/menus")
 	g.Use(middle.IsAdmin())
 	{

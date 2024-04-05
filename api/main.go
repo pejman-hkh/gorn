@@ -31,13 +31,17 @@ func main() {
 	}
 
 	r := gin.Default()
-	r.Static("/assets", "./public")
 	r.Use(middle.Cors())
-	controller.InitIndex(r)
-	controller.InitUser(r)
-	controller.InitMenu(r)
-	// user := &controller.UserController{}
-	// user.InitRoutes(r)
+	g := r.Group("api/v1")
+	controller.InitIndex(g)
+	controller.InitUser(g)
+	controller.InitMenu(g)
+
+	// r.GET("/*", func(ctx *gin.Context) {
+	// 	//buf, _ := ioutil.ReadFile("../admin/dist/index.html")
+
+	// 	ctx.HTML(http.StatusOK, "../admin/dist/index.html", nil)
+	// })
 
 	r.Run(":8090")
 

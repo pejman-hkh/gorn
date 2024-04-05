@@ -11,12 +11,12 @@ type IndexController struct {
 	BaseController
 }
 
-func InitIndex(r *gin.Engine) {
+func InitIndex(r *gin.RouterGroup) {
 	index := &IndexController{}
 	index.InitRoutes(r)
 }
 
-func (c *IndexController) InitRoutes(r *gin.Engine) {
+func (c *IndexController) InitRoutes(r *gin.RouterGroup) {
 	g := r.Group("admin/")
 	g.Use(middle.IsAdmin())
 	{

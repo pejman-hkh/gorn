@@ -14,12 +14,12 @@ type UserController struct {
 	BaseController
 }
 
-func InitUser(r *gin.Engine) {
+func InitUser(r *gin.RouterGroup) {
 	a := &UserController{}
 	a.InitRoutes(r)
 }
 
-func (c *UserController) InitRoutes(r *gin.Engine) {
+func (c *UserController) InitRoutes(r *gin.RouterGroup) {
 
 	g := r.Group("admin/users")
 	g.Use(middle.IsAdmin())
@@ -29,11 +29,14 @@ func (c *UserController) InitRoutes(r *gin.Engine) {
 
 	}
 
-	r.GET("/login", c.Login)
-	r.GET("/register", c.Register)
-	r.POST("/register", c.RegisterPost)
-	r.POST("/login", c.LoginPost)
-	r.GET("/panel", c.Panel)
+	g = r.Group("admin")
+
+	g.GET("/login", c.Login)
+	g.GET("/register", c.Register)
+	g.POST("/register", c.RegisterPost)
+	g.POST("/login", c.LoginPost)
+	g.GET("/panel", c.Panel)
+
 }
 
 func (c *UserController) Index(ctx *gin.Context) {
