@@ -21,12 +21,12 @@ function getPathName() {
     pathName += '/'
   return pathName
 }
-export default function useRouter(Routes: any, props: any) {
+export default function useRouter(baseUri: string, routes: any, props: any) {
   const ref = useRef(false);
 
   const [data, setData] = useState(props.data)
 
-  const value = [data, setData];
+  const value = [data, setData, {baseUri : baseUri}];
 
   const [path, setPath] = useState(getPathName())
 
@@ -71,21 +71,21 @@ export default function useRouter(Routes: any, props: any) {
 
   let content
   let routeFound = false
-  for (let route in Routes) {
-    let val = Routes[route]
+  for (let route in routes) {
+    let val = routes[route]
 
     if (route.substr(-1) != '/')
       route += '/'
 
-    if (path == route) {
+    if (path == baseUri+route) {
       content = RouteTo(val[0], val[1])
       routeFound = true
       break
     }
 
   }
-  if (!routeFound && Routes["*"]) {
-    let val = Routes["*"]
+  if (!routeFound && routes["*"]) {
+    let val = routes["*"]
     content = RouteTo(val[0], val[1])
   }
 
