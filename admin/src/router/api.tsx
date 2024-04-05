@@ -5,7 +5,7 @@ export default function Api(path: string) {
         try {
             if (path.substr(0, 1) !== '/')
                 path = '/' + path
-            console.log(import.meta.env)
+          
             let url = import.meta.env.VITE_API_URL + path
 
             if (url.substr(-1) !== '/')

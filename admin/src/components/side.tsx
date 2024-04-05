@@ -84,7 +84,7 @@ export default function Side() {
                         <MenuItem>
                             <MenuLink to="/menus">
                                 <MenuSvg>
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 6h8M6 10h12M8 14h8M6 18h12"></path>
+                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 6h8M6 10h12M8 14h8M6 18h12"></path>
                                 </MenuSvg>
                                 <MenuText>Menu</MenuText>
                             </MenuLink>

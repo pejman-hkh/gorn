@@ -85,12 +85,12 @@ export function Index() {
                     <List.Th>Position</List.Th>
                     <List.Th>Status</List.Th>
                     <List.Th>Date</List.Th>
-                    <List.Th>Actions</List.Th>
+                    <List.Th width="200">Actions</List.Th>
                 </tr>
             </List.Thead>
             <List.Tbody>
                 {data?.data?.list?.map((item:any) => (
-                    <List.Tr>
+                    <List.Tr key={item.id}>
                         <List.TdCheckbox>
                             <List.CheckboxTd id="checkbox-1" aria-describedby="checkbox-1">checkbox</List.CheckboxTd>
                         </List.TdCheckbox>
