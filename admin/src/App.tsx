@@ -22,7 +22,7 @@ let Routes = {
 };
 
 export default function App({ ...props }) {
-  const content = useRouter(Routes, props)
+  const content = useRouter("/admin", Routes, props)
   const mainRef = useRef(false)
 
   useEffect(function () {
