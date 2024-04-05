@@ -18,7 +18,7 @@ export function Thead({ children, ...props }:any) {
 }
 
 export function Th({ children, ...props }:any) {
-    return <th {...props} scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+    return <th {...props} scope="col" className="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
         {children}</th>
 }
 
