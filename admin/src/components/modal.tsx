@@ -43,7 +43,7 @@ export function Footer({ children, ...props }: any) {
 export function Modal({ children, ...props }: any) {
     return <>
         <div modal-backdrop="1" className="hidden bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40"></div>
-        <div ref={props?.pref} {...props} modal="" className="fixed left-0 right-0 z-50 items-center justify-center overflow-x-hidden overflow-y-auto top-4 md:inset-0 h-modal sm:h-full flex hidden">
+        <div ref={props?.pref} {...props} data-modal="" className="fixed left-0 right-0 z-50 items-center justify-center overflow-x-hidden overflow-y-auto top-4 md:inset-0 h-modal sm:h-full flex hidden">
             <div className="relative w-full h-full max-w-2xl px-4 md:h-auto">
 
                 <div className="relative bg-white rounded-lg shadow dark:bg-gray-800">

@@ -8,8 +8,8 @@ export default function MainScript() {
 
     })
 
-    document.querySelectorAll("[modal]").on('click.modal.hide', function (e) {
-        if( ! e.target.hasAttribute('modal'))
+    document.querySelectorAll("[data-modal]").on('click.modal.hide', function (e) {
+        if( ! e.target.hasAttribute('data-modal'))
             return
 
         this.previousSibling.classList.toggle('hidden')
