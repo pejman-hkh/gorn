@@ -5,9 +5,12 @@ import Pagination from "../components/pagination"
 import * as List from "../components/list"
 import * as Grid from "../components/grid"
 import Form, { Input, Select, Textarea } from "../components/form"
-import { useContext, useRef, useState } from "react"
+import { useContext, useState } from "react"
 import { DataContext } from "../router/data"
 import Button from "../components/button"
+import * as Task from "../components/tasks"
+import { useGoTo } from "../router/router"
+
 
 export function MenuForm({ ...props }) {
     let edit = props.edit
@@ -37,41 +40,59 @@ export function MenuForm({ ...props }) {
     </Grid.Wrapper>
 }
 
-function Head({...props}) {
-    return <Breadcrumb.Wrapper>
-        <Breadcrumb.Main>
-            <Breadcrumb.ItemHome></Breadcrumb.ItemHome>
-            <Breadcrumb.Item to="/dashboard">Cms</Breadcrumb.Item>
-            <Breadcrumb.Item to={props.link}>{props.title}</Breadcrumb.Item>
-        </Breadcrumb.Main>
-        <Breadcrumb.Title>All {props.title}s</Breadcrumb.Title>
-
-        <Actions.Wrapper>
-            <Actions.LeftSide>
-                <Actions.SearchForm />
-                <Actions.Tasks></Actions.Tasks>
-            </Actions.LeftSide>
-
-            <Actions.RightSide>
-                <Actions.AddButton>Add {props.title}</Actions.AddButton>
-                <Actions.ExportButton>Export</Actions.ExportButton>
-            </Actions.RightSide>
-        </Actions.Wrapper>
-    </Breadcrumb.Wrapper>
-}
 export function Index() {
     const dataContext = useContext(DataContext) as Array<any>;
     const data = dataContext[0]
 
-    const [edit, setEdit] = useState({id:0})
-    const editHandler = (item:any) => {
+    const [edit, setEdit] = useState({ id: 0 })
+    const editModal = useState(false)
+    const searchModal = useState(false)
+    const addModal = useState(false)
+    const deleteModal = useState(false)
+
+    const editHandler = (e: any, item: any) => {
+        e.preventDefault()
+        editModal[1](true)
         setEdit(item)
     }
 
-    const searchModal = useRef<HTMLDivElement>(null)
-
+    let sendRequest = false
+    let timeOut: number;
+    const searchHandler = (e: any) => {
+        if (!sendRequest) {
+            clearTimeout(timeOut);
+            timeOut = setTimeout(function () {
+                sendRequest = true;
+                useGoTo("?search=" + encodeURIComponent(e.target.value))
+            }, 800);
+        }
+    }
     return <main>
-        <Head title="Menu" link="/menus"></Head>
+        <Breadcrumb.Wrapper>
+            <Breadcrumb.Main>
+                <Breadcrumb.ItemHome></Breadcrumb.ItemHome>
+                <Breadcrumb.Item to="/dashboard">Cms</Breadcrumb.Item>
+                <Breadcrumb.Item to="/menus">Menu</Breadcrumb.Item>
+            </Breadcrumb.Main>
+            <Breadcrumb.Title>All Menus</Breadcrumb.Title>
+
+            <Actions.Wrapper>
+                <Actions.LeftSide>
+                    <Actions.SearchForm onChange={searchHandler} />
+                    <Actions.Tasks>
+                        <Task.Setting onClick={() => { searchModal[1](true) }} />
+                        <Task.Delete />
+                        <Task.Info />
+                        <Task.More />
+                    </Actions.Tasks>
+                </Actions.LeftSide>
+
+                <Actions.RightSide>
+                    <Actions.AddButton onClick={() => { addModal[1](true) }}>Add Menu</Actions.AddButton>
+                    <Actions.ExportButton>Export</Actions.ExportButton>
+                </Actions.RightSide>
+            </Actions.Wrapper>
+        </Breadcrumb.Wrapper>
 
         <List.Table>
             <List.Thead>
@@ -89,7 +110,7 @@ export function Index() {
                 </tr>
             </List.Thead>
             <List.Tbody>
-                {data?.data?.list?.map((item:any) => (
+                {data?.data?.list?.map((item: any) => (
                     <List.Tr key={item.id}>
                         <List.TdCheckbox>
                             <List.CheckboxTd id="checkbox-1" aria-describedby="checkbox-1">checkbox</List.CheckboxTd>
@@ -110,10 +131,10 @@ export function Index() {
                         </List.Td>
                         <List.Td>{item.created_at}</List.Td>
                         <List.TdAction>
-                            <List.ButtonEdit onClick={() => editHandler(item)}>
+                            <List.ButtonEdit onClick={(e: any) => editHandler(e, item)}>
                                 Edit
                             </List.ButtonEdit>
-                            <List.ButtonDelete>
+                            <List.ButtonDelete onClick={() => { deleteModal[1](true) }}>
                                 Delete
                             </List.ButtonDelete>
                         </List.TdAction>
@@ -124,7 +145,7 @@ export function Index() {
         </List.Table>
         <Pagination pagination={data?.data?.pagination} module="/menus"></Pagination>
         {/* Edit Modal */}
-        <Modal.Modal title="Edit Menu" id="edit-modal">
+        <Modal.Modal title="Edit Menu" show={editModal}>
             <Form action={"menus/" + edit?.id}>
                 <Modal.Content>
 
@@ -138,10 +159,10 @@ export function Index() {
         </Modal.Modal>
 
         {/* Add Modal */}
-        <Modal.Modal title="Add Menu" id="add-modal">
+        <Modal.Modal title="Add Menu" show={addModal}>
             <Form action="menus/create">
                 <Modal.Content>
-                
+
                     <MenuForm />
                 </Modal.Content>
                 <Modal.Footer><Button type="submit">Save</Button></Modal.Footer>
@@ -149,18 +170,18 @@ export function Index() {
         </Modal.Modal>
 
         {/* Search Modal */}
-        <Modal.Modal title="Search Menu" id="search-modal" pref={searchModal}>
+        <Modal.Modal title="Search Menu" show={searchModal}>
             <Form method="get" action="menus">
                 <input type="hidden" name="asearch" />
                 <Modal.Content>
-              
+
                     <MenuForm />
                 </Modal.Content>
-                <Modal.Footer><Button type="submit" onClick={function() {searchModal.current?.classList?.add('hidden');searchModal.current?.previousElementSibling?.classList?.add('hidden')}}>Search</Button></Modal.Footer>
+                <Modal.Footer><Button type="submit" onClick={() => searchModal[1](false)}>Search</Button></Modal.Footer>
             </Form>
         </Modal.Modal>
 
         {/* Delete User Modal */}
-        <Modal.Delete id="delete-modal" title="Delete Menu">Are you sure you want to delete this menu?</Modal.Delete>
+        <Modal.Delete show={deleteModal} title="Delete Menu">Are you sure you want to delete this menu?</Modal.Delete>
     </main >
 }
