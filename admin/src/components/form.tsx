@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useGoTo, useRouterUpdateDataContext } from "../router/router";
+import { DataContext } from "../router/data";
 
 export function Alert({ children, ...props }:any) {
 	var className = 'hidden'
@@ -36,6 +37,10 @@ export function Textarea({ children, ...props }:any) {
 }
 
 export default function Form({ children, ...props }:any) {
+	const dataContext = useContext(DataContext) as Array<any>
+	const baseUri = dataContext[2]?.baseUri
+
+
 	const [alertText, setAlertText] = useState(null)
 	const [alertType, setAlertType] = useState('')
 
@@ -62,10 +67,13 @@ export default function Form({ children, ...props }:any) {
 		submit.innerHTML = 'Loading ...';
 
 		submitted = false;
+
 		let action = (props.action ? props.action : window.location.pathname)
+
 		if( action.substr(0,1) != '/')
 			action = '/'+action
 		
+		action = baseUri+action
 		fetch(import.meta.env.VITE_API_URL + action + '?'+new URLSearchParams({ auth : localStorage.getItem('auth') } as any),
 			{
 				method: "POST",
