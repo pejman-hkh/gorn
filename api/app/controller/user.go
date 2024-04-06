@@ -118,5 +118,5 @@ func (c *UserController) LoginPost(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": "Logined successfully", "data": map[string]any{"auth": auth, "redirect": "/dashboard"}})
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": "Logined successfully", "data": map[string]any{"auth": auth, "redirect": "/admin/dashboard"}})
 }
