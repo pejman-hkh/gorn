@@ -23,10 +23,10 @@ function getPathName() {
 }
 export default function useRouter(baseUri: string, routes: any, props: any) {
   const ref = useRef(false);
-
+  
   const [data, setData] = useState(props.data)
 
-  const value = [data, setData, {baseUri : baseUri}];
+  const value = [data, setData, {baseUri : baseUri}, props?.mainData?.data];
 
   const [path, setPath] = useState(getPathName())
 
@@ -56,14 +56,20 @@ export default function useRouter(baseUri: string, routes: any, props: any) {
       window.addEventListener("updatedatacontext", () => {
         Api(window.location.pathname).then(function (fetchData) {
           setData(fetchData)
+        }).catch(function() {
+          window.location.href = ('/admin/login')
         })
       })
 
       window.addEventListener("locationchange", () => {
+      
         Api(window.location.pathname).then(function (fetchData) {
           setData(fetchData)
           setPath(getPathName())
+        }).catch(function() {
+          window.location.href = ('/admin/login')
         })
+       
       })
       ref.current = true;
     }
