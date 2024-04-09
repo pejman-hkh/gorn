@@ -54,12 +54,12 @@ export function TdCheckbox({ children, ...props }:any) {
 }
 export function Checkbox({ children, ...props }:any) {
     const handler = function(e:any) {
-     
+        
         document.querySelectorAll("[td-checkbox]")?.each(function(this:any) {
             if( this == e.target )
                 return
 
-            this.checked = !this.checked
+            this.checked = e.target.checked
         })
     }
     return <div className="flex items-center">
