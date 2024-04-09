@@ -2,6 +2,7 @@ package controller
 
 import (
 	"gorn/app/middle"
+	"gorn/app/model"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -20,14 +21,24 @@ func (c *IndexController) InitRoutes(r *gin.RouterGroup) {
 	g := r.Group("admin/")
 	g.Use(middle.IsAdmin())
 	{
-		u := UserController{}
 		g.GET("/", c.Index)
-		g.POST("/", u.LoginPost)
+		g.GET("/data", c.Data)
+		g.GET("/dashboard", c.Index)
 	}
 
 	r.GET("/", c.Index)
 	r.GET("/home", c.Index)
 
+}
+
+func (c *IndexController) Data(ctx *gin.Context) {
+	user, _ := ctx.Get("authUser")
+	set := make(map[string]any)
+	if user != nil {
+		set["authUser"] = user.(*model.User)
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "data": set})
 }
 
 func (c *IndexController) Index(ctx *gin.Context) {
