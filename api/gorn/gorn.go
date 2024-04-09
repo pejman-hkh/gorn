@@ -22,7 +22,9 @@ func (gr *Gorn) Init() {
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?charset=utf8mb4&parseTime=True&loc=Local", env.Get("DATABASE_USER", "root"), env.Get("DATABASE_PASSWORD", ""), env.Get("DATABASE_HOST", "localhost"), env.Get("DATABASE_NAME", "gorn"))
 
-	DB, _ = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	DB, _ = gorm.Open(mysql.Open(dsn), &gorm.Config{
+		DisableForeignKeyConstraintWhenMigrating: true,
+	})
 
 	// sqlDB, _ := DB.DB()
 	// sqlDB.SetMaxIdleConns(10)
