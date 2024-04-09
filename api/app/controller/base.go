@@ -65,13 +65,4 @@ func (c *BaseController) AdvancedSearch(ctx *gin.Context, list any, asearch map[
 
 func (c *BaseController) parentIndex(ctx *gin.Context, list any, search []string, asearch map[string]string) {
 
-	var p gorn.Paginator
-
-	result := gorn.DB.Scopes(c.Search(ctx, &list, search)).Scopes(c.AdvancedSearch(ctx, &list, asearch)).Scopes(p.Paginate(ctx, &list)).Order("Id desc").Find(&list)
-	if result.Error != nil {
-		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": result.Error})
-		return
-	}
-
-	ctx.JSON(http.StatusOK, gin.H{"status": 1, "data": map[string]any{"list": list, "pagination": p}})
 }
