@@ -5,7 +5,7 @@ import Pagination from "../components/pagination"
 import * as List from "../components/list"
 import * as Grid from "../components/grid"
 import Form, { Input, Select, Textarea } from "../components/form"
-import { useContext, useState } from "react"
+import { useContext, useRef, useState } from "react"
 import { DataContext } from "../router/data"
 import Button from "../components/button"
 import * as Task from "../components/tasks"
@@ -49,6 +49,8 @@ export function Index() {
     const searchModal = useState(false)
     const addModal = useState(false)
     const deleteModal = useState(false)
+    const deleteAllModal = useState(false)
+    const [actionValue, setActionValue] = useState("")
 
     const editHandler = (e: any, item: any) => {
         e.preventDefault()
@@ -67,7 +69,10 @@ export function Index() {
             }, 800);
         }
     }
-    return <main>
+
+    const listForm = useRef<any>(null)
+    
+    return <>
         <Breadcrumb.Wrapper>
             <Breadcrumb.Main>
                 <Breadcrumb.ItemHome></Breadcrumb.ItemHome>
@@ -81,7 +86,7 @@ export function Index() {
                     <Actions.SearchForm onChange={searchHandler} />
                     <Actions.Tasks>
                         <Task.Setting onClick={() => { searchModal[1](true) }} />
-                        <Task.Delete />
+                        <Task.Delete onClick={() => { setActionValue("delete"); deleteAllModal[1](true) }} />
                         <Task.Info />
                         <Task.More />
                     </Actions.Tasks>
@@ -93,60 +98,63 @@ export function Index() {
                 </Actions.RightSide>
             </Actions.Wrapper>
         </Breadcrumb.Wrapper>
+        <Form fref={listForm} disableClass="true" method="post" action="menus/actions">
+            <input type="hidden" name="action" value={actionValue} />
 
-        <List.Table>
-            <List.Thead>
-                <tr>
-                    <List.Th>
-                        <List.Checkbox id="checkbox-1" aria-describedby="checkbox-1">checkbox</List.Checkbox>
-                    </List.Th>
-                    <List.Th>Title</List.Th>
-                    <List.Th>User</List.Th>
-                    <List.Th>Url</List.Th>
-                    <List.Th>Position</List.Th>
-                    <List.Th>Status</List.Th>
-                    <List.Th>Date</List.Th>
-                    <List.Th width="200">Actions</List.Th>
-                </tr>
-            </List.Thead>
-            <List.Tbody>
-                {data?.data?.list?.map((item: any) => (
-                    <List.Tr key={item.id}>
-                        <List.TdCheckbox>
-                            <List.CheckboxTd id="checkbox-1" aria-describedby="checkbox-1">checkbox</List.CheckboxTd>
-                        </List.TdCheckbox>
+            <List.Table>
+                <List.Thead>
+                    <tr>
+                        <List.Th>
+                            <List.Checkbox id="checkbox-1" aria-describedby="checkbox-1">checkbox</List.Checkbox>
+                        </List.Th>
+                        <List.Th width="30%">Title</List.Th>
+                        <List.Th>User</List.Th>
+                        <List.Th>Url</List.Th>
+                        <List.Th>Position</List.Th>
+                        <List.Th>Status</List.Th>
+                        <List.Th>Date</List.Th>
+                        <List.Th>Actions</List.Th>
+                    </tr>
+                </List.Thead>
+                <List.Tbody>
+                    {data?.data?.list?.map((item: any) => (
+                        <List.Tr key={item.id}>
+                            <List.TdCheckbox>
+                                <List.CheckboxTd name="ids[]" value={item.id} id="checkbox-1" aria-describedby="checkbox-1">checkbox</List.CheckboxTd>
+                            </List.TdCheckbox>
 
-                        <List.TdTitle>
-                            {item.title}
-                        </List.TdTitle>
+                            <List.TdTitle>
+                                {item.title}
+                            </List.TdTitle>
 
-                        <List.Td>{item.user.id}</List.Td>
-                        <List.TdText>
-                            {item.url}
-                        </List.TdText>
+                            <List.Td>{item.user.id}</List.Td>
+                            <List.TdText>
+                                {item.url}
+                            </List.TdText>
 
-                        <List.Td> {item.position}</List.Td>
-                        <List.Td>
-                            <List.ActiveBadge />
-                        </List.Td>
-                        <List.Td>{item.created_at}</List.Td>
-                        <List.TdAction>
-                            <List.ButtonEdit onClick={(e: any) => editHandler(e, item)}>
-                                Edit
-                            </List.ButtonEdit>
-                            <List.ButtonDelete onClick={() => { deleteModal[1](true) }}>
-                                Delete
-                            </List.ButtonDelete>
-                        </List.TdAction>
-                    </List.Tr>
-                ))}
+                            <List.Td> {item.position}</List.Td>
+                            <List.Td>
+                                <List.ActiveBadge />
+                            </List.Td>
+                            <List.Td>{item.created_at}</List.Td>
+                            <List.TdAction>
+                                <List.ButtonEdit onClick={(e: any) => editHandler(e, item)}>
+                                    Edit
+                                </List.ButtonEdit>
+                                <List.ButtonDelete onClick={() => { deleteModal[1](true); setEdit(item) }}>
+                                    Delete
+                                </List.ButtonDelete>
+                            </List.TdAction>
+                        </List.Tr>
+                    ))}
 
-            </List.Tbody>
-        </List.Table>
+                </List.Tbody>
+            </List.Table>
+        </Form>
         <Pagination pagination={data?.data?.pagination} module="/menus"></Pagination>
         {/* Edit Modal */}
         <Modal.Modal title="Edit Menu" show={editModal}>
-            <Form action={"menus/" + edit?.id}>
+            <Form action={"menus/" + edit?.id} alertClass="m-6">
                 <Modal.Content>
 
                     <MenuForm edit={edit}></MenuForm>
@@ -160,7 +168,7 @@ export function Index() {
 
         {/* Add Modal */}
         <Modal.Modal title="Add Menu" show={addModal}>
-            <Form action="menus/create">
+            <Form action="menus/create" alertClass="m-6">
                 <Modal.Content>
 
                     <MenuForm />
@@ -181,7 +189,30 @@ export function Index() {
             </Form>
         </Modal.Modal>
 
-        {/* Delete User Modal */}
-        <Modal.Delete show={deleteModal} title="Delete Menu">Are you sure you want to delete this menu?</Modal.Delete>
-    </main >
+        {/* Delete Modal */}
+        <Modal.Delete show={deleteModal} title="Delete Menu">
+            <Form key={edit.id} method="delete" action={"menus/" + edit.id}>
+                <Modal.AlertIcon />
+                <Modal.ModalH3>Are you sure you want to delete this ?</Modal.ModalH3>
+                <Modal.YesButton type="submit">Yes, I'm sure</Modal.YesButton>
+                <Modal.NoButton href="#" onClick={(e: any) => { e.preventDefault(); deleteModal[1](false) }}>No, cancel</Modal.NoButton>
+            </Form>
+        </Modal.Delete>
+
+        {/* Delete Modal */}
+        <Modal.Delete show={deleteAllModal} title="Delete All Menu">
+         
+            <Modal.AlertIcon />
+            <Modal.ModalH3>Are you sure you want to delete this ?</Modal.ModalH3>
+            <Modal.YesButton onClick={() => {
+                var event = new Event('submit', { bubbles: true });
+                listForm.current?.dispatchEvent(event);
+                deleteAllModal[1](false)
+            
+            }}>Yes, I'm sure</Modal.YesButton>
+            <Modal.NoButton href="#" onClick={(e: any) => { e.preventDefault(); deleteAllModal[1](false) }}>No, cancel</Modal.NoButton>
+        
+        </Modal.Delete>
+
+    </>
 }
