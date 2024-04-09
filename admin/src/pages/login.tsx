@@ -19,7 +19,7 @@ export default function Login() {
     return <Guest>
         <Card title="Login">
 
-            <Form>
+            <Form action="/login">
                 <div>
                     <Label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</Label>
                     <Input type="email" name="email" id="email" placeholder="test@test.test" required />
