@@ -19,6 +19,10 @@ type Paginator struct {
 
 func (p *Paginator) Paginate(r *gin.Context, model any) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
+		if r.Query("excel") != "" {
+			return db
+		}
+
 		var totalRows int64
 
 		page, _ := strconv.Atoi(r.Query("page"))
