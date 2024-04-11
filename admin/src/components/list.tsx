@@ -1,3 +1,9 @@
+import Button from "./button"
+import Form from "./form"
+import * as Modal from "./modal"
+import * as Breadcrumb from "./breadcrumb"
+import * as Actions from "./actions"
+import * as Task from "./tasks"
 
 export function Wrapper({ children, ...props }: any) {
     return <div {...props} className="flex flex-col">
@@ -92,7 +98,7 @@ export function ActiveBadge({ ...props }) {
         className += ' bg-red-400'
 
     return <div {...props} className="flex items-center">
-        <div className={className} />  {props.active?'Enable':'Disable'}
+        <div className={className} />  {props.active ? 'Enable' : 'Disable'}
     </div>
 }
 
@@ -102,4 +108,96 @@ export function Table({ children, ...props }: any) {
             {children}
         </table>
     </Wrapper>
+}
+
+export function BreadCrumb({ title, route, searchHandler, setActionValue, deleteAllModal, addModal, setEdit, searchModal }: any) {
+    return <Breadcrumb.Wrapper>
+        <Breadcrumb.Main>
+            <Breadcrumb.ItemHome></Breadcrumb.ItemHome>
+            <Breadcrumb.Item to="/dashboard">Cms</Breadcrumb.Item>
+            <Breadcrumb.Item to={route}>{title}</Breadcrumb.Item>
+        </Breadcrumb.Main>
+        <Breadcrumb.Title>All {title}s</Breadcrumb.Title>
+
+        <Actions.Wrapper>
+            <Actions.LeftSide>
+                <Actions.SearchForm action="/menus" onChange={searchHandler} />
+                <Actions.Tasks>
+                    <Task.Setting onClick={() => { searchModal[1](true) }} />
+                    <Task.Delete onClick={() => { setActionValue("delete"); deleteAllModal[1](true) }} />
+                    <Task.Info />
+                    <Task.More />
+                </Actions.Tasks>
+            </Actions.LeftSide>
+
+            <Actions.RightSide>
+                <Actions.AddButton onClick={() => { addModal[1](true); setEdit({}) }}>Add {title}</Actions.AddButton>
+                <Actions.ExportButton>Export</Actions.ExportButton>
+            </Actions.RightSide>
+        </Actions.Wrapper>
+    </Breadcrumb.Wrapper>
+}
+
+export function Modals({ title, route, edit, addModal, MainForm, editModal, searchModal, deleteModal, deleteAllModal, listForm }: any) {
+    return <>
+        <Modal.Modal title={"Edit " + title} show={editModal}>
+            <Form action={route + "/" + edit?.id} alertclass="m-6">
+                <Modal.Content>
+
+                    <MainForm edit={edit}></MainForm>
+
+                </Modal.Content>
+                <Modal.Footer>
+                    <Button type="submit">Save</Button>
+                </Modal.Footer>
+            </Form>
+        </Modal.Modal>
+
+        <Modal.Modal title={"Add " + title} show={addModal}>
+            <Form action={route + "/create"} alertclass="m-6">
+                <Modal.Content>
+
+                    <MainForm />
+                </Modal.Content>
+                <Modal.Footer>
+                    <Button type="submit">Save</Button>
+                    <Button type="reset">Reset</Button>
+                </Modal.Footer>
+            </Form>
+        </Modal.Modal>
+
+        <Modal.Modal title={"Search " + title} show={searchModal}>
+            <Form method="get" action={route}>
+                <input type="hidden" name="asearch" />
+                <Modal.Content>
+
+                    <MainForm />
+                </Modal.Content>
+                <Modal.Footer><Button type="submit" onClick={() => searchModal[1](false)}>Search</Button></Modal.Footer>
+            </Form>
+        </Modal.Modal>
+
+        <Modal.Delete show={deleteModal} title={"Delete " + title}>
+            <Form key={edit.id} method="delete" action={route + "/" + edit.id} onSuccess={() => {deleteModal[1](false)}}>
+                <Modal.AlertIcon />
+                <Modal.ModalH3>Are you sure you want to delete this ?</Modal.ModalH3>
+                <Modal.YesButton type="submit">Yes, I'm sure</Modal.YesButton>
+                <Modal.NoButton href="#" onClick={(e: any) => { e.preventDefault(); deleteModal[1](false) }}>No, cancel</Modal.NoButton>
+            </Form>
+        </Modal.Delete>
+
+        <Modal.Delete show={deleteAllModal} title={"Delete All " + title}>
+
+            <Modal.AlertIcon />
+            <Modal.ModalH3>Are you sure you want to delete this ?</Modal.ModalH3>
+            <Modal.YesButton onClick={() => {
+                var event = new Event('submit', { bubbles: true });
+                listForm.current?.dispatchEvent(event);
+                deleteAllModal[1](false)
+
+            }}>Yes, I'm sure</Modal.YesButton>
+            <Modal.NoButton href="#" onClick={(e: any) => { e.preventDefault(); deleteAllModal[1](false) }}>No, cancel</Modal.NoButton>
+
+        </Modal.Delete>
+    </>
 }
