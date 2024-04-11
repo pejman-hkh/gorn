@@ -47,7 +47,7 @@ func (p *Paginator) Paginate(r *gin.Context, model any) func(db *gorm.DB) *gorm.
 		p.End = end
 		next := uint(page) + 1
 		if next > end {
-			next = 1
+			next = end
 		}
 
 		p.Next = next
