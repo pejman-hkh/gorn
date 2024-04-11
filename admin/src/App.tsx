@@ -1,6 +1,7 @@
 import Guest from './components/layout/guest'
 import Layout from './components/layout/auth'
 import * as Menus from './pages/menus'
+import * as Settings from './pages/settings'
 import Dashboard from './pages/dashboard'
 import NoPage from './pages/nopage'
 import Login from './pages/login'
@@ -16,6 +17,7 @@ import useRouter from "./router/router";
 let routes = {
   '/': [Guest, Login],
   '/menus': [Layout, Menus.Index],
+  '/settings': [Layout, Settings.Index],
   '/login': [Guest, Login],
   '/dashboard': [Layout, Dashboard],
   '*': [Guest, NoPage]

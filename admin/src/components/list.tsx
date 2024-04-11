@@ -1,5 +1,5 @@
 
-export function Wrapper({ children, ...props }:any) {
+export function Wrapper({ children, ...props }: any) {
     return <div {...props} className="flex flex-col">
         <div className="overflow-x-auto">
             <div className="inline-block min-w-full align-middle">
@@ -11,31 +11,31 @@ export function Wrapper({ children, ...props }:any) {
     </div>
 }
 
-export function Thead({ children, ...props }:any) {
+export function Thead({ children, ...props }: any) {
     return <thead {...props} className="bg-gray-100 dark:bg-gray-700">
         {children}
     </thead>
 }
 
-export function Th({ children, ...props }:any) {
+export function Th({ children, ...props }: any) {
     return <th {...props} scope="col" className="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
         {children}</th>
 }
 
-export function Tbody({ children, ...props }:any) {
+export function Tbody({ children, ...props }: any) {
     return <tbody {...props} className="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">{children}</tbody>
 }
 
-export function Tr({ children, ...props }:any) {
+export function Tr({ children, ...props }: any) {
     return <tr {...props} className="hover:bg-gray-100 dark:hover:bg-gray-700">{children}</tr>
 }
 
-export function ButtonEdit({ children, ...props }:any) {
+export function ButtonEdit({ children, ...props }: any) {
 
     return <button {...props} onClick={props?.onClick} type="button" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"><svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fillRule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clipRule="evenodd" /></svg>{children}</button>
 }
 
-export function ButtonDelete({ children, ...props }:any) {
+export function ButtonDelete({ children, ...props }: any) {
 
     return <button {...props} type="button" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:focus:ring-red-900">
         <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
@@ -43,20 +43,20 @@ export function ButtonDelete({ children, ...props }:any) {
     </button>
 }
 
-export function Td({ children, ...props }:any) {
+export function Td({ children, ...props }: any) {
     return <td {...props} className="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">{children}</td>
 }
-export function TdAction({ children, ...props }:any) {
+export function TdAction({ children, ...props }: any) {
     return <td {...props} className="p-4 space-x-2 whitespace-nowrap">{children}</td>
 }
-export function TdCheckbox({ children, ...props }:any) {
+export function TdCheckbox({ children, ...props }: any) {
     return <td {...props} className="w-4 p-4">{children}</td>
 }
-export function Checkbox({ children, ...props }:any) {
-    const handler = function(e:any) {
-        
-        document.querySelectorAll("[td-checkbox]")?.each(function(this:any) {
-            if( this == e.target )
+export function Checkbox({ children, ...props }: any) {
+    const handler = function (e: any) {
+
+        document.querySelectorAll("[td-checkbox]")?.each(function (this: any) {
+            if (this == e.target)
                 return
 
             this.checked = e.target.checked
@@ -68,7 +68,7 @@ export function Checkbox({ children, ...props }:any) {
     </div>
 }
 
-export function CheckboxTd({ children, ...props }:any) {
+export function CheckboxTd({ children, ...props }: any) {
     function handler() {
 
     }
@@ -76,21 +76,27 @@ export function CheckboxTd({ children, ...props }:any) {
 }
 
 
-export function TdTitle({ children, ...props }:any) {
+export function TdTitle({ children, ...props }: any) {
     return <td {...props} className="flex items-center p-4 mr-12 space-x-6 whitespace-nowrap">{children}</td>
 }
 
-export function TdText({ children, ...props }:any) {
+export function TdText({ children, ...props }: any) {
     return <td {...props} className="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400">{children}</td>
 }
 
 export function ActiveBadge({ ...props }) {
+    let className = "h-2.5 w-2.5 rounded-full mr-2"
+    if (props.active == 1)
+        className += ' bg-green-400'
+    else
+        className += ' bg-red-400'
+
     return <div {...props} className="flex items-center">
-        <div className="h-2.5 w-2.5 rounded-full bg-green-400 mr-2" />  Active
+        <div className={className} />  {props.active?'Enable':'Disable'}
     </div>
 }
 
-export function Table({ children, ...props }:any) {
+export function Table({ children, ...props }: any) {
     return <Wrapper>
         <table {...props} className="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600">
             {children}
