@@ -12,8 +12,8 @@ export function Alert({ children, ...props }: any) {
 		className = 'alert p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400'
 	}
 
-	if (props?.alertClass)
-		className += ' ' + props.alertClass;
+	if (props?.alertclass)
+		className += ' ' + props.alertclass;
 
 	return <div className={className} role="alert">{children}</div>
 }
@@ -57,8 +57,6 @@ export default function Form({ children, ...props }: any) {
 	const [alertText, setAlertText] = useState(null)
 	const [alertType, setAlertType] = useState('')
 
-	//const [data, setData] = useContext(DataContext);
-
 	let submitted = true;
 	const alertElement = useRef(0);
 	function submitHandler(e: any) {
@@ -70,6 +68,8 @@ export default function Form({ children, ...props }: any) {
 		const method = props.method?.toLowerCase() ?? "post";
 		if (method == "get") {
 			let to = props.action + '?' + new URLSearchParams((dataForm as any) || {})
+			if (props.action)
+				to = baseUri + to
 
 			history.pushState({}, "", to);
 			return
@@ -127,5 +127,5 @@ export default function Form({ children, ...props }: any) {
 			})
 	}
 
-	return <form ref={props.fref} {...props} className={props?.disableClass ? "" : (props?.className ? props?.className : " mt-8 space-y-6")} onSubmit={submitHandler}><Alert alertClass={props?.alertClass} ref={alertElement} type={alertType}>{alertText}</Alert>{children}</form>
+	return <form ref={props.fref} {...props} className={props?.disableclass ? "" : (props?.className ? props?.className : " mt-8 space-y-6")} onSubmit={submitHandler}><Alert alertclass={props?.alertclass} ref={alertElement} type={alertType}>{alertText}</Alert>{children}</form>
 }
