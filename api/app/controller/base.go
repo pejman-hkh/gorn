@@ -27,7 +27,7 @@ func getType(myvar interface{}) string {
 	}
 }
 
-func (c *BaseController) makeExcel(excepts []string, data any) {
+func (c *BaseController) makeExcel(ctx *gin.Context, excepts []string, data any) {
 	file := excelize.NewFile()
 
 	defer func() {
@@ -61,10 +61,17 @@ func (c *BaseController) makeExcel(excepts []string, data any) {
 
 	model := getType(v.Interface())
 	now := time.Now()
-	if err := file.SaveAs("public/" + model + "-" + now.Format("2006-01-02 15:04:05") + ".xlsx"); err != nil {
+	fileName := model + "-" + now.Format("2006-01-02 15:04:05") + ".xlsx"
+	filePath := "public/files/" + fileName
+	if err := file.SaveAs(filePath); err != nil {
 		log.Fatal(err)
 	}
 
+	ctx.Header("Content-Description", "File Transfer")
+	ctx.Header("Content-Transfer-Encoding", "binary")
+	ctx.Header("Content-Disposition", "attachment; filename="+fileName)
+	ctx.Header("Content-Type", "application/octet-stream")
+	ctx.File(filePath)
 }
 
 func (c *BaseController) parentEdit(ctx *gin.Context, model any) {
@@ -114,8 +121,4 @@ func (c *BaseController) AdvancedSearch(ctx *gin.Context, list any, asearch map[
 		}
 		return db
 	}
-}
-
-func (c *BaseController) parentIndex(ctx *gin.Context, list any, search []string, asearch map[string]string) {
-
 }
