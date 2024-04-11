@@ -13,7 +13,7 @@ import Scripts from "./scripts/scripts";
 
 import useRouter from "./router/router";
 
-let Routes = {
+let routes = {
   '/': [Guest, Login],
   '/menus': [Layout, Menus.Index],
   '/login': [Guest, Login],
@@ -21,8 +21,22 @@ let Routes = {
   '*': [Guest, NoPage]
 };
 
+function Loading({...props}) {
+  const handler = () => {
+    props?.fref.current.classList.add('hidden')
+  }
+
+  return <div ref={props?.fref} onClick={handler} className="hidden bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40"></div>
+}
+
 export default function App({ ...props }) {
-  const content = useRouter("/admin", Routes, props)
+  const loading = useRef<any>(null)
+
+  const content = useRouter("/admin", routes, props, () => {
+    loading.current.classList.remove('hidden')
+  }, () => {
+    loading.current.classList.add('hidden')
+  })
   const mainRef = useRef(false)
 
   useEffect(function () {
@@ -33,5 +47,5 @@ export default function App({ ...props }) {
     }
   }, [window.location.pathname])
 
-  return content
+  return <><Loading fref={loading} />{content}</>
 }

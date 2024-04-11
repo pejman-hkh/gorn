@@ -21,7 +21,7 @@ function getPathName() {
     pathName += '/'
   return pathName
 }
-export default function useRouter(baseUri: string, routes: any, props: any) {
+export default function useRouter(baseUri: string, routes: any, props: any, beforeLoad:any, afterLoad:any) {
   const ref = useRef(false);
   
   const [data, setData] = useState(props.data)
@@ -62,10 +62,11 @@ export default function useRouter(baseUri: string, routes: any, props: any) {
       })
 
       window.addEventListener("locationchange", () => {
-      
+        beforeLoad()
         Api(window.location.pathname).then(function (fetchData) {
           setData(fetchData)
           setPath(getPathName())
+          afterLoad()
         }).catch(function() {
           window.location.href = ('/admin/login')
         })
