@@ -1,17 +1,70 @@
 package controller
 
 import (
+	"fmt"
 	"gorn/app/model"
 	"gorn/gorn"
+	"log"
 	"net/http"
+	"reflect"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/xuri/excelize/v2"
 	"gorm.io/gorm"
 )
 
 type BaseController struct {
 	gorn.Controller
 	authUser *model.User
+}
+
+func getType(myvar interface{}) string {
+	if t := reflect.TypeOf(myvar); t.Kind() == reflect.Ptr {
+		return "*" + t.Elem().Name()
+	} else {
+		return t.Name()
+	}
+}
+
+func (c *BaseController) makeExcel(excepts []string, data any) {
+	file := excelize.NewFile()
+
+	defer func() {
+		if err := file.Close(); err != nil {
+			fmt.Println(err)
+		}
+	}()
+
+	items := reflect.ValueOf(data)
+	item := items.Index(0)
+	v := reflect.Indirect(item)
+	for i := 0; i < v.NumField(); i++ {
+		if v.Field(i).Kind() != reflect.Struct {
+			file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(64+i)), 1), v.Type().Field(i).Name)
+		}
+	}
+
+	for i := 0; i < items.Len(); i++ {
+		dataRow := i + 2
+		item := items.Index(i)
+		v := reflect.Indirect(item)
+
+		if item.Kind() == reflect.Struct {
+			for j := 0; j < v.NumField(); j++ {
+				if v.Field(j).Kind() != reflect.Struct {
+					file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(64+j)), dataRow), v.Field(j).Interface())
+				}
+			}
+		}
+	}
+
+	model := getType(v.Interface())
+	now := time.Now()
+	if err := file.SaveAs("public/" + model + "-" + now.Format("2006-01-02 15:04:05") + ".xlsx"); err != nil {
+		log.Fatal(err)
+	}
+
 }
 
 func (c *BaseController) parentEdit(ctx *gin.Context, model any) {
