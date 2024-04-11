@@ -56,9 +56,8 @@ func (c *MenuController) Index(ctx *gin.Context) {
 		return
 	}
 	if ctx.Query("excel") != "" {
-		go func() {
-			c.makeExcel([]string{}, list)
-		}()
+		c.makeExcel(ctx, []string{}, list)
+		return
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"status": 1, "data": map[string]any{"list": list, "pagination": p}})
