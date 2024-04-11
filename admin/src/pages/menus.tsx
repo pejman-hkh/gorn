@@ -5,7 +5,7 @@ import Pagination from "../components/pagination"
 import * as List from "../components/list"
 import * as Grid from "../components/grid"
 import Form, { Input, Select, Textarea } from "../components/form"
-import { useContext, useEffect, useRef, useState } from "react"
+import { useContext, useRef, useState } from "react"
 import { DataContext } from "../router/data"
 import Button from "../components/button"
 import * as Task from "../components/tasks"
@@ -72,7 +72,7 @@ export function Index() {
     const dataContext = useContext(DataContext) as Array<any>
     const data = dataContext[0]
 
-    const [edit, setEdit] = useState({})
+    const [edit, setEdit] = useState<any>({})
     const editModal = useState(false)
     const searchModal = useState(false)
     const addModal = useState(false)
@@ -166,7 +166,7 @@ export function Index() {
 
                             <List.Td> {item.position}</List.Td>
                             <List.Td>
-                                <List.ActiveBadge />
+                                <List.ActiveBadge active={item?.status} />
                             </List.Td>
                             <List.Td>{toDate(item.created_at)}</List.Td>
                             <List.TdAction>
