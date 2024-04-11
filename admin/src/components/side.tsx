@@ -119,7 +119,7 @@ export default function Side() {
             </div>
             <div
                 className="absolute bottom-0 left-0 justify-center hidden w-full p-4 space-x-4 bg-white lg:flex dark:bg-gray-800"
-                sidebar-bottom-menu>
+                sidebar-bottom-menu="true">
                 <a href="#"
                     className="inline-flex justify-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white">
                     <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -146,7 +146,7 @@ export default function Side() {
                     <svg className="h-5 w-5 rounded-full mt-0.5" xmlns="http://www.w3.org/2000/svg"
                         xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 3900 3900">
                         <path fill="#b22234" d="M0 0h7410v3900H0z" />
-                        <path d="M0 450h7410m0 600H0m0 600h7410m0 600H0m0 600h7410m0 600H0" stroke="#fff" stroke-width="300" />
+                        <path d="M0 450h7410m0 600H0m0 600h7410m0 600H0m0 600h7410m0 600H0" stroke="#fff" strokeWidth="300" />
                         <path fill="#3c3b6e" d="M0 0h2964v2100H0z" />
                         <g fill="#fff">
                             <g id="d">
@@ -183,7 +183,7 @@ export default function Side() {
                                     <svg className="h-3.5 w-3.5 rounded-full mr-2" xmlns="http://www.w3.org/2000/svg" id="flag-icon-css-us"
                                         viewBox="0 0 512 512">
                                         <g fillRule="evenodd">
-                                            <g stroke-width="1pt">
+                                            <g strokeWidth="1pt">
                                                 <path fill="#bd3d44"
                                                     d="M0 0h247v10H0zm0 20h247v10H0zm0 20h247v10H0zm0 20h247v10H0zm0 20h247v10H0zm0 20h247v10H0zm0 20h247v10H0z"
                                                     transform="scale(3.9385)" />
@@ -223,7 +223,7 @@ export default function Side() {
                                 <div className="inline-flex items-center">
                                     <svg className="h-3.5 w-3.5 rounded-full mr-2" xmlns="http://www.w3.org/2000/svg" id="flag-icon-css-it"
                                         viewBox="0 0 512 512">
-                                        <g fillRule="evenodd" stroke-width="1pt">
+                                        <g fillRule="evenodd" strokeWidth="1pt">
                                             <path fill="#fff" d="M0 0h512v512H0z" />
                                             <path fill="#009246" d="M0 0h170.7v512H0z" />
                                             <path fill="#ce2b37" d="M341.3 0H512v512H341.3z" />
