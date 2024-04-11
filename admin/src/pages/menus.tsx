@@ -5,16 +5,25 @@ import Pagination from "../components/pagination"
 import * as List from "../components/list"
 import * as Grid from "../components/grid"
 import Form, { Input, Select, Textarea } from "../components/form"
-import { useContext, useRef, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { DataContext } from "../router/data"
 import Button from "../components/button"
 import * as Task from "../components/tasks"
 import { useGoTo } from "../router/router"
 import Link from "../router/link"
+import toDate from "../components/date"
+
+const positionArray: any = [{ id: 1, title: "Top" }, { id: 2, title: "Right" }, { id: 3, title: "Bottom" }, { id: 4, title: "Left" }]
+
+function getPositionTitle(position:number) {
+    return positionArray.find((v:any) => {
+        return v.id == position
+    })
+}
 
 export function MainForm({ ...props }) {
     let edit = props.edit
-    const positionArray: any = [{ id: 1, title: "Top" }, { id: 2, title: "Right" }, { id: 3, title: "Bottom" }, { id: 4, title: "Left" }]
+
     return <Grid.Wrapper key={edit?.id} {...props}>
         <Grid.Col6>
             <Input type="text" name="title" defaultValue={edit?.title}>Title</Input>
@@ -51,6 +60,7 @@ export function MainForm({ ...props }) {
             <Textarea name="svg" rows={4} placeholder="Just put svg paths" defaultValue={edit?.svg}>Svg</Textarea>
 
         </Grid.Span6>
+ 
     </Grid.Wrapper>
 }
 
@@ -62,7 +72,7 @@ export function Index() {
     const dataContext = useContext(DataContext) as Array<any>
     const data = dataContext[0]
 
-    const [edit, setEdit] = useState({ id: 0 })
+    const [edit, setEdit] = useState({})
     const editModal = useState(false)
     const searchModal = useState(false)
     const addModal = useState(false)
@@ -111,7 +121,7 @@ export function Index() {
                 </Actions.LeftSide>
 
                 <Actions.RightSide>
-                    <Actions.AddButton onClick={() => { addModal[1](true) }}>Add {title}</Actions.AddButton>
+                    <Actions.AddButton onClick={() => { addModal[1](true); setEdit({}) }}>Add {title}</Actions.AddButton>
                     <Actions.ExportButton>Export</Actions.ExportButton>
                 </Actions.RightSide>
             </Actions.Wrapper>
@@ -127,6 +137,7 @@ export function Index() {
                         </List.Th>
                         <List.Th width="30%">Title</List.Th>
                         <List.Th>User</List.Th>
+                        <List.Th>Position</List.Th>
                         <List.Th>Url</List.Th>
                         <List.Th>Position</List.Th>
                         <List.Th>Status</List.Th>
@@ -147,6 +158,9 @@ export function Index() {
 
                             <List.Td><Link to={"/users?id=" + item.user.id}>{item.user.Name}</Link></List.Td>
                             <List.TdText>
+                                {getPositionTitle(item.position)?.title}
+                            </List.TdText>
+                            <List.TdText>
                                 {item.url}
                             </List.TdText>
 
@@ -154,7 +168,7 @@ export function Index() {
                             <List.Td>
                                 <List.ActiveBadge />
                             </List.Td>
-                            <List.Td>{item.created_at}</List.Td>
+                            <List.Td>{toDate(item.created_at)}</List.Td>
                             <List.TdAction>
                                 <List.ButtonEdit onClick={(e: any) => editHandler(e, item)}>
                                     Edit
@@ -190,7 +204,10 @@ export function Index() {
 
                     <MainForm />
                 </Modal.Content>
-                <Modal.Footer><Button type="submit">Save</Button></Modal.Footer>
+                <Modal.Footer>
+                    <Button type="submit">Save</Button>
+                    <Button type="reset">Reset</Button>
+                </Modal.Footer>
             </Form>
         </Modal.Modal>
 
