@@ -1,9 +1,9 @@
 import Link from "../router/link"
 
-function MenuItem({ children, ...props }:any) {
+function MenuItem({ children, ...props }: any) {
     return <li {...props}>{children}</li>
 }
-function MenuSvg({ children, ...props }:any) {
+function MenuSvg({ children, ...props }: any) {
     return <svg {...props}
         className="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
         fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -11,18 +11,18 @@ function MenuSvg({ children, ...props }:any) {
     </svg>
 }
 
-function MenuText({ children, ...props }:any) {
+function MenuText({ children, ...props }: any) {
     return <span {...props} className="ml-3" sidebar-toggle-item="true">{children}</span>
 }
-function MenuLink({ children, ...props }:any) {
+function MenuLink({ children, ...props }: any) {
     return <Link {...props} to={props.to}
         className="flex items-center p-2 text-base text-gray-900 rounded-lg hover:bg-gray-100 group dark:text-gray-200 dark:hover:bg-gray-700">
         {children}
     </Link>
 }
-function MenuSearch({}) {
+function MenuSearch({ }) {
     return <form action="#" method="GET" className="lg:hidden">
-        <label  htmlFor="mobile-search" className="sr-only">Search</label>
+        <label htmlFor="mobile-search" className="sr-only">Search</label>
         <div className="relative">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                 <svg className="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 20 20"
@@ -39,8 +39,8 @@ function MenuSearch({}) {
     </form>
 }
 
-function MenuButton({ children }:any) {
-    const handler = (e:any) => {
+function MenuButton({ children }: any) {
+    const handler = (e: any) => {
         e.target.parentElement.nextSibling.classList.toggle('hidden')
     }
 
@@ -53,6 +53,15 @@ function MenuButton({ children }:any) {
 
 function MenuButtonText({ children }: any) {
     return <span className="flex-1 ml-3 text-left whitespace-nowrap" sidebar-toggle-item="true">{children}</span>
+}
+
+function IconDown() {
+    return <svg sidebar-toggle-item="true" className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg">
+        <path fillRule="evenodd"
+            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+            clipRule="evenodd"></path>
+    </svg>
 }
 
 function MenuChilds({ children, ...props }: any) {
@@ -91,30 +100,47 @@ export default function Side() {
                         </MenuItem>
 
                         <MenuItem>
+                            <MenuLink to="/settings">
+                                <MenuSvg>
+                                    <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
+
+                                </MenuSvg>
+                                <MenuText>Setting</MenuText>
+                            </MenuLink>
+                        </MenuItem>
+
+                        <MenuItem>
+                            <MenuLink to="/settings">
+                                <MenuSvg>
+
+                                    <path fillRule="evenodd" d="M12 3a1 1 0 0 1 .78.375l4 5a1 1 0 1 1-1.56 1.25L13 6.85V14a1 1 0 1 1-2 0V6.85L8.78 9.626a1 1 0 1 1-1.56-1.25l4-5A1 1 0 0 1 12 3ZM9 14v-1H5a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2h-4v1a3 3 0 1 1-6 0Zm8 2a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2H17Z" clipRule="evenodd">
+                                    </path>
+
+
+                                </MenuSvg>
+                                <MenuText>Media</MenuText>
+                            </MenuLink>
+                        </MenuItem>
+
+                        <MenuItem>
                             <MenuButton>
                                 <MenuSvg>
-                                    <path
-                                        d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z">
-                                    </path>
-                                </MenuSvg>
-                                <MenuButtonText>Layout</MenuButtonText>
+                                    <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
 
-                                <svg sidebar-toggle-item="true" className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path fillRule="evenodd"
-                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                        clipRule="evenodd"></path>
-                                </svg>
+                                </MenuSvg>
+                                <MenuButtonText>User</MenuButtonText>
+
+                                <IconDown></IconDown>
                             </MenuButton>
                             <MenuChilds>
-                                <MenuItem><MenuLink to="test">Stacked</MenuLink></MenuItem>
-                                <MenuItem><MenuLink to="test1">Sidebar</MenuLink></MenuItem>
+                                <MenuItem><MenuLink to="/users">User</MenuLink></MenuItem>
+                                <MenuItem><MenuLink to="/groups">Group</MenuLink></MenuItem>
                             </MenuChilds>
 
                         </MenuItem>
 
                     </ul>
-               
+
                 </div>
             </div>
             <div
