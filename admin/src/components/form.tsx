@@ -25,7 +25,8 @@ export function Label({ children, ...props }: any) {
 export function Select({ children, ...props }: any) {
 	const select = useRef<HTMLSelectElement>(null)
 	useEffect(function () {
-		select.current!.value = props?.defaultValue
+		if( props?.defaultValue )
+			select.current!.value = props?.defaultValue
 	}, [props.value])
 	return <><Label htmlFor={props.id}>{props.title}</Label><select ref={select} {...props} className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
 		{children}
