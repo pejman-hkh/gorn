@@ -10,11 +10,11 @@ import { DataContext } from "../router/data"
 import Button from "../components/button"
 import * as Task from "../components/tasks"
 import { useGoTo } from "../router/router"
+import Link from "../router/link"
 
-
-export function MenuForm({ ...props }) {
+export function MainForm({ ...props }) {
     let edit = props.edit
-
+    const positionArray: any = [{ id: 1, title: "Top" }, { id: 2, title: "Right" }, { id: 3, title: "Bottom" }, { id: 4, title: "Left" }]
     return <Grid.Wrapper key={edit?.id} {...props}>
         <Grid.Col6>
             <Input type="text" name="title" defaultValue={edit?.title}>Title</Input>
@@ -22,17 +22,31 @@ export function MenuForm({ ...props }) {
         <Grid.Col6>
             <Input type="text" name="url" defaultValue={edit?.url}>Url</Input>
         </Grid.Col6>
-        <Grid.Col6>
-            <Input type="text" name="icon" defaultValue={edit?.icon}>Icon</Input>
-        </Grid.Col6>
+
         <Grid.Col6>
             <Select name="position" title="Position" defaultValue={edit?.position}>
                 <option value="">Select</option>
-                <option value="1">Top</option>
+                {positionArray?.map((v: any) => <option key={v.id} value={v.id}>{v.title}</option>)}
             </Select>
 
         </Grid.Col6>
-
+        <Grid.Col6>
+            <Select name="status" title="Status" defaultValue={edit?.status}>
+                <option value="">Select</option>
+                <option value="0">Disable</option>
+                <option value="1">Enable</option>
+                
+            </Select>
+        </Grid.Col6>
+        <Grid.Col6>
+            <Select name="menuid" title="Parent Menu" defaultValue={edit?.menuid}>
+                <option value="">Select</option>
+                
+            </Select>
+        </Grid.Col6>
+        <Grid.Col6>
+            <Input type="text" name="icon" defaultValue={edit?.icon}>Icon</Input>
+        </Grid.Col6>
         <Grid.Span6>
             <Textarea name="svg" rows={4} placeholder="Just put svg paths" defaultValue={edit?.svg}>Svg</Textarea>
 
@@ -41,7 +55,11 @@ export function MenuForm({ ...props }) {
 }
 
 export function Index() {
-    const dataContext = useContext(DataContext) as Array<any>;
+
+    const route = "/menus"
+    const title = "Menu"
+
+    const dataContext = useContext(DataContext) as Array<any>
     const data = dataContext[0]
 
     const [edit, setEdit] = useState({ id: 0 })
@@ -71,19 +89,19 @@ export function Index() {
     }
 
     const listForm = useRef<any>(null)
-    
+
     return <>
         <Breadcrumb.Wrapper>
             <Breadcrumb.Main>
                 <Breadcrumb.ItemHome></Breadcrumb.ItemHome>
                 <Breadcrumb.Item to="/dashboard">Cms</Breadcrumb.Item>
-                <Breadcrumb.Item to="/menus">Menu</Breadcrumb.Item>
+                <Breadcrumb.Item to={route}>{title}</Breadcrumb.Item>
             </Breadcrumb.Main>
-            <Breadcrumb.Title>All Menus</Breadcrumb.Title>
+            <Breadcrumb.Title>All {title}s</Breadcrumb.Title>
 
             <Actions.Wrapper>
                 <Actions.LeftSide>
-                    <Actions.SearchForm onChange={searchHandler} />
+                    <Actions.SearchForm action="/menus" onChange={searchHandler} />
                     <Actions.Tasks>
                         <Task.Setting onClick={() => { searchModal[1](true) }} />
                         <Task.Delete onClick={() => { setActionValue("delete"); deleteAllModal[1](true) }} />
@@ -93,12 +111,12 @@ export function Index() {
                 </Actions.LeftSide>
 
                 <Actions.RightSide>
-                    <Actions.AddButton onClick={() => { addModal[1](true) }}>Add Menu</Actions.AddButton>
+                    <Actions.AddButton onClick={() => { addModal[1](true) }}>Add {title}</Actions.AddButton>
                     <Actions.ExportButton>Export</Actions.ExportButton>
                 </Actions.RightSide>
             </Actions.Wrapper>
         </Breadcrumb.Wrapper>
-        <Form fref={listForm} disableClass="true" method="post" action="menus/actions">
+        <Form fref={listForm} disableclass="true" method="post" action={route + "/actions"} alertclass="m-6">
             <input type="hidden" name="action" value={actionValue} />
 
             <List.Table>
@@ -127,7 +145,7 @@ export function Index() {
                                 {item.title}
                             </List.TdTitle>
 
-                            <List.Td>{item.user.id}</List.Td>
+                            <List.Td><Link to={"/users?id=" + item.user.id}>{item.user.Name}</Link></List.Td>
                             <List.TdText>
                                 {item.url}
                             </List.TdText>
@@ -151,13 +169,13 @@ export function Index() {
                 </List.Tbody>
             </List.Table>
         </Form>
-        <Pagination pagination={data?.data?.pagination} module="/menus"></Pagination>
-        {/* Edit Modal */}
-        <Modal.Modal title="Edit Menu" show={editModal}>
-            <Form action={"menus/" + edit?.id} alertClass="m-6">
+        <Pagination pagination={data?.data?.pagination} module={route}></Pagination>
+
+        <Modal.Modal title={"Edit " + title} show={editModal}>
+            <Form action={route + "/" + edit?.id} alertclass="m-6">
                 <Modal.Content>
 
-                    <MenuForm edit={edit}></MenuForm>
+                    <MainForm edit={edit}></MainForm>
 
                 </Modal.Content>
                 <Modal.Footer>
@@ -166,32 +184,29 @@ export function Index() {
             </Form>
         </Modal.Modal>
 
-        {/* Add Modal */}
-        <Modal.Modal title="Add Menu" show={addModal}>
-            <Form action="menus/create" alertClass="m-6">
+        <Modal.Modal title={"Add " + title} show={addModal}>
+            <Form action={route + "/create"} alertclass="m-6">
                 <Modal.Content>
 
-                    <MenuForm />
+                    <MainForm />
                 </Modal.Content>
                 <Modal.Footer><Button type="submit">Save</Button></Modal.Footer>
             </Form>
         </Modal.Modal>
 
-        {/* Search Modal */}
-        <Modal.Modal title="Search Menu" show={searchModal}>
-            <Form method="get" action="menus">
+        <Modal.Modal title={"Search " + title} show={searchModal}>
+            <Form method="get" action={route}>
                 <input type="hidden" name="asearch" />
                 <Modal.Content>
 
-                    <MenuForm />
+                    <MainForm />
                 </Modal.Content>
                 <Modal.Footer><Button type="submit" onClick={() => searchModal[1](false)}>Search</Button></Modal.Footer>
             </Form>
         </Modal.Modal>
 
-        {/* Delete Modal */}
-        <Modal.Delete show={deleteModal} title="Delete Menu">
-            <Form key={edit.id} method="delete" action={"menus/" + edit.id}>
+        <Modal.Delete show={deleteModal} title={"Delete " + title}>
+            <Form key={edit.id} method="delete" action={route + "/" + edit.id}>
                 <Modal.AlertIcon />
                 <Modal.ModalH3>Are you sure you want to delete this ?</Modal.ModalH3>
                 <Modal.YesButton type="submit">Yes, I'm sure</Modal.YesButton>
@@ -199,19 +214,18 @@ export function Index() {
             </Form>
         </Modal.Delete>
 
-        {/* Delete Modal */}
-        <Modal.Delete show={deleteAllModal} title="Delete All Menu">
-         
+        <Modal.Delete show={deleteAllModal} title={"Delete All " + title}>
+
             <Modal.AlertIcon />
             <Modal.ModalH3>Are you sure you want to delete this ?</Modal.ModalH3>
             <Modal.YesButton onClick={() => {
                 var event = new Event('submit', { bubbles: true });
                 listForm.current?.dispatchEvent(event);
                 deleteAllModal[1](false)
-            
+
             }}>Yes, I'm sure</Modal.YesButton>
             <Modal.NoButton href="#" onClick={(e: any) => { e.preventDefault(); deleteAllModal[1](false) }}>No, cancel</Modal.NoButton>
-        
+
         </Modal.Delete>
 
     </>
