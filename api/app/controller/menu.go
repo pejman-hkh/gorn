@@ -12,10 +12,13 @@ import (
 )
 
 type MenuForm struct {
-	Title  string `form:"title" binding:"required"`
-	Url    string `form:"url" binding:"required"`
-	MenuId uint
-	Status uint8
+	Title    string `form:"title" binding:"required"`
+	Url      string `form:"url" binding:"required"`
+	MenuId   uint   `form:"menuid"`
+	Status   uint8  `form:"status"`
+	Icon     string `form:"icon"`
+	Svg      string `form:"svg"`
+	Position uint8  `form:"position"`
 }
 
 type MenuController struct {
@@ -51,6 +54,11 @@ func (c *MenuController) Index(ctx *gin.Context) {
 	if result.Error != nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": result.Error})
 		return
+	}
+	if ctx.Query("excel") != "" {
+		go func() {
+			c.makeExcel([]string{}, list)
+		}()
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"status": 1, "data": map[string]any{"list": list, "pagination": p}})
