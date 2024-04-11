@@ -24,7 +24,7 @@ func (c *UserController) InitRoutes(r *gin.RouterGroup) {
 	g := r.Group("admin/users")
 	g.Use(middle.IsAdmin())
 	{
-		g.GET("/", c.Index)
+		g.GET("", c.Index)
 		g.GET("/index", c.Index)
 
 	}
