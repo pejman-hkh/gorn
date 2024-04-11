@@ -22,7 +22,7 @@ export default function Api(path: string) {
 
         }
 
-        if (!data?.ok) {
+        if (data?.status == 403) {
             return Promise.reject(new Error(""+data?.status));
         }
 
