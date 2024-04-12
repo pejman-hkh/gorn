@@ -38,5 +38,8 @@ export default {
     "Setting" : "تنظیمات",
     "Media" : "مدیا",
     "Group" : "گروه",
+    "Yes, I'm sure" : "بله، مطمئن هستم",
+    "No, cancel" : "نه، لغو",
+    "Are you sure you want to delete this ?" : "آیا از حذف این مورد اطمینان دارید ؟",
     
 }

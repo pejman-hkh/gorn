@@ -197,23 +197,23 @@ export function Modals({ title, route, edit, addModal, MainForm, editModal, sear
         <Modal.Delete show={deleteModal} title={"Delete " + title}>
             <Form key={edit.id} method="delete" action={route + "/" + edit.id} onSuccess={() => { deleteModal[1](false) }}>
                 <Modal.AlertIcon />
-                <Modal.ModalH3>Are you sure you want to delete this ?</Modal.ModalH3>
-                <Modal.YesButton type="submit">Yes, I'm sure</Modal.YesButton>
-                <Modal.NoButton href="#" onClick={(e: any) => { e.preventDefault(); deleteModal[1](false) }}>No, cancel</Modal.NoButton>
+                <Modal.ModalH3>{t("Are you sure you want to delete this ?")}</Modal.ModalH3>
+                <Modal.YesButton type="submit">{t("Yes, I'm sure")}</Modal.YesButton>
+                <Modal.NoButton href="#" onClick={(e: any) => { e.preventDefault(); deleteModal[1](false) }}>{t("No, cancel")}</Modal.NoButton>
             </Form>
         </Modal.Delete>
 
         <Modal.Delete show={deleteAllModal} title={"Delete All " + title}>
 
             <Modal.AlertIcon />
-            <Modal.ModalH3>Are you sure you want to delete this ?</Modal.ModalH3>
+            <Modal.ModalH3>{t("Are you sure you want to delete this ?")}</Modal.ModalH3>
             <Modal.YesButton onClick={() => {
                 var event = new Event('submit', { bubbles: true });
                 listForm.current?.dispatchEvent(event);
                 deleteAllModal[1](false)
 
-            }}>Yes, I'm sure</Modal.YesButton>
-            <Modal.NoButton href="#" onClick={(e: any) => { e.preventDefault(); deleteAllModal[1](false) }}>No, cancel</Modal.NoButton>
+            }}>{t("Yes, I'm sure")}</Modal.YesButton>
+            <Modal.NoButton href="#" onClick={(e: any) => { e.preventDefault(); deleteAllModal[1](false) }}>{t("No, cancel")}</Modal.NoButton>
 
         </Modal.Delete>
     </>
