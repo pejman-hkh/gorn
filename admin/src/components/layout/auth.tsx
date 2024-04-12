@@ -1,7 +1,7 @@
 import Nav from "../nav";
 import Side from "../side";
 export default function Auth({ children }:any) {
-    return <>
+    return <div dir="ltr">
         <Nav></Nav>
         <div className="flex pt-16 overflow-hidden bg-gray-50 dark:bg-gray-900">
 
@@ -32,5 +32,5 @@ export default function Auth({ children }:any) {
             </div>
 
         </div>
-    </>
+    </div>
 }

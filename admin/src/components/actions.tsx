@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useApiPath } from "../router/api";
 import Form from "./form";
 
@@ -8,10 +9,11 @@ export function SearchForm({ ...props }) {
         history.pushState({}, "", "?"+data);
         e.preventDefault();
     }
+    const { t, i18n } = useTranslation();
     return <Form {...props} onSubmit={handler} className="lg:pr-3" action={props.action} method="GET">
-        <label htmlFor="search" className="sr-only">Search</label>
+        <label htmlFor="search" className="sr-only">{t("Search")}</label>
         <div className="relative mt-1 lg:w-64 xl:w-96">
-            <input type="text" name="search" id="search" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Search..." />
+            <input type="text" name="search" id="search" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder={t("Search...")} />
         </div>
     </Form>
 }

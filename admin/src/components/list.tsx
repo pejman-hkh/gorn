@@ -4,6 +4,8 @@ import * as Modal from "./modal"
 import * as Breadcrumb from "./breadcrumb"
 import * as Actions from "./actions"
 import * as Task from "./tasks"
+import { useTranslation } from "react-i18next"
+import { useGoTo } from "../router/router"
 
 export function Wrapper({ children, ...props }: any) {
     return <div {...props} className="flex flex-col">
@@ -91,6 +93,7 @@ export function TdText({ children, ...props }: any) {
 }
 
 export function ActiveBadge({ ...props }) {
+    const { t, i18n } = useTranslation();
     let className = "h-2.5 w-2.5 rounded-full mr-2"
     if (props.active == 1)
         className += ' bg-green-400'
@@ -98,7 +101,7 @@ export function ActiveBadge({ ...props }) {
         className += ' bg-red-400'
 
     return <div {...props} className="flex items-center">
-        <div className={className} />  {props.active ? 'Enable' : 'Disable'}
+        <div className={className} />  {props.active ? t('Enable') : t('Disable')}
     </div>
 }
 
@@ -110,14 +113,27 @@ export function Table({ children, ...props }: any) {
     </Wrapper>
 }
 
-export function BreadCrumb({ title, route, searchHandler, setActionValue, deleteAllModal, addModal, setEdit, searchModal }: any) {
+export function BreadCrumb({ title, route, setActionValue, deleteAllModal, addModal, setEdit, searchModal }: any) {
+    const { t, i18n } = useTranslation();
+    let sendRequest = false
+    let timeOut: number;
+    const searchHandler = (e: any) => {
+        if (!sendRequest) {
+            clearTimeout(timeOut);
+            timeOut = setTimeout(function () {
+                sendRequest = true;
+                useGoTo("?search=" + encodeURIComponent(e.target.value))
+            }, 800);
+        }
+    }
+
     return <Breadcrumb.Wrapper>
         <Breadcrumb.Main>
-            <Breadcrumb.ItemHome></Breadcrumb.ItemHome>
-            <Breadcrumb.Item to="/dashboard">Cms</Breadcrumb.Item>
-            <Breadcrumb.Item to={route}>{title}</Breadcrumb.Item>
+            <Breadcrumb.ItemHome>{t("Home")}</Breadcrumb.ItemHome>
+            <Breadcrumb.Item to="/dashboard">{t("Cms")}</Breadcrumb.Item>
+            <Breadcrumb.Item to={route}>{t(title)}</Breadcrumb.Item>
         </Breadcrumb.Main>
-        <Breadcrumb.Title>All {title}s</Breadcrumb.Title>
+        <Breadcrumb.Title>{t("All {{title}}", { title: t(title) })}</Breadcrumb.Title>
 
         <Actions.Wrapper>
             <Actions.LeftSide>
@@ -131,14 +147,15 @@ export function BreadCrumb({ title, route, searchHandler, setActionValue, delete
             </Actions.LeftSide>
 
             <Actions.RightSide>
-                <Actions.AddButton onClick={() => { addModal[1](true); setEdit({}) }}>Add {title}</Actions.AddButton>
-                <Actions.ExportButton>Export</Actions.ExportButton>
+                <Actions.AddButton onClick={() => { addModal[1](true); setEdit({}) }}>{t("Add {{title}}", { title: t(title) })}</Actions.AddButton>
+                <Actions.ExportButton>{t("Export")}</Actions.ExportButton>
             </Actions.RightSide>
         </Actions.Wrapper>
     </Breadcrumb.Wrapper>
 }
 
 export function Modals({ title, route, edit, addModal, MainForm, editModal, searchModal, deleteModal, deleteAllModal, listForm }: any) {
+    const { t, i18n } = useTranslation();
     return <>
         <Modal.Modal title={"Edit " + title} show={editModal}>
             <Form action={route + "/" + edit?.id} alertclass="m-6">
@@ -148,37 +165,37 @@ export function Modals({ title, route, edit, addModal, MainForm, editModal, sear
 
                 </Modal.Content>
                 <Modal.Footer>
-                    <Button type="submit">Save</Button>
+                    <Button type="submit">{t("Save")}</Button>
                 </Modal.Footer>
             </Form>
         </Modal.Modal>
 
-        <Modal.Modal title={"Add " + title} show={addModal}>
+        <Modal.Modal title={t("Add {{title}}", { title: t(title) })} show={addModal}>
             <Form action={route + "/create"} alertclass="m-6">
                 <Modal.Content>
 
                     <MainForm />
                 </Modal.Content>
                 <Modal.Footer>
-                    <Button type="submit">Save</Button>
-                    <Button type="reset">Reset</Button>
+                    <Button type="submit">{t("Save")}</Button>
+                    <Button type="reset">{t("Reset")}</Button>
                 </Modal.Footer>
             </Form>
         </Modal.Modal>
 
-        <Modal.Modal title={"Search " + title} show={searchModal}>
+        <Modal.Modal title={t("Search {{title}}", { title: t(title) })} show={searchModal}>
             <Form method="get" action={route}>
                 <input type="hidden" name="asearch" />
                 <Modal.Content>
 
                     <MainForm />
                 </Modal.Content>
-                <Modal.Footer><Button type="submit" onClick={() => searchModal[1](false)}>Search</Button></Modal.Footer>
+                <Modal.Footer><Button type="submit" onClick={() => searchModal[1](false)}>{t("Search")}</Button></Modal.Footer>
             </Form>
         </Modal.Modal>
 
         <Modal.Delete show={deleteModal} title={"Delete " + title}>
-            <Form key={edit.id} method="delete" action={route + "/" + edit.id} onSuccess={() => {deleteModal[1](false)}}>
+            <Form key={edit.id} method="delete" action={route + "/" + edit.id} onSuccess={() => { deleteModal[1](false) }}>
                 <Modal.AlertIcon />
                 <Modal.ModalH3>Are you sure you want to delete this ?</Modal.ModalH3>
                 <Modal.YesButton type="submit">Yes, I'm sure</Modal.YesButton>
