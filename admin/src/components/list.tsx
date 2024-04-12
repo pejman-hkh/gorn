@@ -157,7 +157,7 @@ export function BreadCrumb({ title, route, setActionValue, deleteAllModal, addMo
 export function Modals({ title, route, edit, addModal, MainForm, editModal, searchModal, deleteModal, deleteAllModal, listForm }: any) {
     const { t, i18n } = useTranslation();
     return <>
-        <Modal.Modal title={"Edit " + title} show={editModal}>
+        <Modal.Modal title={t("Edit {{title}}", { title:t(title)})} show={editModal}>
             <Form action={route + "/" + edit?.id} alertclass="m-6">
                 <Modal.Content>
 

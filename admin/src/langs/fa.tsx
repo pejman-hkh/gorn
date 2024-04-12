@@ -3,6 +3,7 @@ export default {
     "Add {{title}}" : "افزودن {{title}}",
     "Search {{title}}" : "جستجو در {{title}} ها",
     "All {{title}}" : "{{title}} ها",
+    "Edit {{title}}" : "ویرایش {{title}}",
     "Menu" : "منو",
     "Export" : "خروجی اکسل",
     "Edit" : "ویرایش",
