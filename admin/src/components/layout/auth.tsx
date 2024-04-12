@@ -2,6 +2,7 @@ import { useContext } from "react";
 import Nav from "../nav";
 import Side from "../side";
 import { DataContext } from "../../router/data";
+
 export default function Auth({ children }:any) {
     const dataContext = useContext(DataContext) as Array<any>
 	const direction = dataContext[4]
