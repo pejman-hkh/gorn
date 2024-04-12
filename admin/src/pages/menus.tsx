@@ -7,7 +7,7 @@ import { DataContext } from "../router/data"
 
 import { useGoTo } from "../router/router"
 import Link from "../router/link"
-import toDate from "../components/date"
+import DateTime from "../components/date"
 import t from "../components/translate"
 
 const positionArray: any = [{ id: 1, title: "Top" }, { id: 2, title: "Right" }, { id: 3, title: "Bottom" }, { id: 4, title: "Left" }]
@@ -143,8 +143,9 @@ export function Index() {
                                 <List.ActiveBadge active={item?.status} />
                             </List.Td>
                             <List.Td>
-                                {toDate(item.created_at)} <br />
-                                {item.updated_at != item.created_at ? toDate(item.updated_at) : ""}
+                                <DateTime time={item.created_at} />
+                                <br />
+                                {item.updated_at != item.created_at ? <DateTime time={item.updated_at} /> : ""}
                             </List.Td>
                             <List.TdAction>
                                 <List.ButtonEdit onClick={(e: any) => editHandler(e, item)}>
