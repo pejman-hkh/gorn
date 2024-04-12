@@ -8,7 +8,7 @@ import { DataContext } from "../router/data"
 import { useGoTo } from "../router/router"
 import Link from "../router/link"
 import DateTime from "../components/date"
-import t from "../components/translate"
+import { useTranslation } from 'react-i18next';
 
 const positionArray: any = [{ id: 1, title: "Top" }, { id: 2, title: "Right" }, { id: 3, title: "Bottom" }, { id: 4, title: "Left" }]
 
@@ -38,9 +38,9 @@ export function MainForm({ ...props }) {
         </Grid.Col6>
         <Grid.Col6>
             <Select name="status" title="Status" defaultValue={edit?.status}>
-                <option value="">Select</option>
-                <option value="0">Disable</option>
+       
                 <option value="1">Enable</option>
+                <option value="0">Disable</option>
 
             </Select>
         </Grid.Col6>
@@ -97,8 +97,10 @@ export function Index() {
 
     const listForm = useRef<any>(null)
 
+    const { t, i18n } = useTranslation();
+
     return <>
-        <List.BreadCrumb {...{title,route,searchHandler, setActionValue,deleteAllModal, addModal,setEdit,searchModal}}></List.BreadCrumb>
+        <List.BreadCrumb {...{ title, route, searchHandler, setActionValue, deleteAllModal, addModal, setEdit, searchModal }}></List.BreadCrumb>
 
         <Form fref={listForm} disableclass="true" method="post" action={route + "/actions"} alertclass="m-6">
             <input type="hidden" name="action" value={actionValue} />
@@ -107,23 +109,23 @@ export function Index() {
                 <List.Thead>
                     <tr>
                         <List.Th>
-                            <List.Checkbox id="checkbox-1" aria-describedby="checkbox-1">checkbox</List.Checkbox>
+                            <List.Checkbox id="checkbox-1" aria-describedby="checkbox-1"></List.Checkbox>
                         </List.Th>
                         <List.Th width="30%">{t("Title")}</List.Th>
                         <List.Th>{t("User")}</List.Th>
-                        <List.Th>Position</List.Th>
-                        <List.Th>Url</List.Th>
-                        <List.Th>Position</List.Th>
-                        <List.Th>Status</List.Th>
-                        <List.Th>Date</List.Th>
-                        <List.Th>Actions</List.Th>
+                        <List.Th>{t("Position")}</List.Th>
+                        <List.Th>{t("Url")}</List.Th>
+                        <List.Th>{t("Position")}</List.Th>
+                        <List.Th>{t("Status")}</List.Th>
+                        <List.Th>{t("Date")}</List.Th>
+                        <List.Th>{t("Actions")}</List.Th>
                     </tr>
                 </List.Thead>
                 <List.Tbody>
                     {data?.data?.list?.map((item: any) => (
                         <List.Tr key={item.id}>
                             <List.TdCheckbox>
-                                <List.CheckboxTd name="ids[]" value={item.id} id="checkbox-1" aria-describedby="checkbox-1">checkbox</List.CheckboxTd>
+                                <List.CheckboxTd name="ids[]" value={item.id} id="checkbox-1" aria-describedby="checkbox-1"></List.CheckboxTd>
                             </List.TdCheckbox>
 
                             <List.TdTitle>
@@ -149,10 +151,10 @@ export function Index() {
                             </List.Td>
                             <List.TdAction>
                                 <List.ButtonEdit onClick={(e: any) => editHandler(e, item)}>
-                                    Edit
+                                    {t("Edit")}
                                 </List.ButtonEdit>
                                 <List.ButtonDelete onClick={() => { deleteModal[1](true); setEdit(item) }}>
-                                    Delete
+                                    {t("Delete")}
                                 </List.ButtonDelete>
                             </List.TdAction>
                         </List.Tr>
