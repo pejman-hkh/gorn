@@ -23,10 +23,11 @@ function getPathName() {
 }
 export default function useRouter(baseUri: string, routes: any, props: any, beforeLoad:any, afterLoad:any) {
   const ref = useRef(false);
-  
+  const direction = useState('ltr')
+
   const [data, setData] = useState(props.data)
 
-  const value = [data, setData, {baseUri : baseUri}, props?.mainData?.data];
+  const value = [data, setData, {baseUri : baseUri}, props?.mainData?.data, direction];
 
   const [path, setPath] = useState(getPathName())
 

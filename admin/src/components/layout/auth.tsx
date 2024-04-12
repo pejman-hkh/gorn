@@ -1,7 +1,12 @@
+import { useContext } from "react";
 import Nav from "../nav";
 import Side from "../side";
+import { DataContext } from "../../router/data";
 export default function Auth({ children }:any) {
-    return <div dir="rtl">
+    const dataContext = useContext(DataContext) as Array<any>
+	const direction = dataContext[4]
+
+    return <div dir={direction[0]}>
         <Nav></Nav>
         <div className="flex pt-16 overflow-hidden bg-gray-50 dark:bg-gray-900">
 
