@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { DataContext } from "./data";
 import Api from "./api";
 import { useTranslation } from "react-i18next";
+import { resources } from "../i18n";
 
 function RouteTo(Layout: any, Component: any) {
   return <Layout><Component /></Layout>
@@ -25,8 +26,8 @@ function getPathName() {
 export default function useRouter(baseUri: string, routes: any, props: any, beforeLoad:any, afterLoad:any) {
   const ref = useRef(false);
   const { i18n } = useTranslation();
-
-  const direction = useState(i18n.language == 'fa'?'rtl':'ltr')
+  const res:any = resources
+  const direction = useState(res[i18n.language].direction)
 
   const [data, setData] = useState(props.data)
 
