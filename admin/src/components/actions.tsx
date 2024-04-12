@@ -42,7 +42,7 @@ export function AddButton({ children, ...props }:any) {
 }
 
 export function RightSide({ children, ...props }:any) {
-    return <div {...props} className="flex items-center ml-auto space-x-2 sm:space-x-3">
+    return <div {...props} className="flex items-center rtl:mr-auto ltr:ml-auto space-x-2 sm:space-x-3">
         {children}
     </div>
 }

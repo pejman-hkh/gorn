@@ -1,7 +1,7 @@
 import Nav from "../nav";
 import Side from "../side";
 export default function Auth({ children }:any) {
-    return <div dir="ltr">
+    return <div dir="rtl">
         <Nav></Nav>
         <div className="flex pt-16 overflow-hidden bg-gray-50 dark:bg-gray-900">
 
@@ -9,7 +9,7 @@ export default function Auth({ children }:any) {
 
             <div className="fixed inset-0 z-10 hidden bg-gray-900/50 dark:bg-gray-900/90" id="sidebarBackdrop"></div>
 
-            <div id="main-content" className="relative w-full h-full overflow-y-auto bg-gray-50 lg:ml-64 dark:bg-gray-900">
+            <div id="main-content" className="relative w-full h-full overflow-y-auto bg-gray-50 ltr:lg:ml-64 rtl:lg:mr-64 dark:bg-gray-900">
                 <main>
                     {children}
                 </main>
