@@ -69,7 +69,7 @@ function MenuChilds({ children, ...props }: any) {
     return <ul {...props} id="dropdown-layouts" className="hidden py-2 space-y-2">{children}</ul>
 }
 export default function Side() {
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
 
     return <aside id="sidebar"
         className="fixed top-0 left-0 z-20 flex flex-col flex-shrink-0 hidden w-64 h-full pt-16 font-normal duration-75 lg:flex transition-width"

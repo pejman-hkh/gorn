@@ -19,7 +19,7 @@ function getPositionTitle(position: number) {
 
 export function MainForm({ ...props }) {
     let edit = props.edit
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
   
     return <Grid.Wrapper key={edit?.id} {...props}>
         <Grid.Col6>
@@ -85,7 +85,7 @@ export function Index() {
 
     const listForm = useRef<any>(null)
 
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
     positionArray = [{ id: 1, title: t("Top") }, { id: 2, title: t("Right") }, { id: 3, title: t("Bottom") }, { id: 4, title: t("Left") }]
     return <>
         <List.BreadCrumb {...{ title, route, setActionValue, deleteAllModal, addModal, setEdit, searchModal }}></List.BreadCrumb>

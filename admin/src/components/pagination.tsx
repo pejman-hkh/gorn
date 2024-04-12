@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import Link from "../router/link"
 
 export default function Pagination({...props}) {
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
     return <div className="sticky bottom-0 right-0 items-center w-full p-4 bg-white border-t border-gray-200 sm:flex sm:justify-between dark:bg-gray-800 dark:border-gray-700">
         <div className="flex items-center mb-4 sm:mb-0">
             <Link to={props?.module+"?page="+props?.pagination?.Prev} className="inline-flex justify-center p-1 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">

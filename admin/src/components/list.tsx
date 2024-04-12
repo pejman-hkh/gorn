@@ -93,7 +93,7 @@ export function TdText({ children, ...props }: any) {
 }
 
 export function ActiveBadge({ ...props }) {
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
     let className = "h-2.5 w-2.5 rounded-full mr-2"
     if (props.active == 1)
         className += ' bg-green-400'
@@ -114,7 +114,7 @@ export function Table({ children, ...props }: any) {
 }
 
 export function BreadCrumb({ title, route, setActionValue, deleteAllModal, addModal, setEdit, searchModal }: any) {
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
     let sendRequest = false
     let timeOut: number;
     const searchHandler = (e: any) => {

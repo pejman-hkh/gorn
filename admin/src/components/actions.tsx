@@ -9,7 +9,7 @@ export function SearchForm({ ...props }) {
         history.pushState({}, "", "?"+data);
         e.preventDefault();
     }
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
     return <Form {...props} onSubmit={handler} className="lg:pr-3" action={props.action} method="GET">
         <label htmlFor="search" className="sr-only">{t("Search")}</label>
         <div className="relative mt-1 lg:w-64 xl:w-96">
