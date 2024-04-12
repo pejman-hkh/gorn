@@ -3,12 +3,14 @@ import Link from "../router/link";
 import Form from "./form";
 import * as Notification from "./notification"
 import { DataContext } from "../router/data";
+import { useTranslation } from "react-i18next";
 
 export default function Nav() {
 
     const context = useContext(DataContext) as Array<any>
     const data = context[3]
-    console.log(data)
+    const {t} = useTranslation()
+
     return <nav className="fixed z-30 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
         <div className="px-3 py-3 lg:px-5 lg:pl-3">
             <div className="flex items-center justify-between">
@@ -26,14 +28,14 @@ export default function Nav() {
                         <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Gorn</span>
                     </a>
                     <Form action="" method="GET" className="hidden lg:block lg:pl-3.5">
-                        <label htmlFor="topbar-search" className="sr-only">Search</label>
+                        <label htmlFor="topbar-search" className="sr-only">{t("Search")}</label>
                         <div className="relative mt-1 lg:w-96">
                             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                 <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                     <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
                                 </svg>
                             </div>
-                            <input type="text" name="search" id="topbar-search" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Search" />
+                            <input type="text" name="search" id="topbar-search" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder={t("Search")} />
                         </div>
                     </Form>
                 </div>
@@ -61,11 +63,11 @@ export default function Nav() {
                         </div>
                         <a href="#" className="block py-2 text-base font-normal text-center text-gray-900 bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:text-white dark:hover:underline">
                             <div className="inline-flex items-center ">
-                                <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <svg className="w-5 h-5 ltr:mr-2 rtl:ml-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
                                     <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
                                 </svg>
-                                View all
+                                {t("View all")}
                             </div>
                         </a>
                     </div>
@@ -154,7 +156,7 @@ export default function Nav() {
                         Toggle dark mode
                         <div className="tooltip-arrow" data-popper-arrow />
                     </div>
-                    <div className="flex items-center ml-3">
+                    <div className="flex items-center ltr:ml-3 rtl:mr-3">
                         <div>
                             <button type="button" className="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" id="user-menu-button-2" aria-expanded="false" data-dropdown-toggle="dropdown-2">
                                 <span className="sr-only">Open user menu</span>
