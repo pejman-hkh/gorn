@@ -26,7 +26,7 @@ export function Thead({ children, ...props }: any) {
 }
 
 export function Th({ children, ...props }: any) {
-    return <th {...props} scope="col" className="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+    return <th {...props} scope="col" className="p-4 text-xs font-medium ltr:text-left rtl:text-right text-gray-500 uppercase dark:text-gray-400">
         {children}</th>
 }
 
@@ -94,7 +94,7 @@ export function TdText({ children, ...props }: any) {
 
 export function ActiveBadge({ ...props }) {
     const { t } = useTranslation();
-    let className = "h-2.5 w-2.5 rounded-full mr-2"
+    let className = "h-2.5 w-2.5 rounded-full ltr:mr-2 rtl:ml-2"
     if (props.active == 1)
         className += ' bg-green-400'
     else

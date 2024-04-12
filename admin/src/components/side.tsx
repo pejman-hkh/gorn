@@ -13,7 +13,7 @@ function MenuSvg({ children, ...props }: any) {
 }
 
 function MenuText({ children, ...props }: any) {
-    return <span {...props} className="ml-3" sidebar-toggle-item="true">{children}</span>
+    return <span {...props} className="ltr:ml-3 rtl:mr-3" sidebar-toggle-item="true">{children}</span>
 }
 function MenuLink({ children, ...props }: any) {
     return <Link {...props} to={props.to}
@@ -53,7 +53,7 @@ function MenuButton({ children }: any) {
 }
 
 function MenuButtonText({ children }: any) {
-    return <span className="flex-1 ml-3 text-left whitespace-nowrap" sidebar-toggle-item="true">{children}</span>
+    return <span className="flex-1 ltr:ml-3 rtl:mr-3 ltr:text-left rtl:text-right whitespace-nowrap" sidebar-toggle-item="true">{children}</span>
 }
 
 function IconDown() {
@@ -75,7 +75,7 @@ export default function Side() {
         className="fixed top-0 ltr:left-0 rtl:right-0 z-20 flex flex-col flex-shrink-0 hidden w-64 h-full pt-16 font-normal duration-75 lg:flex transition-width"
         aria-label="Sidebar">
         <div
-            className="relative flex flex-col flex-1 min-h-0 pt-0 bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+            className="relative flex flex-col flex-1 min-h-0 pt-0 bg-white ltr:border-r rtl:border-l border-gray-200 dark:bg-gray-800 dark:border-gray-700">
             <div className="flex flex-col flex-1 pt-5 pb-4 overflow-y-auto">
                 <div className="flex-1 px-3 space-y-1 bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
                     <ul className="pb-2 space-y-2">
