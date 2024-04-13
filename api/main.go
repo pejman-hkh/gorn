@@ -36,6 +36,7 @@ func main() {
 	controller.InitIndex(g)
 	controller.InitUser(g)
 	controller.InitMenu(g)
+	controller.InitGroup(g)
 
 	// r.GET("/*", func(ctx *gin.Context) {
 	// 	//buf, _ := ioutil.ReadFile("../admin/dist/index.html")
