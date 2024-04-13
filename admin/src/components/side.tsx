@@ -47,7 +47,7 @@ function MenuSearch({ }) {
 
 function MenuButton({ children }: any) {
     const handler = (e: any) => {
-        e.target.parentElement.nextSibling.classList.toggle('hidden')
+       // e.target.parentElement.nextSibling.classList.toggle('hidden')
     }
 
     return <button onClick={handler} type="button"
@@ -77,11 +77,13 @@ function MenuChilds({ children, ...props }: any) {
 function LangItem({ children, ...props }: any) {
     const { i18n } = useTranslation()
     const dataContext = useContext(DataContext) as Array<any>
-    const [direction, setDirection] = dataContext[4]
+    const setDirection = dataContext[4][1]
     const res: any = resources
 
     const handler = () => {
         i18n.changeLanguage(props.lang)
+    
+        localStorage.setItem('lang', props.lang)
         setDirection(res[props.lang]?.direction)
     }
 
@@ -161,8 +163,7 @@ export default function Side() {
 
                                 </MenuSvg>
                                 <MenuButtonText>{t("User")}</MenuButtonText>
-
-                                <IconDown></IconDown>
+                                <IconDown />
                             </MenuButton>
                             <MenuChilds>
                                 <MenuItem><MenuLink to="/users">{t("User")}</MenuLink></MenuItem>
