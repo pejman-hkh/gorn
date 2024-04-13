@@ -106,7 +106,7 @@ export function Index() {
                         <List.Th>{t("Position")}</List.Th>
                         <List.Th>{t("Status")}</List.Th>
                         <List.Th>{t("Date")}</List.Th>
-                        <List.Th>{t("Actions")}</List.Th>
+                        <List.Th width="5%">{t("Actions")}</List.Th>
                     </tr>
                 </List.Thead>
                 <List.Tbody>
