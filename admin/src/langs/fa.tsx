@@ -42,5 +42,13 @@ export default {
     "Yes, I'm sure" : "بله، مطمئن هستم",
     "No, cancel" : "نه، لغو",
     "Are you sure you want to delete this ?" : "آیا از حذف این مورد اطمینان دارید ؟",
-    
+    "404 Page not found" : "404 صفحه مورد نظر یافت نشد",
+    "Oops! Looks like you followed a bad link. If you think this is a problem with us, please tell us." : "صفحه ای که دنبال آن میگردید پیدا نشد.",
+    "Go back home" : "بازگشت به خانه",
+    "Your email" : "ایمیل",
+    "Your password" : "رمز ورود",
+    "Remember me" : "یاد آوری",
+    "Login to your account" : "ورود",
+    "Lost Password?" : "رمز عبور خود را گم کرده اید ؟",
+    "Login" : "ورود",
 }
