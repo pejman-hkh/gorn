@@ -7,7 +7,9 @@ At first, my purpose is to write a tiny blog with the User, Group (with permissi
 
 I used `Flowbite` and `Vite` with `Reactjs` as the admin panel
 
-For backend I used gin + gorm for api
+Admin panel is multilingual and multi-directional (RTL and LTR)
+
+For backend I used `Gin`, `Gorm` for api
 
 For frontend I will used nextjs
 
