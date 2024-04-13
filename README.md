@@ -11,6 +11,6 @@ Admin panel is multilingual and multi-directional (RTL and LTR)
 
 For backend I used `Gin`, `Gorm` for api
 
-For frontend I will used nextjs
+For frontend I will use nextjs
 
 At the end, I want to develop an ecommerce for it
