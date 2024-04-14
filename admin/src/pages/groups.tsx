@@ -1,7 +1,7 @@
 import Pagination from "../components/pagination"
 import * as List from "../components/list"
 import * as Grid from "../components/grid"
-import Form, { Input, Select, Textarea } from "../components/form"
+import Form, { Input, Checkbox } from "../components/form"
 import { useContext, useRef, useState } from "react"
 import { DataContext } from "../router/data"
 
@@ -13,10 +13,61 @@ import { useTranslation } from 'react-i18next';
 export function MainForm({ ...props }) {
     let edit = props.edit
     const { t } = useTranslation();
+    const models: any = [
+        t("User"),
+        t("Group"),
+        t("Menu"),
+        t("Setting"),
+        t("Media"),
+        t("Post"),
+        t("Page"),
+        t("Comment"),
+    ]
+
+    const permissions = [
+        t("Create"),
+        t("Update"),
+        t("View"),
+        t("Delete"),
+    ]
+
+    const checkAll = (e: any, per: string) => {
+        document.querySelectorAll("."+per).each(function(this:any) {
+            this.checked = e.target.checked
+        })
+    }
+
+    const checkAllModel = (e: any, model: string) => {
+        document.querySelectorAll("."+model).each(function(this:any) {
+            this.checked = e.target.checked
+        })
+    }
 
     return <Grid.Wrapper key={edit?.id} {...props}>
         <Grid.Span6>
             <Input type="text" name="title" defaultValue={edit?.title}>{t("Title")}</Input>
+        </Grid.Span6>
+
+        <Grid.Span6>
+            <List.Table>
+                <List.Tr>
+                    <List.Th></List.Th>{permissions.map((per: string) => <List.Th>
+                        {per}
+                        <br />
+                        <Checkbox onChange={(e: any) => { checkAll(e, per) }}>{t("All")}</Checkbox>
+                    </List.Th>)}
+                </List.Tr>
+                {models.map((model: string) => <List.Tr key={model}>
+                    <List.Th>
+                        {model}
+                        <br /><Checkbox onChange={(e: any) => { checkAllModel(e, model) }}>{t("All")}</Checkbox>
+                    </List.Th>
+                    {permissions.map((per: string) =>
+                        <List.Th key={model + per}><Checkbox className={per+" "+model} name={model.toLocaleLowerCase() + "[" + per.toLocaleLowerCase() + "]"} id={model + per}>{per}</Checkbox></List.Th>
+                    )}
+                </List.Tr>
+                )}
+            </List.Table>
         </Grid.Span6>
 
     </Grid.Wrapper>
@@ -47,7 +98,7 @@ export function Index() {
     const listForm = useRef<any>(null)
 
     const { t } = useTranslation();
- 
+
     return <>
         <List.BreadCrumb {...{ title, route, setActionValue, deleteAllModal, addModal, setEdit, searchModal }}></List.BreadCrumb>
 
