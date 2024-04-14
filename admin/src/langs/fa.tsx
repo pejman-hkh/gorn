@@ -51,4 +51,10 @@ export default {
     "Login to your account" : "ورود",
     "Lost Password?" : "رمز عبور خود را گم کرده اید ؟",
     "Login" : "ورود",
+    "Post" : "پست",
+    "Page" : "صفحه",
+    "Comment" : "نظرات",
+    "Create" : "ایجاد",
+    "Update" : "بروزرسانی",
+    "View" : "نمایش",
 }
