@@ -22,10 +22,10 @@ func (c *IndexController) InitRoutes(r *gin.RouterGroup) {
 	g.Use(middle.IsAdmin())
 	{
 		g.GET("/", c.Index)
-		g.GET("/data", c.Data)
 		g.GET("/dashboard", c.Index)
 	}
 
+	r.GET("admin/data", c.Data)
 	r.GET("/", c.Index)
 	r.GET("/home", c.Index)
 
