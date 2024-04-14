@@ -3,11 +3,11 @@ package model
 import (
 	"fmt"
 	"gorn/gorn"
-	"os"
 	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gofor-little/env"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -94,7 +94,7 @@ func (u *User) Login(email string, password string) (string, error) {
 		"exp": time.Now().Add(time.Hour * 24 * 30).Unix(),
 	})
 
-	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET")))
+	tokenString, err := token.SignedString([]byte(env.Get("SECRET", "")))
 
 	if err == nil {
 		return tokenString, nil
@@ -110,7 +110,7 @@ func (u *User) Check(tokenString string) bool {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 
-		return []byte(os.Getenv("SECRET")), nil
+		return []byte(env.Get("SECRET", "")), nil
 	})
 
 	if error != nil {
