@@ -63,7 +63,7 @@ export function MainForm({ ...props }) {
         })
     }
 
-    console.log(permissionArray)
+
     return <Grid.Wrapper key={edit?.id} {...props}>
         <Grid.Span6>
             <Input type="text" name="title" defaultValue={edit?.title}>{t("Title")}</Input>
