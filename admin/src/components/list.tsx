@@ -137,7 +137,7 @@ export function BreadCrumb({ title, route, setActionValue, deleteAllModal, addMo
 
         <Actions.Wrapper>
             <Actions.LeftSide>
-                <Actions.SearchForm action="/menus" onChange={searchHandler} />
+                <Actions.SearchForm action={route} onChange={searchHandler} />
                 <Actions.Tasks>
                     <Task.Setting onClick={() => { searchModal[1](true) }} />
                     <Task.Delete onClick={() => { setActionValue("delete"); deleteAllModal[1](true) }} />
