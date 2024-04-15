@@ -148,7 +148,7 @@ export function BreadCrumb({ title, route, setActionValue, deleteAllModal, addMo
 
             <Actions.RightSide>
                 <Actions.AddButton onClick={() => { addModal[1](true); setEdit({}) }}>{t("Add {{title}}", { title: t(title) })}</Actions.AddButton>
-                <Actions.ExportButton>{t("Export")}</Actions.ExportButton>
+                <Actions.ExportButton route={route}>{t("Export")}</Actions.ExportButton>
             </Actions.RightSide>
         </Actions.Wrapper>
     </Breadcrumb.Wrapper>
