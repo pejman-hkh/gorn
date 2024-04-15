@@ -51,9 +51,53 @@ function getPathName() {
 	return pathName
 }
 
-export function Checkbox({children, ...props}:any) {
-	return <div className="flex items-center"><input {...props} type="checkbox" className={props.className+" w-4 h-4 border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:focus:ring-primary-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600"} />
-	<label htmlFor={props.id} className="m-1">{children}</label></div>
+export function Checkbox({ children, ...props }: any) {
+	return <div className="flex items-center"><input {...props} type="checkbox" className={props.className + " w-4 h-4 border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:focus:ring-primary-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600"} />
+		<label htmlFor={props.id} className="m-1">{children}</label></div>
+}
+
+const toJson = (f: any) => {
+	let method = function (object: any, pair: any) {
+
+		let keys = pair[0].replace(/\]/g, '').split('[');
+		let key = keys[0];
+		let value = pair[1];
+
+		if (keys.length > 1) {
+
+			let i, x, segment;
+			let last = value;
+			let type = isNaN(keys[1]) ? {} : [];
+
+			value = segment = object[key] || type;
+
+			for (i = 1; i < keys.length; i++) {
+
+				x = keys[i];
+
+				if (i == keys.length - 1) {
+					if (Array.isArray(segment)) {
+						segment.push(last);
+					} else {
+						segment[x] = last;
+					}
+				} else if (segment[x] == undefined) {
+					segment[x] = isNaN(keys[i + 1]) ? {} : [];
+				}
+
+				segment = segment[x];
+
+			}
+
+		}
+
+		object[key] = value;
+
+		return object;
+
+	}
+
+	return JSON.stringify(Array.from(f).reduce(method, {}));
 }
 
 export default function Form({ children, ...props }: any) {
@@ -96,11 +140,27 @@ export default function Form({ children, ...props }: any) {
 
 		if (props.action)
 			action = baseUri + action
-		fetch(import.meta.env.VITE_API_URL + action + '?' + new URLSearchParams({ auth: localStorage.getItem('auth') } as any),
-			{
+
+		let fetchParam: any
+
+		if (props?.method == "json") {
+	
+			fetchParam = {
+				method: 'POST',
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				body: toJson(dataForm)
+			}
+		} else {
+			fetchParam = {
 				method: method,
 				body: dataForm
-			})
+			}
+		}
+
+		fetch(import.meta.env.VITE_API_URL + action + '?' + new URLSearchParams({ auth: localStorage.getItem('auth') } as any), fetchParam)
 			.then(function (res) { return res.json(); })
 			.then(function (fetchData) {
 				if (fetchData.data?.auth)
