@@ -9,6 +9,12 @@ I used `Flowbite` and `Vite` with `Reactjs` as the admin panel
 
 Admin panel is multilingual and multi-directional (RTL and LTR)
 
+# Admin Features
+- Fast search in list
+- Advanced search in all fields in list
+- Live create, edit, delete, delete all, excel export for all lists
+
+
 For backend I used `Gin`, `Gorm` for api
 
 For frontend I will use nextjs
