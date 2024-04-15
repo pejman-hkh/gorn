@@ -9,18 +9,10 @@ import Link from "../router/link"
 import DateTime from "../components/date"
 import { useTranslation } from 'react-i18next';
 
-let positionArray: any = {}
-
-function getPositionTitle(position: number) {
-    return positionArray.find((v: any) => {
-        return v.id == position
-    })
-}
-
 export function MainForm({ ...props }) {
     let edit = props.edit
     const { t } = useTranslation();
-
+  
     return <Grid.Wrapper key={edit?.id} {...props}>
         <Grid.Col6>
             <Input type="text" name="title" defaultValue={edit?.title}>{t("Title")}</Input>
@@ -30,15 +22,8 @@ export function MainForm({ ...props }) {
         </Grid.Col6>
 
         <Grid.Col6>
-            <Select name="position" title={t("Position")} defaultValue={edit?.position}>
-                <option value="">{t("Select")}</option>
-                {positionArray?.map((v: any) => <option key={v.id} value={v.id}>{v.title}</option>)}
-            </Select>
-
-        </Grid.Col6>
-        <Grid.Col6>
             <Select name="status" title={t("Status")} defaultValue={edit?.status}>
-
+       
                 <option value="1">{t("Enable")}</option>
                 <option value="0">{t("Disable")}</option>
 
@@ -63,8 +48,8 @@ export function MainForm({ ...props }) {
 
 export function Index() {
 
-    const route = "/menus"
-    const title = "Menu"
+    const route = "/users"
+    const title = "User"
 
     const dataContext = useContext(DataContext) as Array<any>
     const data = dataContext[0]
@@ -86,7 +71,7 @@ export function Index() {
     const listForm = useRef<any>(null)
 
     const { t } = useTranslation();
-    positionArray = [{ id: 1, title: t("Top") }, { id: 2, title: t("Right") }, { id: 3, title: t("Bottom") }, { id: 4, title: t("Left") }]
+
     return <>
         <List.BreadCrumb {...{ title, route, setActionValue, deleteAllModal, addModal, setEdit, searchModal }}></List.BreadCrumb>
 
@@ -99,10 +84,11 @@ export function Index() {
                         <List.Th>
                             <List.Checkbox />
                         </List.Th>
-                        <List.Th width="30%">{t("Title")}</List.Th>
+                        <List.Th width="30%">{t("Name")}</List.Th>
+                        <List.Th>{t("Email")}</List.Th>
                         <List.Th>{t("User")}</List.Th>
-                        <List.Th>{t("Position")}</List.Th>
-                        <List.Th>{t("Url")}</List.Th>
+                        <List.Th>{t("Is Admin")}</List.Th>
+                        <List.Th>{t("Is Main")}</List.Th>
                         <List.Th>{t("Status")}</List.Th>
                         <List.Th>{t("Date")}</List.Th>
                         <List.Th width="5%">{t("Actions")}</List.Th>
@@ -116,17 +102,22 @@ export function Index() {
                             </List.TdCheckbox>
 
                             <List.TdTitle>
-                                {item.title}
+                                {item.name}
                             </List.TdTitle>
 
-                            <List.Td><Link to={"/users?id=" + item.user.id}>{item.user.Name}</Link></List.Td>
-                            <List.TdText>
-                                {getPositionTitle(item.position)?.title}
-                            </List.TdText>
-                            <List.TdText>
-                                {item.url}
-                            </List.TdText>
+                            <List.Td>
+                                {item.email}
+                            </List.Td>
 
+                            <List.Td><Link to={"/users?id=" + item?.user?.id}>{item?.user?.Name}</Link></List.Td>
+            
+                            <List.Td>
+                                {item.isadmin}
+                            </List.Td>
+            
+                            <List.Td>
+                                {item.ismain}
+                            </List.Td>
 
                             <List.Td>
                                 <List.ActiveBadge active={item?.status} />

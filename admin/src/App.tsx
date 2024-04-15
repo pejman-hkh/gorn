@@ -2,6 +2,7 @@ import Guest from './components/layout/guest'
 import Layout from './components/layout/auth'
 import * as Menus from './pages/menus'
 import * as Groups from './pages/groups'
+import * as Users from './pages/users'
 import * as Settings from './pages/settings'
 import Dashboard from './pages/dashboard'
 import NoPage from './pages/nopage'
@@ -19,6 +20,7 @@ let routes = {
   '/': [Guest, Login],
   '/menus': [Layout, Menus.Index],
   '/groups': [Layout, Groups.Index],
+  '/users': [Layout, Users.Index],
   '/settings': [Layout, Settings.Index],
   '/login': [Guest, Login],
   '/dashboard': [Layout, Dashboard],

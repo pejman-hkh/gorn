@@ -15,15 +15,16 @@ import (
 
 type User struct {
 	BaseModel
-	Name            string `gorm:"size:255"`
-	Email           string `gorm:"type:varchar(100);index:idx_email"`
+	Name            string `json:"name" gorm:"size:255"`
+	Email           string `json:"email" gorm:"type:varchar(100);index:idx_email"`
 	Password        string `gorm:"size:255" json:"-"`
 	EmailVerifiedAt time.Time
-	IsAdmin         bool
-	IsMain          bool
-	UserID          uint `gorm:"index"`
-	GroupID         uint `gorm:"index"`
-	Groups          Group
+	IsAdmin         bool  `json:"isadmin"`
+	IsMain          bool  `json:"ismain"`
+	Status          uint8 `json:"status" gorm:"index:idx_status"`
+	UserID          uint  `json:"userid" gorm:"index"`
+	GroupID         uint  `json:"groupid" gorm:"index"`
+	Groups          Group `json:"groups"`
 }
 
 func MakePassword(password string) (string, error) {
