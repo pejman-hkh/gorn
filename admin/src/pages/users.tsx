@@ -15,33 +15,47 @@ export function MainForm({ ...props }) {
   
     return <Grid.Wrapper key={edit?.id} {...props}>
         <Grid.Col6>
-            <Input type="text" name="title" defaultValue={edit?.title}>{t("Title")}</Input>
+            <Input type="text" name="name" defaultValue={edit?.name}>{t("Name")}</Input>
         </Grid.Col6>
         <Grid.Col6>
-            <Input type="text" name="url" defaultValue={edit?.url}>{t("Url")}</Input>
+            <Input type="text" name="email" defaultValue={edit?.email}>{t("Email")}</Input>
+        </Grid.Col6>
+        <Grid.Col6>
+            <Input type="text" name="password" defaultValue={edit?.password}>{t("Password")}</Input>
+        </Grid.Col6>
+        <Grid.Col6>
+            <Input type="text" name="repassword">{t("Re-Password")}</Input>
         </Grid.Col6>
 
         <Grid.Col6>
             <Select name="status" title={t("Status")} defaultValue={edit?.status}>
-       
                 <option value="1">{t("Enable")}</option>
                 <option value="0">{t("Disable")}</option>
-
             </Select>
         </Grid.Col6>
+
         <Grid.Col6>
-            <Select name="menuid" title={t("Parent Menu")} defaultValue={edit?.menuid}>
+            <Select name="status" title={t("Is Admin")} defaultValue={edit?.isadmin}>
+                <option value="1">{t("Admin")}</option>
+                <option value="0">{t("User")}</option>
+            </Select>
+        </Grid.Col6>
+
+        <Grid.Col6>
+            <Select name="status" title={t("Is Main")} defaultValue={edit?.ismain}>
+                <option value="1">{t("Main")}</option>
+                <option value="0">{t("Not main")}</option>
+            </Select>
+        </Grid.Col6>
+
+
+        <Grid.Col6>
+            <Select name="groupid" title={t("Group")} defaultValue={edit?.groupid}>
                 <option value="">{t("Select")}</option>
 
             </Select>
         </Grid.Col6>
-        <Grid.Col6>
-            <Input type="text" name="icon" defaultValue={edit?.icon}>{t("Icon")}</Input>
-        </Grid.Col6>
-        <Grid.Span6>
-            <Textarea name="svg" rows={4} placeholder={t("Just put svg paths")} defaultValue={edit?.svg}>{t("Svg")}</Textarea>
 
-        </Grid.Span6>
 
     </Grid.Wrapper>
 }
