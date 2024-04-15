@@ -154,11 +154,13 @@ export function BreadCrumb({ title, route, setActionValue, deleteAllModal, addMo
     </Breadcrumb.Wrapper>
 }
 
-export function Modals({ title, route, edit, addModal, MainForm, editModal, searchModal, deleteModal, deleteAllModal, listForm }: any) {
+export function Modals({ SearchForm, method, title, route, edit, addModal, MainForm, editModal, searchModal, deleteModal, deleteAllModal, listForm }: any) {
+    const Search = SearchForm??MainForm
+
     const { t } = useTranslation();
     return <>
         <Modal.Modal title={t("Edit {{title}}", { title:t(title)})} show={editModal}>
-            <Form action={route + "/" + edit?.id} alertclass="m-6">
+            <Form method={method||"post"} action={route + "/" + edit?.id} alertclass="m-6">
                 <Modal.Content>
 
                     <MainForm edit={edit}></MainForm>
@@ -171,7 +173,7 @@ export function Modals({ title, route, edit, addModal, MainForm, editModal, sear
         </Modal.Modal>
 
         <Modal.Modal title={t("Add {{title}}", { title: t(title) })} show={addModal}>
-            <Form action={route + "/create"} alertclass="m-6">
+            <Form method={method||"post"} action={route + "/create"} alertclass="m-6">
                 <Modal.Content>
 
                     <MainForm />
@@ -188,7 +190,7 @@ export function Modals({ title, route, edit, addModal, MainForm, editModal, sear
                 <input type="hidden" name="asearch" />
                 <Modal.Content>
 
-                    <MainForm />
+                    <Search />
                 </Modal.Content>
                 <Modal.Footer><Button type="submit" onClick={() => searchModal[1](false)}>{t("Search")}</Button></Modal.Footer>
             </Form>
