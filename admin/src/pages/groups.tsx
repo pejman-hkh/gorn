@@ -9,6 +9,15 @@ import Link from "../router/link"
 import DateTime from "../components/date"
 import { useTranslation } from 'react-i18next';
 
+export function SearchForm({ ...props }) {
+    let edit = props.edit
+    const { t } = useTranslation();
+    return <Grid.Wrapper key={edit?.id} {...props}>
+        <Grid.Span6>
+            <Input type="text" name="title" defaultValue={edit?.title}>{t("Title")}</Input>
+        </Grid.Span6>
+    </Grid.Wrapper>
+}
 
 export function MainForm({ ...props }) {
     let edit = props.edit
@@ -31,18 +40,30 @@ export function MainForm({ ...props }) {
         t("Delete"),
     ]
 
+    const toModelIndex = (permissions: any) => {
+        let ret: any = {}
+        for (let k in permissions) {
+            let v = permissions[k]
+            ret[v.model] = v
+        }
+        return ret
+    }
+
+    const permissionArray: any = toModelIndex(edit?.permissions)
+
     const checkAll = (e: any, per: string) => {
-        document.querySelectorAll("."+per).each(function(this:any) {
+        document.querySelectorAll("." + per).each(function (this: any) {
             this.checked = e.target.checked
         })
     }
 
     const checkAllModel = (e: any, model: string) => {
-        document.querySelectorAll("."+model).each(function(this:any) {
+        document.querySelectorAll("." + model).each(function (this: any) {
             this.checked = e.target.checked
         })
     }
 
+    console.log(permissionArray)
     return <Grid.Wrapper key={edit?.id} {...props}>
         <Grid.Span6>
             <Input type="text" name="title" defaultValue={edit?.title}>{t("Title")}</Input>
@@ -63,7 +84,7 @@ export function MainForm({ ...props }) {
                         <br /><Checkbox onChange={(e: any) => { checkAllModel(e, model) }}>{t("All")}</Checkbox>
                     </List.Th>
                     {permissions.map((per: string) =>
-                        <List.Th key={model + per}><Checkbox className={per+" "+model} name={model.toLocaleLowerCase() + "[" + per.toLocaleLowerCase() + "]"} id={model + per}>{per}</Checkbox></List.Th>
+                        <List.Th key={model + per}><Checkbox defaultChecked={permissionArray[model.toLocaleLowerCase()]?permissionArray[model.toLocaleLowerCase()][per.toLocaleLowerCase()]:false} className={per + " " + model} name={"permission[" + model.toLocaleLowerCase() + "][" + per.toLocaleLowerCase() + "]"} id={model + per}>{per}</Checkbox></List.Th>
                     )}
                 </List.Tr>
                 )}
@@ -96,8 +117,8 @@ export function Index() {
     }
 
     const listForm = useRef<any>(null)
-
     const { t } = useTranslation();
+    const method = "json"
 
     return <>
         <List.BreadCrumb {...{ title, route, setActionValue, deleteAllModal, addModal, setEdit, searchModal }}></List.BreadCrumb>
@@ -151,7 +172,7 @@ export function Index() {
         </Form>
         <Pagination pagination={data?.data?.pagination} module={route}></Pagination>
 
-        <List.Modals {...{ title, route, edit, MainForm, addModal, editModal, searchModal, deleteModal, deleteAllModal, listForm }}></List.Modals >
+        <List.Modals {...{ SearchForm, method, title, route, edit, MainForm, addModal, editModal, searchModal, deleteModal, deleteAllModal, listForm }}></List.Modals >
 
     </>
 }
