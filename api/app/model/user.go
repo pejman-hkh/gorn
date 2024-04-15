@@ -23,7 +23,7 @@ type User struct {
 	IsMain          bool
 	UserID          uint `gorm:"index"`
 	GroupID         uint `gorm:"index"`
-	Group           Group
+	Groups          Group
 }
 
 func MakePassword(password string) (string, error) {
@@ -60,7 +60,7 @@ func (u *User) HasPermission(ctx *gin.Context) bool {
 		return true
 	} else if access == "edit" && p.Update {
 		return true
-	} else if access == "list" && p.List {
+	} else if access == "list" && p.View {
 		return true
 	}
 

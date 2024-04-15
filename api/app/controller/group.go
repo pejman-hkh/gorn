@@ -1,10 +1,12 @@
 package controller
 
 import (
+	"encoding/json"
 	"fmt"
 	"gorn/app/middle"
 	"gorn/app/model"
 	"gorn/gorn"
+	"io"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -44,7 +46,7 @@ func (c *GroupController) Index(ctx *gin.Context) {
 	var p gorn.Paginator
 	search := []string{"title"}
 	asearch := map[string]string{"title": "like"}
-	result := gorn.DB.Scopes(c.Search(ctx, &list, search)).Scopes(c.AdvancedSearch(ctx, &list, asearch)).Scopes(p.Paginate(ctx, &list)).Order("id desc").Find(&list)
+	result := gorn.DB.Preload("Users").Preload("Permissions").Scopes(c.Search(ctx, &list, search)).Scopes(c.AdvancedSearch(ctx, &list, asearch)).Scopes(p.Paginate(ctx, &list)).Order("id desc").Find(&list)
 	if result.Error != nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": result.Error})
 		return
@@ -63,27 +65,30 @@ func (c *GroupController) Edit(ctx *gin.Context) {
 }
 
 func (c *GroupController) Update(ctx *gin.Context) {
-	var body GroupForm
+	byt, _ := io.ReadAll(ctx.Request.Body)
 
-	if err := ctx.ShouldBind(&body); err != nil {
-		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": err.Error()})
+	var body map[string]any
+	if err := json.Unmarshal(byt, &body); err != nil {
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": fmt.Sprintf("Error on save: %s", err.Error())})
 		return
 	}
 
 	user, _ := ctx.Get("authUser")
-	Group := model.Group{}
-	gorn.DB.First(&Group, ctx.Param("id"))
+	group := model.Group{}
+	gorn.DB.First(&group, ctx.Param("id"))
 
-	copier.Copy(&Group, &body)
-	Group.UserId = user.(*model.User).ID
+	copier.Copy(&group, &body)
+	userid := user.(*model.User).ID
+	group.UserId = userid
 
-	save := Group.Save(Group)
+	save := group.Save(group)
+	group.SetPermission(userid, group.ID, body)
 	if save.Error != nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": fmt.Sprintf("Error on save: %v", save.Error)})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": "Saved successfully", "data": map[string]any{"model": Group}})
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": "Saved successfully", "data": map[string]any{"model": group}})
 }
 
 func (c *GroupController) Create(ctx *gin.Context) {
@@ -91,20 +96,25 @@ func (c *GroupController) Create(ctx *gin.Context) {
 }
 
 func (c *GroupController) Store(ctx *gin.Context) {
-	var body GroupForm
 
-	if err := ctx.ShouldBind(&body); err != nil {
-		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": err.Error()})
+	byt, _ := io.ReadAll(ctx.Request.Body)
+
+	var body map[string]any
+	if err := json.Unmarshal(byt, &body); err != nil {
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": fmt.Sprintf("Error on save: %s", err.Error())})
 		return
 	}
 
 	user, _ := ctx.Get("authUser")
 
-	Group := &model.Group{}
-	copier.Copy(Group, body)
-	Group.UserId = user.(*model.User).ID
+	group := &model.Group{}
+	group.Title = body["title"].(string)
+	userid := user.(*model.User).ID
+	group.UserId = userid
 
-	save := Group.Save(Group)
+	save := group.Save(group)
+
+	group.SetPermission(userid, group.ID, body)
 	if save.Error != nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": fmt.Sprintf("Error on save: %v", save.Error)})
 		return

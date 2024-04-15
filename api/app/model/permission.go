@@ -1,14 +1,12 @@
 package model
 
 type Permission struct {
-	ID        uint
-	UserID    uint
-	GroupID   uint
-	Model     string
-	Show      bool
-	Update    bool
-	Create    bool
-	List      bool
-	Delete    bool
-	DeleteAll bool
+	ID      uint
+	UserID  uint   `json:"userid"`
+	GroupID uint   `json:"groupid"`
+	Model   string `json:"model"`
+	View    bool   `json:"view"`
+	Update  bool   `json:"update"`
+	Create  bool   `json:"create"`
+	Delete  bool   `json:"delete"`
 }
