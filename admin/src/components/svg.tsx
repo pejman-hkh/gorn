@@ -1,5 +1,5 @@
-export function Usa() {
-    return <svg className="h-3.5 w-3.5 rounded-full mr-2" xmlns="http://www.w3.org/2000/svg" id="flag-icon-css-us"
+export function Usa({...props}) {
+    return <svg className={props?.className??"h-3.5 w-3.5 rounded-full mr-2"} xmlns="http://www.w3.org/2000/svg" id="flag-icon-css-us"
         viewBox="0 0 512 512">
         <g fillRule="evenodd">
             <g strokeWidth="1pt">
@@ -18,8 +18,8 @@ export function Usa() {
     </svg>
 }
 
-export function Iran() {
-    return <svg className="h-3.5 w-3.5 rounded-full mr-2" xmlns="http://www.w3.org/2000/svg" id="flag-icons-ir" viewBox="0 0 640 480">
+export function Iran({...props}) {
+    return <svg className={props?.className??"h-3.5 w-3.5 rounded-full mr-2"} xmlns="http://www.w3.org/2000/svg" id="flag-icons-ir" viewBox="0 0 640 480">
         <defs>
             <clipPath id="ir-a">
                 <path fill-opacity=".7" d="M-85.3 0h682.7v512H-85.3z" />

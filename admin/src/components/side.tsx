@@ -3,7 +3,7 @@ import Link from "../router/link"
 
 import * as Svg from "./svg"
 import { resources } from "../i18n"
-import { useContext } from "react"
+import { useContext, useRef } from "react"
 import { DataContext } from "../router/data"
 
 function MenuItem({ children, ...props }: any) {
@@ -47,7 +47,7 @@ function MenuSearch({ }) {
 
 function MenuButton({ children }: any) {
     const handler = (e: any) => {
-       // e.target.parentElement.nextSibling.classList.toggle('hidden')
+        // e.target.parentElement.nextSibling.classList.toggle('hidden')
     }
 
     return <button onClick={handler} type="button"
@@ -82,7 +82,7 @@ function LangItem({ children, ...props }: any) {
 
     const handler = () => {
         i18n.changeLanguage(props.lang)
-    
+
         localStorage.setItem('lang', props.lang)
         setDirection(res[props.lang]?.direction)
     }
@@ -100,8 +100,16 @@ function LangItem({ children, ...props }: any) {
 }
 
 export default function Side() {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
+    let Icon: any
 
+    if (i18n.language == 'fa') {
+        Icon = Svg.Iran
+    } else {
+        Icon = Svg.Usa
+    }
+
+    const langBtn = useRef<any>(null)
     return <aside id="sidebar"
         className="fixed top-0 ltr:left-0 rtl:right-0 z-20 flex flex-col flex-shrink-0 hidden w-64 h-full pt-16 font-normal duration-75 lg:flex transition-width"
         aria-label="Sidebar">
@@ -134,6 +142,32 @@ export default function Side() {
                         </MenuItem>
 
                         <MenuItem>
+                            <MenuLink to="/pages">
+
+                                <svg class="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                    <path fill-rule="evenodd" d="M14 4.182A4.136 4.136 0 0 1 16.9 3c1.087 0 2.13.425 2.899 1.182A4.01 4.01 0 0 1 21 7.037c0 1.068-.43 2.092-1.194 2.849L18.5 11.214l-5.8-5.71 1.287-1.31.012-.012Zm-2.717 2.763L6.186 12.13l2.175 2.141 5.063-5.218-2.141-2.108Zm-6.25 6.886-1.98 5.849a.992.992 0 0 0 .245 1.026 1.03 1.03 0 0 0 1.043.242L10.282 19l-5.25-5.168Zm6.954 4.01 5.096-5.186-2.218-2.183-5.063 5.218 2.185 2.15Z" clip-rule="evenodd" />
+                                </svg>
+
+
+                                <MenuText>{t("Page")}</MenuText>
+                            </MenuLink>
+                        </MenuItem>
+
+                        <MenuItem>
+                            <MenuLink to="/posts">
+
+                                <svg class="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                    <path fill-rule="evenodd" d="M8 7V2.221a2 2 0 0 0-.5.365L3.586 6.5a2 2 0 0 0-.365.5H8Zm2 0V2h7a2 2 0 0 1 2 2v.126a5.087 5.087 0 0 0-4.74 1.368v.001l-6.642 6.642a3 3 0 0 0-.82 1.532l-.74 3.692a3 3 0 0 0 3.53 3.53l3.694-.738a3 3 0 0 0 1.532-.82L19 15.149V20a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Z" clip-rule="evenodd" />
+                                    <path fill-rule="evenodd" d="M17.447 8.08a1.087 1.087 0 0 1 1.187.238l.002.001a1.088 1.088 0 0 1 0 1.539l-.377.377-1.54-1.542.373-.374.002-.001c.1-.102.22-.182.353-.237Zm-2.143 2.027-4.644 4.644-.385 1.924 1.925-.385 4.644-4.642-1.54-1.54Zm2.56-4.11a3.087 3.087 0 0 0-2.187.909l-6.645 6.645a1 1 0 0 0-.274.51l-.739 3.693a1 1 0 0 0 1.177 1.176l3.693-.738a1 1 0 0 0 .51-.274l6.65-6.646a3.088 3.088 0 0 0-2.185-5.275Z" clip-rule="evenodd" />
+                                </svg>
+
+
+
+                                <MenuText>{t("Post")}</MenuText>
+                            </MenuLink>
+                        </MenuItem>
+
+                        <MenuItem>
                             <MenuLink to="/settings">
                                 <MenuSvg>
                                     <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
@@ -145,13 +179,9 @@ export default function Side() {
 
                         <MenuItem>
                             <MenuLink to="/settings">
-                                <MenuSvg>
-
-                                    <path fillRule="evenodd" d="M12 3a1 1 0 0 1 .78.375l4 5a1 1 0 1 1-1.56 1.25L13 6.85V14a1 1 0 1 1-2 0V6.85L8.78 9.626a1 1 0 1 1-1.56-1.25l4-5A1 1 0 0 1 12 3ZM9 14v-1H5a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2h-4v1a3 3 0 1 1-6 0Zm8 2a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2H17Z" clipRule="evenodd">
-                                    </path>
-
-
-                                </MenuSvg>
+                                <svg class="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="M10 3v4a1 1 0 0 1-1 1H5m14-4v16a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7.914a1 1 0 0 1 .293-.707l3.914-3.914A1 1 0 0 1 9.914 3H18a1 1 0 0 1 1 1Z" />
+                                </svg>
                                 <MenuText>{t("Media")}</MenuText>
                             </MenuLink>
                         </MenuItem>
@@ -200,46 +230,22 @@ export default function Side() {
                     Settings page
                     <div className="tooltip-arrow" data-popper-arrow></div>
                 </div>
-                <button type="button" data-dropdown-toggle="language-dropdown"
+                <button type="button" ref={langBtn} data-dropdown-toggle="language-dropdown"
                     className="inline-flex justify-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white">
-                    <svg className="h-5 w-5 rounded-full mt-0.5" xmlns="http://www.w3.org/2000/svg"
-                        xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 3900 3900">
-                        <path fill="#b22234" d="M0 0h7410v3900H0z" />
-                        <path d="M0 450h7410m0 600H0m0 600h7410m0 600H0m0 600h7410m0 600H0" stroke="#fff" strokeWidth="300" />
-                        <path fill="#3c3b6e" d="M0 0h2964v2100H0z" />
-                        <g fill="#fff">
-                            <g id="d">
-                                <g id="c">
-                                    <g id="e">
-                                        <g id="b">
-                                            <path id="a" d="M247 90l70.534 217.082-184.66-134.164h228.253L176.466 307.082z" />
-                                            <use xlinkHref="#a" y="420" />
-                                            <use xlinkHref="#a" y="840" />
-                                            <use xlinkHref="#a" y="1260" />
-                                        </g>
-                                        <use xlinkHref="#a" y="1680" />
-                                    </g>
-                                    <use xlinkHref="#b" x="247" y="210" />
-                                </g>
-                                <use xlinkHref="#c" x="494" />
-                            </g>
-                            <use xlinkHref="#d" x="988" />
-                            <use xlinkHref="#c" x="1976" />
-                            <use xlinkHref="#e" x="2470" />
-                        </g>
-                    </svg>
+                    <Icon className="h-5 w-5 rounded-full mt-0.5" />
+
                 </button>
 
                 <div
                     className="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700"
                     id="language-dropdown">
                     <ul className="py-1" role="none">
-                        <LangItem lang="en">
+                        <LangItem lang="en" langbtn={langBtn}>
                             <Svg.Usa />
                             English (US)
                         </LangItem>
 
-                        <LangItem lang="fa">
+                        <LangItem lang="fa" langbtn={langBtn}>
                             <Svg.Iran />
                             Iran (IR)
                         </LangItem>
