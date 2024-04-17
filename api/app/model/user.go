@@ -24,7 +24,7 @@ type User struct {
 	Status          uint8 `json:"status" gorm:"index:idx_status"`
 	UserID          uint  `json:"user_id" gorm:"index"`
 	GroupID         uint  `json:"group_id" gorm:"index"`
-	Groups          Group `json:"groups"`
+	Group           Group `json:"group"`
 }
 
 func MakePassword(password string) (string, error) {
