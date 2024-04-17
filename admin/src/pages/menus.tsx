@@ -4,7 +4,7 @@ import * as Grid from "../components/grid"
 import Form, { Input, Select, SelectSearch, Textarea } from "../components/form"
 import { useContext, useRef, useState } from "react"
 import { DataContext } from "../router/data"
-
+import * as Svg from "../components/svg"
 import Link from "../router/link"
 import DateTime from "../components/date"
 import { useTranslation } from 'react-i18next';
@@ -28,6 +28,9 @@ export function MainForm({ ...props }) {
         <Grid.Col6>
             <Input type="text" name="url" defaultValue={edit?.url}>{t("Url")}</Input>
         </Grid.Col6>
+        <Grid.Col6>
+            <Input type="text" name="priority" defaultValue={edit?.priority}>{t("Priority")}</Input>
+        </Grid.Col6>
 
         <Grid.Col6>
             <Select name="position" title={t("Position")} defaultValue={edit?.position}>
@@ -45,7 +48,9 @@ export function MainForm({ ...props }) {
             </Select>
         </Grid.Col6>
         <Grid.Col6>
-            <SelectSearch title={t("Parent Menu")} path="/admin/menus" name="menu_id" edit={edit} defaultValue={edit?.menu_id} />
+            <SelectSearch title={t("Parent Menu")} path="/admin/menus" name="menu_id" edit={edit} defaultValue={edit?.menu_id}>
+                <option value="0">{t("Main")}</option>
+            </SelectSearch>
         </Grid.Col6>
         <Grid.Col6>
             <Input type="text" name="icon" defaultValue={edit?.icon}>{t("Icon")}</Input>
@@ -96,7 +101,7 @@ export function Index() {
                         <List.Th>
                             <List.Checkbox />
                         </List.Th>
-                        <List.Th width="30%">{t("Title")}</List.Th>
+                        <List.Th width="20%">{t("Title")}</List.Th>
                         <List.Th>{t("User")}</List.Th>
                         <List.Th>{t("Position")}</List.Th>
                         <List.Th>{t("Url")}</List.Th>
@@ -116,6 +121,7 @@ export function Index() {
                                 {item.title}
                             </List.TdTitle>
 
+                 
                             <List.Td><Link to={"/users?id=" + item.user.id}>{item.user.Name}</Link></List.Td>
                             <List.TdText>
                                 {getPositionTitle(item.position)?.title}
@@ -135,10 +141,10 @@ export function Index() {
                             </List.Td>
                             <List.TdAction>
                                 <List.ButtonEdit onClick={(e: any) => editHandler(e, item)}>
-                                  
+
                                 </List.ButtonEdit>
                                 <List.ButtonDelete onClick={() => { deleteModal[1](true); setEdit(item) }}>
-                               
+
                                 </List.ButtonDelete>
                             </List.TdAction>
                         </List.Tr>
