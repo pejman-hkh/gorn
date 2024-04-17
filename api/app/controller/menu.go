@@ -14,7 +14,7 @@ import (
 type MenuForm struct {
 	Title    string `form:"title" binding:"required"`
 	Url      string `form:"url" binding:"required"`
-	MenuId   uint   `form:"menuid"`
+	MenuId   uint   `form:"menu_id"`
 	Status   uint8  `form:"status"`
 	Icon     string `form:"icon"`
 	Svg      string `form:"svg"`
@@ -49,7 +49,7 @@ func (c *MenuController) Index(ctx *gin.Context) {
 	list := []model.Menu{}
 	var p gorn.Paginator
 	search := []string{"title", "url"}
-	asearch := map[string]string{"title": "like", "url": "like"}
+	asearch := map[string]string{"title": "like", "url": "like", "position": "=", "status": "=", "menu_id": "=", "icon": "like", "svg": "like"}
 	result := gorn.DB.Preload("User").Scopes(c.Search(ctx, &list, search)).Scopes(c.AdvancedSearch(ctx, &list, asearch)).Scopes(p.Paginate(ctx, &list)).Order("Id desc").Find(&list)
 	if result.Error != nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": result.Error})
