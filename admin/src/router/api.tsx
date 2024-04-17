@@ -22,7 +22,8 @@ export default function Api(path: string) {
         let search = window.location.search.substr(1)
         if (search)
             search = '&' + search
-        let params = '?' + new URLSearchParams({ "auth": localStorage.getItem('auth') || "" }) + search
+
+        let params = (path.match(/\?/g)?'&':'?') + new URLSearchParams({ "auth": localStorage.getItem('auth') || "" }) + search
 
         let data = await fetch(url + params, { redirect: 'follow' });
         if (data?.status == 200) {

@@ -158,10 +158,8 @@ export function Index() {
                             </List.Td>
                             <List.TdAction>
                                 <List.ButtonEdit onClick={(e: any) => editHandler(e, item)}>
-                                    {t("Edit")}
                                 </List.ButtonEdit>
                                 <List.ButtonDelete onClick={() => { deleteModal[1](true); setEdit(item) }}>
-                                    {t("Delete")}
                                 </List.ButtonDelete>
                             </List.TdAction>
                         </List.Tr>

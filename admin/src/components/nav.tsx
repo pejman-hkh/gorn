@@ -2,6 +2,7 @@ import { useContext } from "react";
 import Link from "../router/link";
 import Form from "./form";
 import * as Notification from "./notification"
+import * as Svg from "./svg"
 import { DataContext } from "../router/data";
 import { useTranslation } from "react-i18next";
 
@@ -160,7 +161,7 @@ export default function Nav() {
                         <div>
                             <button type="button" className="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" id="user-menu-button-2" aria-expanded="false" data-dropdown-toggle="dropdown-2">
                                 <span className="sr-only">Open user menu</span>
-                                <img className="w-8 h-8 rounded-full" src="" alt="user photo" />
+                                <Svg.User />
                             </button>
                         </div>
                         <div className="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600" id="dropdown-2">

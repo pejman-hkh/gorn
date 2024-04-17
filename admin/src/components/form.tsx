@@ -1,6 +1,10 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { useGoTo, useRouterUpdateDataContext } from "../router/router";
 import { DataContext } from "../router/data";
+import ReactSelect from 'react-select';
+import Api from "../router/api"
+import { useTranslation } from "react-i18next";
+
 
 export function Alert({ children, ...props }: any) {
 
@@ -20,6 +24,49 @@ export function Alert({ children, ...props }: any) {
 
 export function Label({ children, ...props }: any) {
 	return <label htmlFor={props.htmlFor} className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{children}</label>
+}
+
+export function SelectSearch({...props}) {
+
+	const [list, setList] = useState<any[]>([])
+	const [isLoading, setIsLoading] = useState(false)
+	const [selected, setSelected] = useState({})
+
+	let sendRequest = false
+	let timeOut: number;
+
+	const InputHandler = (inputValue: any) => {
+		if (!sendRequest) {
+			clearTimeout(timeOut);
+			setIsLoading(true)
+			timeOut = setTimeout(function () {
+				sendRequest = true;
+				Api("/admin/groups?search=" + encodeURIComponent(inputValue)).then((data: any) => {
+					let list: any[] = []
+					data?.data?.list.map((item: any) => {
+						list.push({ value: item.id, label: item.title })
+					})
+					setList(list)
+					setIsLoading(false)
+				})
+			}, 600);
+		}
+	}
+
+	const {t} = useTranslation()
+
+	return <ReactSelect {...props}
+		options={list}
+		isLoading={isLoading}
+		placeholder={t("Group")}
+		onChange={(item: any) => {
+			setSelected(item);
+		}}
+		onInputChange={InputHandler}
+		value={selected}
+		defaultValue={props?.edit?.groupid}
+	/>
+
 }
 
 export function Select({ children, ...props }: any) {
@@ -144,7 +191,7 @@ export default function Form({ children, ...props }: any) {
 		let fetchParam: any
 
 		if (props?.method == "json") {
-	
+
 			fetchParam = {
 				method: 'POST',
 				headers: {

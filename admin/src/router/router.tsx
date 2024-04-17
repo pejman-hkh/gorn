@@ -27,7 +27,7 @@ export default function useRouter(baseUri: string, routes: any, props: any, befo
   const ref = useRef(false);
   const { i18n } = useTranslation();
   const res:any = resources
-  const direction = useState(res[i18n.language].direction)
+  const direction = useState<string>(res[i18n.language].direction)
 
   const [data, setData] = useState(props.data)
 

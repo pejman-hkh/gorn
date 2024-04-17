@@ -1,5 +1,12 @@
-export function Usa({...props}) {
-    return <svg className={props?.className??"h-3.5 w-3.5 rounded-full mr-2"} xmlns="http://www.w3.org/2000/svg" id="flag-icon-css-us"
+export function User({...props}) {
+    return <svg className={props.className??"rounded-full w-8 h-8 text-white dark:text-white"} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+        <path fillRule="evenodd" d="M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z" clipRule="evenodd" />
+    </svg>
+
+}
+
+export function Usa({ ...props }) {
+    return <svg className={props?.className ?? "h-3.5 w-3.5 rounded-full mr-2"} xmlns="http://www.w3.org/2000/svg" id="flag-icon-css-us"
         viewBox="0 0 512 512">
         <g fillRule="evenodd">
             <g strokeWidth="1pt">
@@ -18,8 +25,8 @@ export function Usa({...props}) {
     </svg>
 }
 
-export function Iran({...props}) {
-    return <svg className={props?.className??"h-3.5 w-3.5 rounded-full mr-2"} xmlns="http://www.w3.org/2000/svg" id="flag-icons-ir" viewBox="0 0 640 480">
+export function Iran({ ...props }) {
+    return <svg className={props?.className ?? "h-3.5 w-3.5 rounded-full mr-2"} xmlns="http://www.w3.org/2000/svg" id="flag-icons-ir" viewBox="0 0 640 480">
         <defs>
             <clipPath id="ir-a">
                 <path fill-opacity=".7" d="M-85.3 0h682.7v512H-85.3z" />

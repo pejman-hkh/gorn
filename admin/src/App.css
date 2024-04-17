@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+@font-face {
+    font-family: IRANSans;
+    font-style: normal;
+    font-weight: normal;
+    unicode-range: U+0600-06FF;
+    src: url('assets/fonts/iransans/IRANSansWeb.eot');
+    src: url('assets/fonts/iransans/IRANSansWeb.eot?#iefix') format('embedded-opentype'),  /* IE6-8 */
+         url('assets/fonts/iransans/IRANSansWeb.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+         url('assets/fonts/iransans/IRANSansWeb.woff') format('woff'),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+         url('assets/fonts/iransans/IRANSansWeb.ttf') format('truetype');
+         font-display: swap;
+}
+
+[dir="rtl"] * {
+	font-family: IRANSans;
+}

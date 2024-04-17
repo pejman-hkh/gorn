@@ -77,4 +77,5 @@ export default {
     "Gallery" : "گالری تصاویر",
     "Brand" : "برند",
     "Warranty" : "گارانتی",
+    "Settings page" : "تنظیمات",
 }
