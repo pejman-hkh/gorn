@@ -116,6 +116,11 @@ func (c *BaseController) AdvancedSearch(ctx *gin.Context, list any, asearch map[
 			pre = " and "
 		}
 
+		if ctx.Query("id") != "" {
+			sql = pre + " id = @id "
+			bind["id"] = ctx.Query("id")
+		}
+
 		if sql != "" {
 			return db.Where(sql, bind)
 		}
