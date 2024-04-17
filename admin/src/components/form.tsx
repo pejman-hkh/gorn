@@ -26,7 +26,7 @@ export function Label({ children, ...props }: any) {
 	return <label htmlFor={props.htmlFor} className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{children}</label>
 }
 
-export function SelectSearch({ ...props }) {
+export function SelectSearch({ children, ...props }: any) {
 
 	const [list, setList] = useState<any[]>([])
 	const [isLoading, setIsLoading] = useState(false)
@@ -58,14 +58,23 @@ export function SelectSearch({ ...props }) {
 	}
 
 	useEffect(() => {
+
 		setIsLoading(true)
 		if (props?.edit?.id) {
 			Api(props.path + "?nopage=true&id=" + encodeURIComponent(props.defaultValue)).then((data: any) => {
 				let list: any[] = []
+
+				const childs: any[] = Array.isArray(children) ? children : [children]
+				childs.map((item: any) => {
+					if (item?.props)
+						list.push({ value: item?.props?.value, label: item?.props?.children })
+				})
+
 				data?.data?.list.map((item: any) => {
 					list.push({ value: item.id, label: item.title })
 					setSelected({ value: item.id, label: item.title })
 				})
+
 				setList(list)
 				setIsLoading(false)
 
@@ -73,13 +82,20 @@ export function SelectSearch({ ...props }) {
 		} else {
 			Api(props.path + "?nopage=true").then((data: any) => {
 				let list: any[] = []
+
+				const childs: any[] = Array.isArray(children) ? children : [children]
+				childs.map((item: any) => {
+					if (item?.props)
+						list.push({ value: item?.props?.value, label: item?.props?.children })
+				})
+
 				data?.data?.list.map((item: any) => {
 					list.push({ value: item.id, label: item.title })
 				})
 				setList(list)
 				setIsLoading(false)
 
-			})			
+			})
 		}
 	}, [])
 
@@ -95,7 +111,7 @@ export function SelectSearch({ ...props }) {
 		onInputChange={InputHandler}
 		value={selected}
 		defaultValue={props?.defaultValue}
-		styles={{ control: (styles) => ({ ...styles, borderColor: "rgb(209 213 219 / var(--tw-border-opacity))" }) }}
+		styles={{ control: (styles) => ({ ...styles, borderColor: "#D1D5DB", backgroundColor: "#F9FAFB" }) }}
 	/></>
 
 }
