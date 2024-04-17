@@ -32,7 +32,7 @@ func main() {
 
 	//gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
-	r.Use(middle.Cors())
+	r.Use(middle.Cors(), middle.Global())
 	g := r.Group("api/v1")
 	controller.InitIndex(g)
 	controller.InitUser(g)
