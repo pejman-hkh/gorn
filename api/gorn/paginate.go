@@ -19,7 +19,7 @@ type Paginator struct {
 
 func (p *Paginator) Paginate(r *gin.Context, model any) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
-		if r.Query("excel") != "" {
+		if r.Query("excel") != "" || r.Query("nopage") != "" {
 			return db
 		}
 
