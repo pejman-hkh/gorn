@@ -2,8 +2,8 @@ package model
 
 type Permission struct {
 	ID      uint
-	UserID  uint   `json:"userid"`
-	GroupID uint   `json:"groupid"`
+	UserID  uint   `json:"user_id"`
+	GroupID uint   `json:"group_id"`
 	Model   string `json:"model"`
 	View    bool   `json:"view"`
 	Update  bool   `json:"update"`

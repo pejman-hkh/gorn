@@ -19,11 +19,11 @@ type User struct {
 	Email           string `json:"email" gorm:"type:varchar(100);index:idx_email"`
 	Password        string `gorm:"size:255" json:"-"`
 	EmailVerifiedAt time.Time
-	IsAdmin         bool  `json:"isadmin"`
-	IsMain          bool  `json:"ismain"`
+	IsAdmin         bool  `json:"is_admin"`
+	IsMain          bool  `json:"is_main"`
 	Status          uint8 `json:"status" gorm:"index:idx_status"`
-	UserID          uint  `json:"userid" gorm:"index"`
-	GroupID         uint  `json:"groupid" gorm:"index"`
+	UserID          uint  `json:"user_id" gorm:"index"`
+	GroupID         uint  `json:"group_id" gorm:"index"`
 	Groups          Group `json:"groups"`
 }
 

@@ -8,12 +8,15 @@ import (
 type Group struct {
 	BaseModel
 	Title       string       `gorm:"size:255" json:"title"`
-	UserId      uint         `gorm:"index" json:"userid"`
+	UserId      uint         `gorm:"index" json:"user_id"`
 	Users       []User       `json:"users"`
 	Permissions []Permission `json:"permissions"`
 }
 
 func (g *Group) SetPermission(userid uint, groupid uint, body map[string]any) {
+	if body["permission"] == nil {
+		return
+	}
 
 	permissions := body["permission"].(map[string]any)
 	fmt.Print(permissions)
