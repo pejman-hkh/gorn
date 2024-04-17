@@ -111,6 +111,9 @@ func (c *MenuController) Store(ctx *gin.Context) {
 	menu.UserId = user.(*model.User).ID
 
 	save := menu.Save(menu)
+	menu.Priority = menu.ID
+	save = menu.Save(menu)
+
 	if save.Error != nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": fmt.Sprintf("Error on save: %v", save.Error)})
 		return
