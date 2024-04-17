@@ -28,14 +28,14 @@ function SearchForm({ ...props }) {
         </Grid.Col6>
 
         <Grid.Col6>
-            <Select name="status" title={t("Is Admin")} defaultValue={edit?.isadmin}>
+            <Select name="is_admin" title={t("Is Admin")} defaultValue={edit?.isadmin}>
                 <option value="1">{t("Admin")}</option>
                 <option value="0">{t("User")}</option>
             </Select>
         </Grid.Col6>
 
         <Grid.Col6>
-            <Select name="status" title={t("Is Main")} defaultValue={edit?.ismain}>
+            <Select name="is_main" title={t("Is Main")} defaultValue={edit?.ismain}>
                 <option value="1">{t("Main")}</option>
                 <option value="0">{t("Not main")}</option>
             </Select>
@@ -43,9 +43,8 @@ function SearchForm({ ...props }) {
 
 
         <Grid.Col6>
-            <Select name="groupid" title={t("Group")} defaultValue={edit?.groupid}>
-                <option value="">{t("Select")}</option>
-            </Select>
+            <SelectSearch path="/admin/groups" name="group_id" />
+
         </Grid.Col6>
     </Grid.Wrapper>
 }
@@ -76,14 +75,14 @@ export function MainForm({ ...props }) {
         </Grid.Col6>
 
         <Grid.Col6>
-            <Select name="status" title={t("Is Admin")} defaultValue={edit?.isadmin}>
+            <Select name="is_admin" title={t("Is Admin")} defaultValue={edit?.isadmin}>
                 <option value="1">{t("Admin")}</option>
                 <option value="0">{t("User")}</option>
             </Select>
         </Grid.Col6>
 
         <Grid.Col6>
-            <Select name="status" title={t("Is Main")} defaultValue={edit?.ismain}>
+            <Select name="is_main" title={t("Is Main")} defaultValue={edit?.ismain}>
                 <option value="1">{t("Main")}</option>
                 <option value="0">{t("Not main")}</option>
             </Select>
@@ -91,9 +90,8 @@ export function MainForm({ ...props }) {
 
 
         <Grid.Col6>
-            <Label htmlFor="group">{t("Group")}</Label>
 
-            <SelectSearch path="/admin/groups" name="groupid" />
+            <SelectSearch title={t("Group")} path="/admin/groups" name="group_id" edit={edit} defaultValue={edit?.group_id}  />
 
         </Grid.Col6>
     </Grid.Wrapper>

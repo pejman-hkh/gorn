@@ -26,7 +26,7 @@ export function Label({ children, ...props }: any) {
 	return <label htmlFor={props.htmlFor} className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{children}</label>
 }
 
-export function SelectSearch({...props}) {
+export function SelectSearch({ ...props }) {
 
 	const [list, setList] = useState<any[]>([])
 	const [isLoading, setIsLoading] = useState(false)
@@ -36,12 +36,16 @@ export function SelectSearch({...props}) {
 	let timeOut: number;
 
 	const InputHandler = (inputValue: any) => {
+		if (!inputValue) {
+			return
+		}
+
 		if (!sendRequest) {
 			clearTimeout(timeOut);
 			setIsLoading(true)
 			timeOut = setTimeout(function () {
 				sendRequest = true;
-				Api("/admin/groups?search=" + encodeURIComponent(inputValue)).then((data: any) => {
+				Api(props.path + "?nopage=true&search=" + encodeURIComponent(inputValue)).then((data: any) => {
 					let list: any[] = []
 					data?.data?.list.map((item: any) => {
 						list.push({ value: item.id, label: item.title })
@@ -53,9 +57,35 @@ export function SelectSearch({...props}) {
 		}
 	}
 
-	const {t} = useTranslation()
+	useEffect(() => {
+		setIsLoading(true)
+		if (props?.edit?.id) {
+			Api(props.path + "?nopage=true&id=" + encodeURIComponent(props.defaultValue)).then((data: any) => {
+				let list: any[] = []
+				data?.data?.list.map((item: any) => {
+					list.push({ value: item.id, label: item.title })
+					setSelected({ value: item.id, label: item.title })
+				})
+				setList(list)
+				setIsLoading(false)
 
-	return <ReactSelect {...props}
+			})
+		} else {
+			Api(props.path + "?nopage=true").then((data: any) => {
+				let list: any[] = []
+				data?.data?.list.map((item: any) => {
+					list.push({ value: item.id, label: item.title })
+				})
+				setList(list)
+				setIsLoading(false)
+
+			})			
+		}
+	}, [])
+
+	const { t } = useTranslation()
+
+	return <><Label htmlFor="group">{props.title}</Label><ReactSelect {...props}
 		options={list}
 		isLoading={isLoading}
 		placeholder={t("Group")}
@@ -64,8 +94,9 @@ export function SelectSearch({...props}) {
 		}}
 		onInputChange={InputHandler}
 		value={selected}
-		defaultValue={props?.edit?.groupid}
-	/>
+		defaultValue={props?.defaultValue}
+		styles={{ control: (styles) => ({ ...styles, borderColor: "rgb(209 213 219 / var(--tw-border-opacity))" }) }}
+	/></>
 
 }
 

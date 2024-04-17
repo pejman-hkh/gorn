@@ -1,7 +1,7 @@
 import Pagination from "../components/pagination"
 import * as List from "../components/list"
 import * as Grid from "../components/grid"
-import Form, { Input, Select, Textarea } from "../components/form"
+import Form, { Input, Select, SelectSearch, Textarea } from "../components/form"
 import { useContext, useRef, useState } from "react"
 import { DataContext } from "../router/data"
 
@@ -45,10 +45,7 @@ export function MainForm({ ...props }) {
             </Select>
         </Grid.Col6>
         <Grid.Col6>
-            <Select name="menuid" title={t("Parent Menu")} defaultValue={edit?.menuid}>
-                <option value="">{t("Select")}</option>
-
-            </Select>
+            <SelectSearch title={t("Parent Menu")} path="/admin/menus" name="menu_id" edit={edit} defaultValue={edit?.menu_id} />
         </Grid.Col6>
         <Grid.Col6>
             <Input type="text" name="icon" defaultValue={edit?.icon}>{t("Icon")}</Input>
