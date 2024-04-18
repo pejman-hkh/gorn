@@ -4,7 +4,10 @@ import { DataContext } from "../router/data";
 import ReactSelect from 'react-select';
 import Api from "../router/api"
 import { useTranslation } from "react-i18next";
-
+import { Editor as DraftEditor } from "react-draft-wysiwyg";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import draftToHtml from 'draftjs-to-html';
+import { ContentState, convertFromHTML, convertToRaw, EditorState } from 'draft-js';
 
 export function Alert({ children, ...props }: any) {
 
@@ -24,6 +27,27 @@ export function Alert({ children, ...props }: any) {
 
 export function Label({ children, ...props }: any) {
 	return <label htmlFor={props.htmlFor} className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{children}</label>
+}
+
+export function Editor({ ...props }) {
+	const [editorState, setEditorState] = useState<any>(null)
+
+	useEffect(() => {
+		if (props?.defaultValue) {
+			const blocksFromHTML:any = convertFromHTML(props?.defaultValue)
+			const content = ContentState.createFromBlockArray(blocksFromHTML)
+			setEditorState(EditorState.createWithContent(content))
+		}
+	}, [props?.defaultValue])
+
+	const stateChange = (editorState: any) => {
+		setEditorState(editorState)
+	}
+
+	return <><Label htmlFor={props?.id}>{props.title}</Label><DraftEditor
+		editorState={editorState}
+		onEditorStateChange={stateChange}
+	/><textarea className="hidden" name={props?.name} value={editorState ? draftToHtml(convertToRaw(editorState?.getCurrentContent() || "")) : ""}></textarea></>;
 }
 
 export function SelectSearch({ children, ...props }: any) {
@@ -84,7 +108,7 @@ export function SelectSearch({ children, ...props }: any) {
 
 	const { t } = useTranslation()
 
-	return <><Label htmlFor="group">{props.title}</Label><ReactSelect {...props}
+	return <><Label htmlFor={props?.id}>{props.title}</Label><ReactSelect {...props}
 		options={list}
 		isLoading={isLoading}
 		placeholder={t("Group")}
