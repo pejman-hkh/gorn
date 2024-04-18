@@ -43,6 +43,11 @@ export function Editor({ ...props }) {
 	const stateChange = (editorState: any) => {
 		setEditorState(editorState)
 	}
+	if(props?.noeditor ) {
+		return <><Label htmlFor={props?.id}>{props.title}</Label>
+		<Textarea name={props?.name}></Textarea>
+		</>
+	}
 
 	return <><Label htmlFor={props?.id}>{props.title}</Label><DraftEditor
 		editorState={editorState}

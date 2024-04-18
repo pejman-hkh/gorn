@@ -8,6 +8,10 @@ import Link from "../router/link"
 import DateTime from "../components/date"
 import { useTranslation } from 'react-i18next';
 
+export function SearchForm({...props}) {
+    return <MainForm noeditor="true" />
+}
+
 export function MainForm({ ...props }) {
     let edit = props.edit
     const { t } = useTranslation();
@@ -35,7 +39,7 @@ export function MainForm({ ...props }) {
         </Grid.Col6>
 
         <Grid.Span6>
-            <Editor name="content" title={t("Content")} defaultValue={edit?.content||""}  />
+            <Editor noeditor={props?.noeditor||false} name="content" title={t("Content")} defaultValue={edit?.content||""}  />
         </Grid.Span6>
 
     </Grid.Wrapper>
@@ -130,7 +134,7 @@ export function Index() {
         </Form>
         <Pagination pagination={data?.data?.pagination} module={route}></Pagination>
 
-        <List.Modals {...{ title, route, edit, MainForm, addModal, editModal, searchModal, deleteModal, deleteAllModal, listForm }}></List.Modals >
+        <List.Modals {...{ SearchForm, title, route, edit, MainForm, addModal, editModal, searchModal, deleteModal, deleteAllModal, listForm }}></List.Modals >
 
     </>
 }
