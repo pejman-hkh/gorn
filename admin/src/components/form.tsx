@@ -19,7 +19,7 @@ export function Alert({ children, ...props }: any) {
 	if (props?.alertclass)
 		className += ' ' + props.alertclass;
 
-	return <div className={className} role="alert">{children}</div>
+	return <div className={className} ref={props?.fref} role="alert">{children}</div>
 }
 
 export function Label({ children, ...props }: any) {
@@ -75,23 +75,6 @@ export function SelectSearch({ children, ...props }: any) {
 					setSelected({ value: item.id, label: item.title })
 				})
 
-				setList(list)
-				setIsLoading(false)
-
-			})
-		} else {
-			Api(props.path + "?nopage=true").then((data: any) => {
-				let list: any[] = []
-
-				const childs: any[] = Array.isArray(children) ? children : [children]
-				childs.map((item: any) => {
-					if (item?.props)
-						list.push({ value: item?.props?.value, label: item?.props?.children })
-				})
-
-				data?.data?.list.map((item: any) => {
-					list.push({ value: item.id, label: item.title })
-				})
 				setList(list)
 				setIsLoading(false)
 
@@ -276,8 +259,8 @@ export default function Form({ children, ...props }: any) {
 
 				if (fetchData.status == 1) {
 					useRouterUpdateDataContext()
-					if (props?.onSuccess != null) {
-						props.onSuccess()
+					if (props?.success != null) {
+						props.success()
 					}
 				}
 
@@ -287,5 +270,5 @@ export default function Form({ children, ...props }: any) {
 			})
 	}
 
-	return <form ref={props.fref} {...props} className={props?.disableclass ? "" : (props?.className ? props?.className : " mt-8 space-y-6")} onSubmit={submitHandler}><Alert alertclass={props?.alertclass} ref={alertElement} type={alertType}>{alertText}</Alert>{children}</form>
+	return <form ref={props.fref} {...props} className={props?.disableclass ? "" : (props?.className ? props?.className : " mt-8 space-y-6")} onSubmit={submitHandler}><Alert alertclass={props?.alertclass} fref={alertElement} type={alertType}>{alertText}</Alert>{children}</form>
 }

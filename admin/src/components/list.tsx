@@ -212,7 +212,7 @@ export function Modals({ SearchForm, method, title, route, edit, addModal, MainF
         </Modal.Modal>
 
         <Modal.Delete show={deleteModal} title={"Delete " + title}>
-            <Form key={edit.id} method="delete" action={route + "/" + edit.id} onSuccess={() => { deleteModal[1](false) }}>
+            <Form key={edit.id} method="delete" action={route + "/" + edit.id} onsuccess={() => { deleteModal[1](false) }}>
                 <Modal.AlertIcon />
                 <Modal.ModalH3>{t("Are you sure you want to delete this ?")}</Modal.ModalH3>
                 <Modal.YesButton type="submit">{t("Yes, I'm sure")}</Modal.YesButton>

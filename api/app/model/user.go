@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"gorn/app/hmodel"
 	"gorn/gorn"
 	"strings"
 	"time"
@@ -19,12 +20,13 @@ type User struct {
 	Email           string `json:"email" gorm:"type:varchar(100);index:idx_email"`
 	Password        string `gorm:"size:255" json:"-"`
 	EmailVerifiedAt time.Time
-	IsAdmin         bool  `json:"is_admin"`
-	IsMain          bool  `json:"is_main"`
-	Status          uint8 `json:"status" gorm:"index:idx_status"`
-	UserID          uint  `json:"user_id" gorm:"index"`
-	GroupID         uint  `json:"group_id" gorm:"index"`
-	Group           Group `json:"group"`
+	IsAdmin         bool        `json:"is_admin"`
+	IsMain          bool        `json:"is_main"`
+	Status          uint8       `json:"status" gorm:"index:idx_status"`
+	UserID          uint        `json:"user_id" gorm:"index"`
+	GroupID         uint        `json:"group_id" gorm:"index"`
+	Group           Group       `json:"group"`
+	User            hmodel.User `json:"user"`
 }
 
 func MakePassword(password string) (string, error) {
