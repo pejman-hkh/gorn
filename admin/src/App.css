@@ -19,3 +19,14 @@
 [dir="rtl"] * {
 	font-family: IRANSans;
 }
+
+
+[dir="rtl"] .rdw-dropdown-carettoopen, [dir="rtl"] .rdw-dropdown-carettoclose {
+    left:10%;
+    right:auto
+}
+
+[dir="rtl"] [class$="-modal"]  {
+    right:5px;
+    left:auto;
+}
