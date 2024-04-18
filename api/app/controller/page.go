@@ -45,8 +45,8 @@ func (c *PageController) InitRoutes(r *gin.RouterGroup) {
 func (c *PageController) Index(ctx *gin.Context) {
 	list := []model.Page{}
 	var p gorn.Paginator
-	search := []string{"title", "url"}
-	asearch := map[string]string{"title": "like", "url": "like", "status": "="}
+	search := []string{"title", "url", "content"}
+	asearch := map[string]string{"title": "like", "url": "like", "status": "=", "has_comment": "="}
 	result := gorn.DB.Preload("User").Scopes(c.Search(ctx, &list, search)).Scopes(c.AdvancedSearch(ctx, &list, asearch)).Scopes(p.Paginate(ctx, &list)).Order("Id desc").Find(&list)
 	if result.Error != nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": result.Error})
