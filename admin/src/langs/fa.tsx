@@ -79,4 +79,7 @@ export default {
     "Warranty" : "گارانتی",
     "Settings page" : "تنظیمات",
     "Main" : "اصلی",
+    "Has Comment" : "نظرات",
+    "Has" : "دارد",
+    "Doesn't have" : "ندارد",
 }
