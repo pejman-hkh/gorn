@@ -39,6 +39,7 @@ func main() {
 	controller.InitMenu(g)
 	controller.InitGroup(g)
 	controller.InitPage(g)
+	controller.InitMedia(g)
 
 	// r.GET("/*", func(ctx *gin.Context) {
 	// 	//buf, _ := ioutil.ReadFile("../admin/dist/index.html")

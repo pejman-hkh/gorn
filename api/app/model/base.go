@@ -20,6 +20,7 @@ func (b *BaseModel) Migirations() {
 	gorn.DB.AutoMigrate(Menu{})
 	gorn.DB.AutoMigrate(Permission{})
 	gorn.DB.AutoMigrate(Page{})
+	gorn.DB.AutoMigrate(Media{})
 }
 
 func (b *BaseModel) Init() {

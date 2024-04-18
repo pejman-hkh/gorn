@@ -5,6 +5,7 @@ import * as Groups from './pages/groups'
 import * as Users from './pages/users'
 import * as Settings from './pages/settings'
 import * as Pages from './pages/pages'
+import * as Medias from './pages/medias'
 import Dashboard from './pages/dashboard'
 import NoPage from './pages/nopage'
 import Login from './pages/login'
@@ -21,6 +22,7 @@ let routes = {
   '/': [Guest, Login],
   '/menus': [Layout, Menus.Index],
   '/pages': [Layout, Pages.Index],
+  '/medias': [Layout, Medias.Index],
   '/groups': [Layout, Groups.Index],
   '/users': [Layout, Users.Index],
   '/settings': [Layout, Settings.Index],
