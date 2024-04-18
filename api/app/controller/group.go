@@ -46,11 +46,12 @@ func (c *GroupController) Index(ctx *gin.Context) {
 	var p gorn.Paginator
 	search := []string{"title"}
 	asearch := map[string]string{"title": "like"}
-	result := gorn.DB.Preload("Users").Preload("Permissions").Scopes(c.Search(ctx, &list, search)).Scopes(c.AdvancedSearch(ctx, &list, asearch)).Scopes(p.Paginate(ctx, &list)).Order("id desc").Find(&list)
+	result := gorn.DB.Preload("User").Preload("Permissions").Scopes(c.Search(ctx, &list, search)).Scopes(c.AdvancedSearch(ctx, &list, asearch)).Scopes(p.Paginate(ctx, &list)).Order("id desc").Find(&list)
 	if result.Error != nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": result.Error})
 		return
 	}
+
 	if ctx.Query("excel") != "" {
 		c.makeExcel(ctx, []string{}, list)
 		return

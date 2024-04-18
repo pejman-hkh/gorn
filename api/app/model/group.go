@@ -2,14 +2,15 @@ package model
 
 import (
 	"fmt"
+	"gorn/app/hmodel"
 	"gorn/gorn"
 )
 
 type Group struct {
 	BaseModel
-	Title       string       `gorm:"size:255" json:"title"`
-	UserId      uint         `gorm:"index" json:"user_id"`
-	Users       []User       `json:"users"`
+	Title       string `gorm:"size:255" json:"title"`
+	UserId      uint   `gorm:"index" json:"user_id"`
+	User        hmodel.User
 	Permissions []Permission `json:"permissions"`
 }
 
