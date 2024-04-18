@@ -4,7 +4,6 @@ import * as Grid from "../components/grid"
 import Form, { Input, Select, SelectSearch, Textarea } from "../components/form"
 import { useContext, useRef, useState } from "react"
 import { DataContext } from "../router/data"
-import * as Svg from "../components/svg"
 import Link from "../router/link"
 import DateTime from "../components/date"
 import { useTranslation } from 'react-i18next';
@@ -122,7 +121,7 @@ export function Index() {
                             </List.TdTitle>
 
                  
-                            <List.Td><Link to={"/users?id=" + item.user.id}>{item.user.Name}</Link></List.Td>
+                            <List.Td><Link to={"/users?id=" + item?.user?.id}>{item?.user?.name}</Link></List.Td>
                             <List.TdText>
                                 {getPositionTitle(item.position)?.title}
                             </List.TdText>

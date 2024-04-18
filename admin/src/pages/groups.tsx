@@ -132,9 +132,9 @@ export function Index() {
                         <List.Th>
                             <List.Checkbox />
                         </List.Th>
-                        <List.Th width="30%">{t("Title")}</List.Th>
-                        <List.Th>{t("User")}</List.Th>
-                        <List.Th>{t("Date")}</List.Th>
+                        <List.Th>{t("Title")}</List.Th>
+                        <List.Th width="15%">{t("User")}</List.Th>
+                        <List.Th width="15%">{t("Date")}</List.Th>
                         <List.Th width="5%">{t("Actions")}</List.Th>
                     </tr>
                 </List.Thead>
