@@ -6,6 +6,8 @@ import (
 	"gorn/app/model"
 	"gorn/gorn"
 	"net/http"
+	"os"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
@@ -105,6 +107,13 @@ func (c *MediaController) Store(ctx *gin.Context) {
 	files := form.File["upload[]"]
 
 	for _, file := range files {
+		sp := strings.Split(file.Filename, ".")
+		ext := sp[len(sp)-1]
+
+		if !gorn.InArray(ext, []string{"pdf", "jpg", "jpeg", "png", "svg", "webp", "txt", "xls", "xlsx", "doc", "docx", "csv", "docb", "docm", "dot", "dotm", "dotx", "json", "zip", "rar", "pot", "potm", "potx", "ppam", "pps", "ppsm", "ppsx", "ppt", "pptm", "pptx", "xml", "html", "mp4", "mkv"}) {
+			continue
+		}
+
 		media := &model.Media{}
 		copier.Copy(media, body)
 		media.UserId = user.(*model.User).ID
@@ -120,14 +129,13 @@ func (c *MediaController) Store(ctx *gin.Context) {
 		ctx.SaveUploadedFile(file, "public/files/"+file.Filename)
 	}
 
-	//media.Upload(ctx)
-
 	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": "Saved successfully"})
 }
 
 func (c *MediaController) Destroy(ctx *gin.Context) {
 	media := model.Media{}
 	gorn.DB.First(&media, ctx.Param("id"))
+	os.Remove("public/files/" + media.File)
 	gorn.DB.Delete(&media)
 	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": "Deleted successfully"})
 }
@@ -146,6 +154,12 @@ func (c *MediaController) Actions(ctx *gin.Context) {
 
 	ids := body.Ids
 	media := model.Media{}
+	list := []model.Media{}
+	gorn.DB.Find(&list, ids)
+	for _, media := range list {
+		os.Remove("public/files/" + media.File)
+	}
+
 	gorn.DB.Delete(&media, ids)
 	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": "Deleted successfully"})
 }
