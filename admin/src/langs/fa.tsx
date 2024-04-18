@@ -78,4 +78,5 @@ export default {
     "Brand" : "برند",
     "Warranty" : "گارانتی",
     "Settings page" : "تنظیمات",
+    "Main" : "اصلی",
 }

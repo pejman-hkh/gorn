@@ -43,7 +43,8 @@ function SearchForm({ ...props }) {
 
 
         <Grid.Col6>
-            <SelectSearch path="/admin/groups" name="group_id" />
+            <SelectSearch title={t("Group")} path="/admin/groups" name="group_id">
+            </SelectSearch>
 
         </Grid.Col6>
     </Grid.Wrapper>
@@ -91,7 +92,7 @@ export function MainForm({ ...props }) {
 
         <Grid.Col6>
 
-            <SelectSearch title={t("Group")} path="/admin/groups" name="group_id" edit={edit} defaultValue={edit?.group_id}  />
+            <SelectSearch title={t("Group")} path="/admin/groups" name="group_id" edit={edit} defaultValue={edit?.group_id} />
 
         </Grid.Col6>
     </Grid.Wrapper>
