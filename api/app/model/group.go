@@ -8,9 +8,9 @@ import (
 
 type Group struct {
 	BaseModel
-	Title       string `gorm:"size:255" json:"title"`
-	UserId      uint   `gorm:"index" json:"user_id"`
-	User        hmodel.User
+	Title       string       `gorm:"size:255" json:"title"`
+	UserId      uint         `gorm:"index" json:"user_id"`
+	User        hmodel.User  `json:"user"`
 	Permissions []Permission `json:"permissions"`
 }
 

@@ -149,7 +149,7 @@ export function Index() {
                                 {item.title}
                             </List.TdTitle>
 
-                            <List.Td><Link to={"/users?id=" + item?.user?.id}>{item?.user?.Name}</Link></List.Td>
+                            <List.Td><Link to={"/users?id=" + item?.user?.id}>{item?.user?.name}</Link></List.Td>
 
                             <List.Td>
                                 <DateTime time={item.created_at} />
