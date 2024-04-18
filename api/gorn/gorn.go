@@ -32,6 +32,16 @@ func (gr *Gorn) Init() {
 	// sqlDB.SetConnMaxLifetime(time.Hour)
 }
 
+func InArray(str string, arr []string) bool {
+	for _, v := range arr {
+		if v == str {
+			return true
+		}
+	}
+
+	return false
+}
+
 func Invoke(obj any, name string, args ...any) []reflect.Value {
 	inputs := make([]reflect.Value, len(args))
 	for i, _ := range args {
