@@ -2,8 +2,6 @@ package model
 
 import (
 	"gorn/app/hmodel"
-
-	"github.com/gin-gonic/gin"
 )
 
 type Media struct {
@@ -15,9 +13,5 @@ type Media struct {
 	User        hmodel.User `json:"user"`
 	Model       string      `gorm:"index:item_idx"`
 	ItemId      string      `gorm:"index:item_idx"`
-	Description string
-}
-
-func (m *Media) Upload(ctx *gin.Context) {
-
+	Description string      `json:"description"`
 }
