@@ -169,17 +169,17 @@ export function BreadCrumb({ title, route, setActionValue, deleteAllModal, addMo
     </Breadcrumb.Wrapper>
 }
 
-export function Modals({ SearchForm, method, title, route, edit, addModal, MainForm, editModal, searchModal, deleteModal, deleteAllModal, listForm }: any) {
+export function Modals({ EditForm, SearchForm, method, title, route, edit, addModal, MainForm, editModal, searchModal, deleteModal, deleteAllModal, listForm }: any) {
     const Search = SearchForm ?? MainForm
+    const Edit = EditForm ?? MainForm
 
     const { t } = useTranslation();
     return <>
         <Modal.Modal title={t("Edit {{title}}", { title: t(title) })} show={editModal}>
             <Form method={method || "post"} action={route + "/" + edit?.id} alertclass="m-6">
                 <Modal.Content>
-
-                    <MainForm edit={edit}></MainForm>
-
+                    <Edit edit={edit} />
+       
                 </Modal.Content>
                 <Modal.Footer>
                     <Button type="submit">{t("Save")}</Button>
@@ -212,7 +212,7 @@ export function Modals({ SearchForm, method, title, route, edit, addModal, MainF
         </Modal.Modal>
 
         <Modal.Delete show={deleteModal} title={"Delete " + title}>
-            <Form key={edit.id} method="delete" action={route + "/" + edit.id} onsuccess={() => { deleteModal[1](false) }}>
+            <Form key={edit.id} method="delete" action={route + "/" + edit.id} success={() => { deleteModal[1](false) }}>
                 <Modal.AlertIcon />
                 <Modal.ModalH3>{t("Are you sure you want to delete this ?")}</Modal.ModalH3>
                 <Modal.YesButton type="submit">{t("Yes, I'm sure")}</Modal.YesButton>
