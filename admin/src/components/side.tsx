@@ -46,7 +46,7 @@ function MenuSearch({ }) {
 }
 
 function MenuButton({ children, ...props }: any) {
-    const handler = (e: any) => {
+    const handler = () => {
         // e.target.parentElement.nextSibling.classList.toggle('hidden')
     }
 

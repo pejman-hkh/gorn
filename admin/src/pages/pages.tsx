@@ -1,14 +1,14 @@
 import Pagination from "../components/pagination"
 import * as List from "../components/list"
 import * as Grid from "../components/grid"
-import Form, { Input, Select, Editor, Textarea } from "../components/form"
+import Form, { Input, Select, Editor } from "../components/form"
 import { useContext, useRef, useState } from "react"
 import { DataContext } from "../router/data"
 import Link from "../router/link"
 import DateTime from "../components/date"
 import { useTranslation } from 'react-i18next';
 
-export function SearchForm({...props}) {
+export function SearchForm() {
     return <MainForm noeditor="true" />
 }
 
@@ -58,6 +58,7 @@ export function Index() {
     const searchModal = useState(false)
     const addModal = useState(false)
     const deleteModal = useState(false)
+    const mediaModal = useState(false)
     const deleteAllModal = useState(false)
     const [actionValue, setActionValue] = useState("")
 
@@ -85,6 +86,7 @@ export function Index() {
                         </List.Th>
                         <List.Th width="20%">{t("Title")}</List.Th>
                         <List.Th>{t("User")}</List.Th>
+                        <List.Th>{t("Attachments")}</List.Th>
                         <List.Th>{t("Url")}</List.Th>
                         <List.Th>{t("Status")}</List.Th>
                         <List.Th>{t("Date")}</List.Th>
@@ -104,6 +106,7 @@ export function Index() {
 
                  
                             <List.Td><Link to={"/users?id=" + item?.user?.id}>{item?.user?.name}</Link></List.Td>
+                            <List.Td><Link to={"/medias?module="+route.substr(1)+"&item_id=" + item?.id}>{t("Attachments")}</Link></List.Td>
                 
                             <List.TdText>
                                 {item.url}
@@ -119,12 +122,9 @@ export function Index() {
                                 {item.updated_at != item.created_at ? <DateTime time={item.updated_at} /> : ""}
                             </List.Td>
                             <List.TdAction>
-                                <List.ButtonEdit onClick={(e: any) => editHandler(e, item)}>
-
-                                </List.ButtonEdit>
-                                <List.ButtonDelete onClick={() => { deleteModal[1](true); setEdit(item) }}>
-
-                                </List.ButtonDelete>
+                                <List.ButtonFile onClick={() => { mediaModal[1](true); setEdit(item) }}></List.ButtonFile>
+                                <List.ButtonEdit onClick={(e: any) => editHandler(e, item)}></List.ButtonEdit>
+                                <List.ButtonDelete onClick={() => { deleteModal[1](true); setEdit(item) }}></List.ButtonDelete>
                             </List.TdAction>
                         </List.Tr>
                     ))}
@@ -134,7 +134,7 @@ export function Index() {
         </Form>
         <Pagination pagination={data?.data?.pagination} module={route}></Pagination>
 
-        <List.Modals {...{ SearchForm, title, route, edit, MainForm, addModal, editModal, searchModal, deleteModal, deleteAllModal, listForm }}></List.Modals >
+        <List.Modals {...{ mediaModal, SearchForm, title, route, edit, MainForm, addModal, editModal, searchModal, deleteModal, deleteAllModal, listForm }}></List.Modals >
 
     </>
 }

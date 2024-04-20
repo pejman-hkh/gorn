@@ -71,6 +71,8 @@ export function Footer({ children, ...props }: any) {
 }
 
 export function Modal({ children, ...props }: any) {
+    if( !props?.show )
+        return <></>
     const [show, setShow] = props?.show
 
     const modalShow = show ? "" : "hidden"

@@ -47,7 +47,7 @@ export function RightSide({ children, ...props }:any) {
     </div>
 }
 export function LeftSide({ children, ...props }:any) {
-    return <div {...props} className="items-center hidden mb-3 sm:flex sm:divide-x sm:divide-gray-100 sm:mb-0 dark:divide-gray-700">{children}</div>
+    return <div {...props} className="items-center mb-3 sm:flex sm:divide-x sm:divide-gray-100 sm:mb-0 dark:divide-gray-700">{children}</div>
 }
 
 export function Wrapper({ children, ...props }:any) {

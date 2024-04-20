@@ -93,6 +93,7 @@ export function Index() {
                         </List.Th>
                         <List.Th width="20%">{t("File")}</List.Th>
                         <List.Th>{t("User")}</List.Th>
+                        <List.Th>{t("Module")}</List.Th>
                         <List.Th>{t("Status")}</List.Th>
                         <List.Th>{t("Date")}</List.Th>
                         <List.Th width="5%">{t("Actions")}</List.Th>
@@ -111,6 +112,7 @@ export function Index() {
 
 
                             <List.Td><Link to={"/users?id=" + item?.user?.id}>{item?.user?.name}</Link></List.Td>
+                            <List.Td><Link to={"/"+item.module+"?id=" + item?.item_id}>{item?.module}</Link></List.Td>
 
                             <List.Td>
                                 <List.ActiveBadge active={item?.status} />

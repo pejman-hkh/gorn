@@ -11,7 +11,7 @@ type Media struct {
 	UserId      uint        `gorm:"index" json:"user_id"`
 	Status      uint8       `json:"status" gorm:"index:status_idx"`
 	User        hmodel.User `json:"user"`
-	Model       string      `gorm:"index:item_idx"`
-	ItemId      string      `gorm:"index:item_idx"`
+	Module      string      `gorm:"index:item_idx" json:"module"`
+	ItemId      string      `gorm:"index:item_idx" json:"item_id"`
 	Description string      `json:"description"`
 }

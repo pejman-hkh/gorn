@@ -16,6 +16,8 @@ import (
 type MediaForm struct {
 	Status      uint8  `form:"status"`
 	Description string `form:"description"`
+	Module      string `form:"module"`
+	ItemId      string `form:"item_id"`
 }
 
 type MediaController struct {
@@ -46,7 +48,7 @@ func (c *MediaController) Index(ctx *gin.Context) {
 	list := []model.Media{}
 	var p gorn.Paginator
 	search := []string{"title", "url"}
-	asearch := map[string]string{"title": "like", "url": "like", "position": "=", "status": "=", "media_id": "=", "icon": "like", "svg": "like"}
+	asearch := map[string]string{"title": "like", "url": "like", "module": "=", "status": "=", "item_id": "="}
 	result := gorn.DB.Preload("User").Scopes(c.Search(ctx, &list, search)).Scopes(c.AdvancedSearch(ctx, &list, asearch)).Scopes(p.Paginate(ctx, &list)).Order("Id desc").Find(&list)
 	if result.Error != nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": result.Error})
