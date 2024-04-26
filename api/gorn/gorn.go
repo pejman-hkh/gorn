@@ -1,9 +1,12 @@
 package gorn
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"reflect"
 
+	"github.com/gin-gonic/gin"
 	"github.com/gofor-little/env"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -40,6 +43,24 @@ func InArray(str string, arr []string) bool {
 	}
 
 	return false
+}
+
+func T(ctx *gin.Context, str string) string {
+	lang := "en"
+	if ctx.PostForm("lang") != "" {
+		lang = ctx.PostForm("lang")
+	}
+	byt, _ := ioutil.ReadFile("lang/" + lang + ".json")
+
+	var data map[string]string
+	if err := json.Unmarshal(byt, &data); err != nil {
+		return str
+	}
+
+	if value, ok := data[str]; ok {
+		return value
+	}
+	return str
 }
 
 func Invoke(obj any, name string, args ...any) []reflect.Value {

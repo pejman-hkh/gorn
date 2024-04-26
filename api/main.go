@@ -3,10 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
-	"gorn/app/controller"
+	"gorn/app"
 	"gorn/app/middle"
-	"gorn/app/model"
 	"gorn/gorn"
+	"gorn/module/shop"
 
 	"github.com/gin-gonic/gin"
 )
@@ -19,34 +19,29 @@ func main() {
 	}()
 
 	var mflag bool
+	var sflag bool
 	flag.BoolVar(&mflag, "m", false, "migrates")
+	flag.BoolVar(&sflag, "s", false, "seeds")
 	flag.Parse()
 	gr := gorn.Gorn{}
 	gr.Init()
 
 	if mflag {
-		b := model.BaseModel{}
-		b.Migirations()
+		app.Migirations()
+		shop.Migirations()
 		return
 	}
 
-	//gin.SetMode(gin.ReleaseMode)
+	if sflag {
+		app.Seeds()
+		return
+	}
+
 	r := gin.Default()
 	r.Use(middle.Cors(), middle.Global())
 	g := r.Group("api/v1")
-	controller.InitIndex(g)
-	controller.InitUser(g)
-	controller.InitMenu(g)
-	controller.InitGroup(g)
-	controller.InitPage(g)
-	controller.InitMedia(g)
-
-	// r.GET("/*", func(ctx *gin.Context) {
-	// 	//buf, _ := ioutil.ReadFile("../admin/dist/index.html")
-
-	// 	ctx.HTML(http.StatusOK, "../admin/dist/index.html", nil)
-	// })
-
+	app.Init(g)
+	shop.Init(g)
 	r.Run(":8090")
 
 }
