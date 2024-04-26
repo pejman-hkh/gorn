@@ -17,7 +17,8 @@ type MediaForm struct {
 	Status      uint8  `form:"status"`
 	Description string `form:"description"`
 	Module      string `form:"module"`
-	ItemId      string `form:"item_id"`
+	ItemId      uint   `form:"item_id"`
+	Lang        string `form:"lang"`
 }
 
 type MediaController struct {
@@ -55,7 +56,7 @@ func (c *MediaController) Index(ctx *gin.Context) {
 		return
 	}
 	if ctx.Query("excel") != "" {
-		c.makeExcel(ctx, []string{}, list)
+		c.MakeExcel(ctx, []string{}, list)
 		return
 	}
 
@@ -64,14 +65,14 @@ func (c *MediaController) Index(ctx *gin.Context) {
 
 func (c *MediaController) Edit(ctx *gin.Context) {
 	model := model.Media{}
-	c.parentEdit(ctx, &model)
+	c.ParentEdit(ctx, &model)
 }
 
 func (c *MediaController) Update(ctx *gin.Context) {
 	var body MediaForm
 
 	if err := ctx.ShouldBind(&body); err != nil {
-		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": err.Error()})
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": gorn.T(ctx, "Complete required fields"), "data": err.Error()})
 		return
 	}
 
@@ -88,7 +89,7 @@ func (c *MediaController) Update(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": "Saved successfully", "data": map[string]any{"model": media}})
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": gorn.T(ctx, "Saved successfully"), "data": map[string]any{"model": media}})
 }
 
 func (c *MediaController) Create(ctx *gin.Context) {
@@ -99,11 +100,12 @@ func (c *MediaController) Store(ctx *gin.Context) {
 	var body MediaForm
 
 	if err := ctx.ShouldBind(&body); err != nil {
-		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": err.Error()})
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": gorn.T(ctx, "Complete required fields"), "data": err.Error()})
 		return
 	}
 
 	user, _ := ctx.Get("authUser")
+	authUser := user.(*model.User).ID
 
 	form, _ := ctx.MultipartForm()
 	files := form.File["upload[]"]
@@ -117,8 +119,8 @@ func (c *MediaController) Store(ctx *gin.Context) {
 		}
 
 		media := &model.Media{}
-		copier.Copy(media, body)
-		media.UserId = user.(*model.User).ID
+		copier.Copy(&media, &body)
+		media.UserId = authUser
 		media.File = file.Filename
 		media.Size = uint(file.Size)
 		save := media.Save(media)
@@ -131,14 +133,14 @@ func (c *MediaController) Store(ctx *gin.Context) {
 		ctx.SaveUploadedFile(file, "public/files/"+file.Filename)
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": "Saved successfully"})
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": gorn.T(ctx, "Saved successfully")})
 }
 
 func (c *MediaController) Destroy(ctx *gin.Context) {
 	media := model.Media{}
 	gorn.DB.First(&media, ctx.Param("id"))
 	os.Remove("public/files/" + media.File)
-	gorn.DB.Delete(&media)
+	media.Delete(&media)
 	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": "Deleted successfully"})
 }
 
@@ -150,7 +152,7 @@ func (c *MediaController) Actions(ctx *gin.Context) {
 	}
 	var body Actions
 	if err := ctx.ShouldBind(&body); err != nil {
-		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": err.Error()})
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": gorn.T(ctx, "Complete required fields"), "data": err.Error()})
 		return
 	}
 
@@ -163,5 +165,5 @@ func (c *MediaController) Actions(ctx *gin.Context) {
 	}
 
 	gorn.DB.Delete(&media, ids)
-	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": "Deleted successfully"})
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": gorn.T(ctx, "Deleted successfully")})
 }

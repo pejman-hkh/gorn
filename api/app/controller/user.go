@@ -74,7 +74,7 @@ func (c *UserController) RegisterPost(ctx *gin.Context) {
 	}
 
 	if err := ctx.ShouldBind(&body); err != nil {
-		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": err})
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": gorn.T(ctx, "Complete required fields"), "data": err.Error()})
 		return
 	}
 
@@ -82,7 +82,7 @@ func (c *UserController) RegisterPost(ctx *gin.Context) {
 	check := gorn.DB.First(user, "email = ?", body.Email)
 
 	if check.RowsAffected != 0 {
-		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": "This user exists !"})
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": gorn.T(ctx, "This user exists !")})
 		return
 	}
 
@@ -97,7 +97,7 @@ func (c *UserController) RegisterPost(ctx *gin.Context) {
 
 	auth, _ := user.Login(user.Email, body.Password)
 
-	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": "Registered successfully", "data": map[string]any{"auth": auth}})
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": gorn.T(ctx, "Registered successfully"), "data": map[string]any{"auth": auth}})
 }
 
 func (c *UserController) LoginPost(ctx *gin.Context) {
@@ -107,7 +107,7 @@ func (c *UserController) LoginPost(ctx *gin.Context) {
 	}
 
 	if err := ctx.ShouldBind(&body); err != nil {
-		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": fmt.Sprintf("%v", err)})
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": gorn.T(ctx, "Complete required fields"), "data": err.Error()})
 		return
 	}
 
@@ -119,5 +119,5 @@ func (c *UserController) LoginPost(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": "Logined successfully", "data": map[string]any{"auth": auth, "redirect": "/admin/dashboard"}})
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": gorn.T(ctx, "Logined successfully"), "data": map[string]any{"auth": auth, "redirect": "/admin/dashboard"}})
 }

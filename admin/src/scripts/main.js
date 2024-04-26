@@ -16,7 +16,7 @@ function DarkMode() {
 
     let event = new Event('dark-mode');
 
-    themeToggleBtn.addEventListener('click', function () {
+    themeToggleBtn?.addEventListener('click', function () {
 
         // toggle icons
         themeToggleDarkIcon.classList.toggle('hidden');

@@ -19,6 +19,7 @@ type MenuForm struct {
 	Icon     string `form:"icon"`
 	Svg      string `form:"svg"`
 	Position uint8  `form:"position"`
+	Lang     string `form:"lang"`
 }
 
 type MenuController struct {
@@ -50,13 +51,13 @@ func (c *MenuController) Index(ctx *gin.Context) {
 	var p gorn.Paginator
 	search := []string{"title", "url"}
 	asearch := map[string]string{"title": "like", "url": "like", "position": "=", "status": "=", "menu_id": "=", "icon": "like", "svg": "like"}
-	result := gorn.DB.Preload("User").Scopes(c.Search(ctx, &list, search)).Scopes(c.AdvancedSearch(ctx, &list, asearch)).Scopes(p.Paginate(ctx, &list)).Order("Id desc").Find(&list)
+	result := gorn.DB.Preload("User").Scopes(c.Lang(ctx, &list)).Scopes(c.Search(ctx, &list, search)).Scopes(c.AdvancedSearch(ctx, &list, asearch)).Scopes(p.Paginate(ctx, &list)).Order("Id desc").Find(&list)
 	if result.Error != nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": result.Error})
 		return
 	}
 	if ctx.Query("excel") != "" {
-		c.makeExcel(ctx, []string{}, list)
+		c.MakeExcel(ctx, []string{}, list)
 		return
 	}
 
@@ -65,23 +66,24 @@ func (c *MenuController) Index(ctx *gin.Context) {
 
 func (c *MenuController) Edit(ctx *gin.Context) {
 	model := model.Menu{}
-	c.parentEdit(ctx, &model)
+	c.ParentEdit(ctx, &model)
 }
 
 func (c *MenuController) Update(ctx *gin.Context) {
 	var body MenuForm
 
 	if err := ctx.ShouldBind(&body); err != nil {
-		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": err.Error()})
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": gorn.T(ctx, "Complete required fields"), "data": err.Error()})
 		return
 	}
 
 	user, _ := ctx.Get("authUser")
+	authUser := user.(*model.User).ID
 	menu := model.Menu{}
 	gorn.DB.First(&menu, ctx.Param("id"))
 
 	copier.Copy(&menu, &body)
-	menu.UserId = user.(*model.User).ID
+	menu.UserId = authUser
 
 	save := menu.Save(menu)
 	if save.Error != nil {
@@ -89,7 +91,7 @@ func (c *MenuController) Update(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": "Saved successfully", "data": map[string]any{"model": menu}})
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": gorn.T(ctx, "Saved successfully"), "data": map[string]any{"model": menu}})
 }
 
 func (c *MenuController) Create(ctx *gin.Context) {
@@ -100,33 +102,35 @@ func (c *MenuController) Store(ctx *gin.Context) {
 	var body MenuForm
 
 	if err := ctx.ShouldBind(&body); err != nil {
-		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": err.Error()})
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": gorn.T(ctx, "Complete required fields"), "data": err.Error()})
 		return
 	}
 
 	user, _ := ctx.Get("authUser")
+	authUser := user.(*model.User).ID
 
 	menu := &model.Menu{}
+
 	copier.Copy(menu, body)
-	menu.UserId = user.(*model.User).ID
+	menu.UserId = authUser
 
 	save := menu.Save(menu)
 	menu.Priority = menu.ID
-	save = menu.Save(menu)
+	save = gorn.DB.Save(&menu)
 
 	if save.Error != nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": fmt.Sprintf("Error on save: %v", save.Error)})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": "Saved successfully"})
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": gorn.T(ctx, "Saved successfully")})
 }
 
 func (c *MenuController) Destroy(ctx *gin.Context) {
 	menu := model.Menu{}
 	gorn.DB.First(&menu, ctx.Param("id"))
-	gorn.DB.Delete(&menu)
-	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": "Deleted successfully"})
+	menu.Delete(&menu)
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": gorn.T(ctx, "Deleted successfully")})
 }
 
 func (c *MenuController) Actions(ctx *gin.Context) {
@@ -137,12 +141,12 @@ func (c *MenuController) Actions(ctx *gin.Context) {
 	}
 	var body Actions
 	if err := ctx.ShouldBind(&body); err != nil {
-		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": err.Error()})
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": gorn.T(ctx, "Complete required fields"), "data": err.Error()})
 		return
 	}
 
 	ids := body.Ids
 	menu := model.Menu{}
 	gorn.DB.Delete(&menu, ids)
-	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": "Deleted successfully"})
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": gorn.T(ctx, "Deleted successfully")})
 }

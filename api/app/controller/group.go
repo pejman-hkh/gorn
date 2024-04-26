@@ -53,7 +53,7 @@ func (c *GroupController) Index(ctx *gin.Context) {
 	}
 
 	if ctx.Query("excel") != "" {
-		c.makeExcel(ctx, []string{}, list)
+		c.MakeExcel(ctx, []string{}, list)
 		return
 	}
 
@@ -62,7 +62,7 @@ func (c *GroupController) Index(ctx *gin.Context) {
 
 func (c *GroupController) Edit(ctx *gin.Context) {
 	model := model.Group{}
-	c.parentEdit(ctx, &model)
+	c.ParentEdit(ctx, &model)
 }
 
 func (c *GroupController) Update(ctx *gin.Context) {
@@ -75,11 +75,13 @@ func (c *GroupController) Update(ctx *gin.Context) {
 	}
 
 	user, _ := ctx.Get("authUser")
+	authUser := user.(*model.User).ID
+
 	group := model.Group{}
 	gorn.DB.First(&group, ctx.Param("id"))
 
 	copier.Copy(&group, &body)
-	userid := user.(*model.User).ID
+	userid := authUser
 	group.UserId = userid
 
 	save := group.Save(group)
@@ -89,7 +91,7 @@ func (c *GroupController) Update(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": "Saved successfully", "data": map[string]any{"model": group}})
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": gorn.T(ctx, "Saved successfully"), "data": map[string]any{"model": group}})
 }
 
 func (c *GroupController) Create(ctx *gin.Context) {
@@ -121,14 +123,14 @@ func (c *GroupController) Store(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": "Saved successfully"})
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": gorn.T(ctx, "Saved successfully")})
 }
 
 func (c *GroupController) Destroy(ctx *gin.Context) {
-	Group := model.Group{}
-	gorn.DB.First(&Group, ctx.Param("id"))
-	gorn.DB.Delete(&Group)
-	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": "Deleted successfully"})
+	group := model.Group{}
+	gorn.DB.First(&group, ctx.Param("id"))
+	group.Delete(&group)
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": gorn.T(ctx, "Deleted successfully")})
 }
 
 func (c *GroupController) Actions(ctx *gin.Context) {
@@ -139,12 +141,12 @@ func (c *GroupController) Actions(ctx *gin.Context) {
 	}
 	var body Actions
 	if err := ctx.ShouldBind(&body); err != nil {
-		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": err.Error()})
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": gorn.T(ctx, "Complete required fields"), "data": err.Error()})
 		return
 	}
 
 	ids := body.Ids
-	Group := model.Group{}
-	gorn.DB.Delete(&Group, ids)
-	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": "Deleted successfully"})
+	group := model.Group{}
+	gorn.DB.Delete(&group, ids)
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": gorn.T(ctx, "Deleted successfully")})
 }

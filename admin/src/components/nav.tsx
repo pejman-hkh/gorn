@@ -10,6 +10,7 @@ export default function Nav() {
 
     const context = useContext(DataContext) as Array<any>
     const data = context[3]
+	const [dark,setDark] = context[5]
     const {t} = useTranslation()
 
     return <nav className="fixed z-30 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
@@ -145,7 +146,16 @@ export default function Nav() {
                             </a>
                         </div>
                     </div>
-                    <button id="theme-toggle" data-tooltip-target="tooltip-toggle" type="button" className="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5">
+                    <button onClick={() => {
+                        if( dark == "" ) {
+                            setDark("dark")
+                            localStorage.setItem("dark", "dark")
+                        }
+                        else {
+                            setDark("")
+                            localStorage.setItem("dark", "")
+                        }
+                    }} data-tooltip-target="tooltip-toggle" type="button" className="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5">
                         <svg id="theme-toggle-dark-icon" className="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                             <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
                         </svg>
@@ -167,10 +177,10 @@ export default function Nav() {
                         <div className="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600" id="dropdown-2">
                             <div className="px-4 py-3" role="none">
                                 <p className="text-sm text-gray-900 dark:text-white" role="none">
-                                    {data?.authUser?.Name}
+                                    {data?.authUser?.name}
                                 </p>
                                 <p className="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
-                                    {data?.authUser?.Email}
+                                    {data?.authUser?.email}
                                 </p>
                             </div>
                             <ul className="py-1" role="none">

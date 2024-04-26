@@ -163,11 +163,11 @@ export function Index() {
                             <List.Td><Link to={"/users?id=" + item?.user?.id}>{item?.user?.name}</Link></List.Td>
 
                             <List.Td>
-                                {item.isadmin ? t("Admin") : t("User")}
+                                {item.is_admin ? t("Admin") : t("User")}
                             </List.Td>
 
                             <List.Td>
-                                {item.ismain ? t("Main") : t("Not main")}
+                                {item.is_main ? t("Main") : t("Not main")}
                             </List.Td>
 
                             <List.Td>

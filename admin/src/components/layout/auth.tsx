@@ -6,8 +6,9 @@ import { DataContext } from "../../router/data";
 export default function Auth({ children }:any) {
     const dataContext = useContext(DataContext) as Array<any>
 	const direction = dataContext[4]
+	const dark = dataContext[5]
 
-    return <div dir={direction[0]}>
+    return <div dir={direction[0]} className={dark[0]}>
         <Nav></Nav>
         <div className="flex pt-16 overflow-hidden bg-gray-50 dark:bg-gray-900">
 
@@ -15,7 +16,7 @@ export default function Auth({ children }:any) {
 
             <div className="fixed inset-0 z-10 hidden bg-gray-900/50 dark:bg-gray-900/90" id="sidebarBackdrop"></div>
 
-            <div id="main-content" className="relative w-full h-full overflow-y-auto bg-gray-50 ltr:lg:ml-64 rtl:lg:mr-64 dark:bg-gray-900">
+            <div id="main-content" className="relative w-full h-full bg-gray-50 ltr:lg:ml-64 rtl:lg:mr-64 dark:bg-gray-900">
                 <main>
                     {children}
                 </main>

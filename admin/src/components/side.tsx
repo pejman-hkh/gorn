@@ -3,11 +3,11 @@ import Link from "../router/link"
 
 import * as Svg from "./svg"
 import { resources } from "../i18n"
-import { useContext, useRef } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { DataContext } from "../router/data"
 
 function MenuItem({ children, ...props }: any) {
-    return <li {...props}>{children}</li>
+    return <li className="rtl:mr-3" {...props}>{children}</li>
 }
 function MenuSvg({ children, ...props }: any) {
     return <svg {...props}
@@ -21,8 +21,16 @@ function MenuText({ children, ...props }: any) {
     return <span {...props} className="ltr:ml-3 rtl:mr-3" sidebar-toggle-item="true">{children}</span>
 }
 function MenuLink({ children, ...props }: any) {
+    const [className, setClassName] = useState("")
+    useEffect(() => {
+        if( props.to == window.location.pathname.replace(/\/admin/, "")) {
+            setClassName("bg-gray-100 dark:bg-gray-700 ")
+        } else {
+            setClassName("")
+        }
+    }, [window.location.href])
     return <Link {...props} to={props.to}
-        className="flex items-center p-2 text-base text-gray-900 rounded-lg hover:bg-gray-100 group dark:text-gray-200 dark:hover:bg-gray-700">
+        className={className+"flex items-center p-2 text-base text-gray-900 rounded-lg hover:bg-gray-100 group dark:text-gray-200 dark:hover:bg-gray-700"}>
         {children}
     </Link>
 }
@@ -116,7 +124,7 @@ export default function Side() {
         <div
             className="relative flex flex-col flex-1 min-h-0 pt-0 bg-white ltr:border-r rtl:border-l border-gray-200 dark:bg-gray-800 dark:border-gray-700">
             <div className="flex flex-col flex-1 pt-5 pb-4 overflow-y-auto">
-                <div className="flex-1 px-3 space-y-1 bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
+                <div className="flex-1 mb-10 px-3 space-y-1 bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
                     <ul className="pb-2 space-y-2">
                         <MenuItem>
                             <MenuSearch></MenuSearch>
@@ -144,6 +152,22 @@ export default function Side() {
                             <MenuChilds id="dropdown-users">
                                 <MenuItem><MenuLink to="/users">{t("User")}</MenuLink></MenuItem>
                                 <MenuItem><MenuLink to="/groups">{t("Group")}</MenuLink></MenuItem>
+                            </MenuChilds>
+
+                        </MenuItem>
+
+                        <MenuItem>
+                            <MenuButton data-collapse-toggle="dropdown-system">
+                                <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width={24} height={24} fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v5m-3 0h6M4 11h16M5 15h14a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1Z" />
+                                </svg>
+
+                                <MenuButtonText>{t("System")}</MenuButtonText>
+                                <IconDown />
+                            </MenuButton>
+                            <MenuChilds id="dropdown-system">
+                                <MenuItem><MenuLink to="/logs">{t("Log")}</MenuLink></MenuItem>
+                                <MenuItem><MenuLink to="/tasks">{t("Task")}</MenuLink></MenuItem>
                             </MenuChilds>
 
                         </MenuItem>
@@ -181,8 +205,9 @@ export default function Side() {
                                 <IconDown />
                             </MenuButton>
                             <MenuChilds id="dropdown-post">
-                                <MenuItem><MenuLink to="/posttypes">{t("Post Type")}</MenuLink></MenuItem>
-                                <MenuItem><MenuLink to="/posts">{t("Post")}</MenuLink></MenuItem>
+                                <MenuItem><MenuLink to="/post/types">{t("Post Type")}</MenuLink></MenuItem>
+                                <MenuItem><MenuLink to="/post/categories">{t("Category")}</MenuLink></MenuItem>
+                                <MenuItem><MenuLink to="/post/posts">{t("Post")}</MenuLink></MenuItem>
                             </MenuChilds>
 
                         </MenuItem>
@@ -237,8 +262,9 @@ export default function Side() {
                                 <IconDown />
                             </MenuButton>
                             <MenuChilds id="dropdown-shop">
+                                <MenuItem><MenuLink to="/shop/dashboard">{t("Dashboard")}</MenuLink></MenuItem>
+                                <MenuItem><MenuLink to="/shop/orders">{t("Order")}</MenuLink></MenuItem>
                                 <MenuItem><MenuLink to="/shop/variants">{t("Variant")}</MenuLink></MenuItem>
-                                <MenuItem><MenuLink to="/shop/prices">{t("Price")}</MenuLink></MenuItem>
                                 <MenuItem><MenuLink to="/shop/categories">{t("Category")}</MenuLink></MenuItem>
                                 <MenuItem><MenuLink to="/shop/products">{t("Product")}</MenuLink></MenuItem>
                                 <MenuItem><MenuLink to="/shop/params">{t("Parameter")}</MenuLink></MenuItem>
@@ -246,6 +272,7 @@ export default function Side() {
                                 <MenuItem><MenuLink to="/shop/brands">{t("Brand")}</MenuLink></MenuItem>
                                 <MenuItem><MenuLink to="/shop/warranties">{t("Warranty")}</MenuLink></MenuItem>
                                 <MenuItem><MenuLink to="/shop/settings">{t("Setting")}</MenuLink></MenuItem>
+
                             </MenuChilds>
 
                         </MenuItem>

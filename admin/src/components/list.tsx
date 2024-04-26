@@ -111,7 +111,7 @@ export function CheckboxTd({ children, ...props }: any) {
 
 
 export function TdTitle({ children, ...props }: any) {
-    return <td {...props} className="flex items-center p-4 mr-12 space-x-6 whitespace-nowrap">{children}</td>
+    return <td {...props} className="flex items-center p-4 mr-12 space-x-6 whitespace-nowrap dark:text-white">{children}</td>
 }
 
 export function TdText({ children, ...props }: any) {
@@ -139,7 +139,7 @@ export function Table({ children, ...props }: any) {
     </Wrapper>
 }
 
-export function BreadCrumb({ title, route, setActionValue, deleteAllModal, addModal, setEdit, searchModal }: any) {
+export function BreadCrumb({ disableDeleteAll, disableAdd, ModuleBreadcrumb, title, route, setActionValue, deleteAllModal, addModal, setEdit, searchModal }: any) {
     const { t } = useTranslation();
     let sendRequest = false
     let timeOut: number;
@@ -152,11 +152,13 @@ export function BreadCrumb({ title, route, setActionValue, deleteAllModal, addMo
             }, 800);
         }
     }
-
+    const Add = disableAdd??<Actions.AddButton onClick={() => { addModal[1](true); setEdit({}) }}>{t("Add {{title}}", { title: t(title) })}</Actions.AddButton>
+    const Module = ModuleBreadcrumb??<Breadcrumb.Item to="/dashboard">{t("Cms")}</Breadcrumb.Item>
+    const DeleteAll = disableDeleteAll?"":<Task.Delete onClick={() => { setActionValue("delete"); deleteAllModal[1](true) }} />
     return <Breadcrumb.Wrapper>
         <Breadcrumb.Main>
             <Breadcrumb.ItemHome>{t("Home")}</Breadcrumb.ItemHome>
-            <Breadcrumb.Item to="/dashboard">{t("Cms")}</Breadcrumb.Item>
+            {Module}
             <Breadcrumb.Item to={route}>{t(title)}</Breadcrumb.Item>
         </Breadcrumb.Main>
         <Breadcrumb.Title>{t("All {{title}}", { title: t(title) })}</Breadcrumb.Title>
@@ -166,14 +168,14 @@ export function BreadCrumb({ title, route, setActionValue, deleteAllModal, addMo
                 <Actions.SearchForm action={route} onChange={searchHandler} />
                 <Actions.Tasks>
                     <Task.Setting onClick={() => { searchModal[1](true) }} />
-                    <Task.Delete onClick={() => { setActionValue("delete"); deleteAllModal[1](true) }} />
+                    {DeleteAll}
                     <Task.Info />
                     <Task.More />
                 </Actions.Tasks>
             </Actions.LeftSide>
 
             <Actions.RightSide>
-                <Actions.AddButton onClick={() => { addModal[1](true); setEdit({}) }}>{t("Add {{title}}", { title: t(title) })}</Actions.AddButton>
+                {Add}
                 <Actions.ExportButton route={route}>{t("Export")}</Actions.ExportButton>
             </Actions.RightSide>
         </Actions.Wrapper>

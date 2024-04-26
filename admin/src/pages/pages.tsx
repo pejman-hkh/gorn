@@ -39,6 +39,10 @@ export function MainForm({ ...props }) {
         </Grid.Col6>
 
         <Grid.Span6>
+            <Editor noeditor={props?.noeditor||false} name="short_content" title={t("Short Content")} defaultValue={edit?.short_content||""}  />
+        </Grid.Span6>
+
+        <Grid.Span6>
             <Editor noeditor={props?.noeditor||false} name="content" title={t("Content")} defaultValue={edit?.content||""}  />
         </Grid.Span6>
 

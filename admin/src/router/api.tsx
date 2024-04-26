@@ -8,6 +8,7 @@ export function useApiPath(path: string) {
 }
 
 export default function Api(path: string) {
+    const lang: string = localStorage.getItem("lang")||""
     async function doRequest(path: string) {
         let res = {};
 
@@ -19,17 +20,23 @@ export default function Api(path: string) {
         if (url.substr(-1) === '/')
             url = url.substr(0, -1)
 
+
         let search = window.location.search.substr(1)
         if (search)
             search = '&' + search
 
-        let params = (path.match(/\?/g)?'&':'?') + new URLSearchParams({ "auth": localStorage.getItem('auth') || "" }) + search
+        let params = (path.match(/\?/g) ? '&' : '?') + new URLSearchParams({ "auth": localStorage.getItem('auth') || "", "lang": lang }) + search
+        let data
+        try {
+            data = await fetch(url + params, { redirect: 'follow' });
+        } catch (e) {
+            //return Promise.reject(new Error("Api down"));
+        }
 
-        let data = await fetch(url + params, { redirect: 'follow' });
         if (data?.status == 200) {
             res = await data.json();
-
         }
+
 
         if (data?.status == 403) {
             return Promise.reject(new Error("" + data?.status));

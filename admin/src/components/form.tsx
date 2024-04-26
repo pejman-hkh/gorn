@@ -29,9 +29,9 @@ export function Label({ children, ...props }: any) {
 	return <label htmlFor={props.htmlFor} className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{children}</label>
 }
 
-export function Upload({...props}) {
+export function Upload({ ...props }) {
 	return <><label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white" htmlFor={props.id}>{props.title}</label>
-  <input className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" {...props} type="file" />
+		<input className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" {...props} type="file" />
 	</>
 }
 export function Editor({ ...props }) {
@@ -39,7 +39,7 @@ export function Editor({ ...props }) {
 
 	useEffect(() => {
 		if (props?.defaultValue) {
-			const blocksFromHTML:any = convertFromHTML(props?.defaultValue)
+			const blocksFromHTML: any = convertFromHTML(props?.defaultValue)
 			const content = ContentState.createFromBlockArray(blocksFromHTML)
 			setEditorState(EditorState.createWithContent(content))
 		}
@@ -48,9 +48,9 @@ export function Editor({ ...props }) {
 	const stateChange = (editorState: any) => {
 		setEditorState(editorState)
 	}
-	if(props?.noeditor ) {
+	if (props?.noeditor) {
 		return <><Label htmlFor={props?.id}>{props.title}</Label>
-		<Textarea name={props?.name}></Textarea>
+			<Textarea name={props?.name}></Textarea>
 		</>
 	}
 
@@ -64,7 +64,13 @@ export function SelectSearch({ children, ...props }: any) {
 
 	const [list, setList] = useState<any[]>([])
 	const [isLoading, setIsLoading] = useState(false)
-	const [selected, setSelected] = useState({})
+	let selected: any
+	let setSelected: any
+	if (props?.select) {
+		[selected, setSelected] = props?.select
+	} else {
+		[selected, setSelected] = useState({})
+	}
 
 	let sendRequest = false
 	let timeOut: number;
@@ -79,7 +85,8 @@ export function SelectSearch({ children, ...props }: any) {
 			setIsLoading(true)
 			timeOut = setTimeout(function () {
 				sendRequest = true;
-				Api(props.path + "?nopage=true&search=" + encodeURIComponent(inputValue)).then((data: any) => {
+				const path = props.path.match(/\?/) ? props.path + "&" : props.path + "?";
+				Api(path + "nopage=true&search=" + encodeURIComponent(inputValue)).then((data: any) => {
 					let list: any[] = []
 					data?.data?.list.map((item: any) => {
 						list.push({ value: item.id, label: item.title })
@@ -93,28 +100,34 @@ export function SelectSearch({ children, ...props }: any) {
 
 	useEffect(() => {
 
+		//if (props?.edit?.id || props?.default) {
 		setIsLoading(true)
-		if (props?.edit?.id) {
-			Api(props.path + "?nopage=true&id=" + encodeURIComponent(props.defaultValue)).then((data: any) => {
-				let list: any[] = []
+		const path = props.path.match(/\?/) ? props.path + "&" : props.path + "?";
 
-				const childs: any[] = Array.isArray(children) ? children : [children]
-				childs.map((item: any) => {
-					if (item?.props)
-						list.push({ value: item?.props?.value, label: item?.props?.children })
-				})
+		Api(path + "nopage=true").then((data: any) => {
+			let list: any[] = []
 
-				data?.data?.list.map((item: any) => {
-					list.push({ value: item.id, label: item.title })
-					setSelected({ value: item.id, label: item.title })
-				})
-
-				setList(list)
-				setIsLoading(false)
+			const childs: any[] = Array.isArray(children) ? children : [children]
+			childs.map((item: any) => {
+				if (item?.props) {
+					list.push({ value: item?.props?.value, label: item?.props?.children })
+					setSelected({ value: item?.props?.value, label: item?.props?.children })
+				}
 
 			})
-		}
-	}, [])
+
+			data?.data?.list.map((item: any) => {
+				list.push({ value: item.id, label: item.title })
+				if (props?.edit?.id == item.id)
+					setSelected({ value: item.id, label: item.title })
+			})
+
+			setList(list)
+			setIsLoading(false)
+
+		})
+		//}
+	}, [props.path])
 
 	const { t } = useTranslation()
 
@@ -218,12 +231,15 @@ export default function Form({ children, ...props }: any) {
 	const [alertText, setAlertText] = useState(null)
 	const [alertType, setAlertType] = useState('')
 
+	const { i18n } = useTranslation();
+
 	let submitted = true;
 	const alertElement = useRef(0);
 	function submitHandler(e: any) {
 		e.preventDefault();
 
 		const dataForm = new FormData(e.target);
+		dataForm.append("lang", i18n.language)
 		if (!submitted)
 			return;
 		const method = props.method?.toLowerCase() ?? "post";

@@ -4,6 +4,7 @@ import "gorn/app/hmodel"
 
 type Menu struct {
 	BaseModel
+	Lang     string      `gorm:"size:20;index" json:"lang"`
 	Title    string      `gorm:"size:255" json:"title"`
 	UserId   uint        `gorm:"index" json:"user_id"`
 	MenuId   uint        `gorm:"index" json:"menu_id"`

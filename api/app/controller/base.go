@@ -27,7 +27,7 @@ func getType(myvar interface{}) string {
 	}
 }
 
-func (c *BaseController) makeExcel(ctx *gin.Context, excepts []string, data any) {
+func (c *BaseController) MakeExcel(ctx *gin.Context, excepts []string, data any) {
 	file := excelize.NewFile()
 
 	defer func() {
@@ -74,7 +74,7 @@ func (c *BaseController) makeExcel(ctx *gin.Context, excepts []string, data any)
 	ctx.File(filePath)
 }
 
-func (c *BaseController) parentEdit(ctx *gin.Context, model any) {
+func (c *BaseController) ParentEdit(ctx *gin.Context, model any) {
 	gorn.DB.First(model, ctx.Param("id"))
 	ctx.JSON(http.StatusOK, gin.H{"status": 1, "data": map[string]any{"edit": model}})
 }
@@ -88,6 +88,24 @@ func (c *BaseController) Search(ctx *gin.Context, list any, search []string) fun
 		bind = append(bind, "%"+search+"%")
 
 		if search != "" {
+			return db.Where(sql, bind)
+		}
+		return db
+	}
+}
+
+func (c *BaseController) Lang(ctx *gin.Context, list any) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		sql := ""
+		bind := make(map[string]any)
+		pre := ""
+
+		if ctx.Query("lang") != "" {
+			sql = pre + " lang = @lang "
+			bind["lang"] = ctx.Query("lang")
+			pre = "and"
+		}
+		if sql != "" {
 			return db.Where(sql, bind)
 		}
 		return db

@@ -16,6 +16,7 @@ type PageForm struct {
 	Url     string `form:"url" binding:"required"`
 	Status  uint8  `form:"status"`
 	Content string `form:"content"`
+	Lang    string `form:"lang"`
 }
 
 type PageController struct {
@@ -47,13 +48,13 @@ func (c *PageController) Index(ctx *gin.Context) {
 	var p gorn.Paginator
 	search := []string{"title", "url", "content"}
 	asearch := map[string]string{"title": "like", "url": "like", "status": "=", "has_comment": "="}
-	result := gorn.DB.Preload("User").Scopes(c.Search(ctx, &list, search)).Scopes(c.AdvancedSearch(ctx, &list, asearch)).Scopes(p.Paginate(ctx, &list)).Order("Id desc").Find(&list)
+	result := gorn.DB.Preload("User").Scopes(c.Lang(ctx, &list)).Scopes(c.Search(ctx, &list, search)).Scopes(c.AdvancedSearch(ctx, &list, asearch)).Scopes(p.Paginate(ctx, &list)).Order("Id desc").Find(&list)
 	if result.Error != nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": result.Error})
 		return
 	}
 	if ctx.Query("excel") != "" {
-		c.makeExcel(ctx, []string{}, list)
+		c.MakeExcel(ctx, []string{}, list)
 		return
 	}
 
@@ -62,14 +63,14 @@ func (c *PageController) Index(ctx *gin.Context) {
 
 func (c *PageController) Edit(ctx *gin.Context) {
 	model := model.Page{}
-	c.parentEdit(ctx, &model)
+	c.ParentEdit(ctx, &model)
 }
 
 func (c *PageController) Update(ctx *gin.Context) {
 	var body PageForm
 
 	if err := ctx.ShouldBind(&body); err != nil {
-		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": err.Error()})
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": gorn.T(ctx, "Complete required fields"), "data": err.Error()})
 		return
 	}
 
@@ -86,7 +87,7 @@ func (c *PageController) Update(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": "Saved successfully", "data": map[string]any{"model": page}})
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": gorn.T(ctx, "Saved successfully"), "data": map[string]any{"model": page}})
 }
 
 func (c *PageController) Create(ctx *gin.Context) {
@@ -97,7 +98,7 @@ func (c *PageController) Store(ctx *gin.Context) {
 	var body PageForm
 
 	if err := ctx.ShouldBind(&body); err != nil {
-		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": err.Error()})
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": gorn.T(ctx, "Complete required fields"), "data": err.Error()})
 		return
 	}
 
@@ -114,14 +115,14 @@ func (c *PageController) Store(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": "Saved successfully"})
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": gorn.T(ctx, "Saved successfully")})
 }
 
 func (c *PageController) Destroy(ctx *gin.Context) {
 	page := model.Page{}
 	gorn.DB.First(&page, ctx.Param("id"))
-	gorn.DB.Delete(&page)
-	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": "Deleted successfully"})
+	page.Delete(&page)
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": gorn.T(ctx, "Deleted successfully")})
 }
 
 func (c *PageController) Actions(ctx *gin.Context) {
@@ -132,12 +133,12 @@ func (c *PageController) Actions(ctx *gin.Context) {
 	}
 	var body Actions
 	if err := ctx.ShouldBind(&body); err != nil {
-		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": err.Error()})
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": gorn.T(ctx, "Complete required fields"), "data": err.Error()})
 		return
 	}
 
 	ids := body.Ids
 	page := model.Page{}
 	gorn.DB.Delete(&page, ids)
-	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": "Deleted successfully"})
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": gorn.T(ctx, "Deleted successfully")})
 }
