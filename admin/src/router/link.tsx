@@ -14,5 +14,5 @@ export default function Link({ children, ...props }: any) {
 
     }
 
-    return <a href={baseUri+props.to} {...props} onClick={(e) => handleClick(e)}>{children}</a>;
+    return <a ref={props.fref} href={baseUri+props.to} {...props} onClick={(e) => handleClick(e)}>{children}</a>;
 }

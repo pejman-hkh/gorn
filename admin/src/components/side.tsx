@@ -22,14 +22,17 @@ function MenuText({ children, ...props }: any) {
 }
 function MenuLink({ children, ...props }: any) {
     const [className, setClassName] = useState("")
+    const ref = useRef<any>(null)
     useEffect(() => {
         if( props.to == window.location.pathname.replace(/\/admin/, "")) {
+            const ul = ref.current?.parentElement.parentElement
+            ul.classList.remove("hidden")
             setClassName("bg-gray-100 dark:bg-gray-700 ")
         } else {
             setClassName("")
         }
     }, [window.location.href])
-    return <Link {...props} to={props.to}
+    return <Link fref={ref} {...props} to={props.to}
         className={className+"flex items-center p-2 text-base text-gray-900 rounded-lg hover:bg-gray-100 group dark:text-gray-200 dark:hover:bg-gray-700"}>
         {children}
     </Link>

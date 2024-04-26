@@ -59,9 +59,9 @@ export default function App({ ...props }) {
     const { i18n } = useTranslation();
     const res: any = resources
     const direction = useState<string>(res[i18n.language].direction)
-    const darkMode = useState<string>(localStorage.getItem("dark") || "")
+    const theme = useState<string>(localStorage.getItem("theme") || "")
     const [data, setData] = useState(props.data)
-    const value = [data, setData, { baseUri: baseUri }, props?.mainData?.data, direction, darkMode];
+    const value = [data, setData, { baseUri: baseUri }, props?.mainData?.data, direction, theme];
     return value
   }, routes, () => {
     loading.current.classList.remove('hidden')
