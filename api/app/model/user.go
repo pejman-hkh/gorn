@@ -40,7 +40,7 @@ func (u *User) HasPermission(ctx *gin.Context) bool {
 
 	pr := strings.Split(route, "/")
 	access := ""
-	model := pr[1]
+	module := pr[1]
 	if pr[2] == ":id" {
 		if ctx.Request.Method == "POST" {
 			access = "update"
@@ -55,7 +55,7 @@ func (u *User) HasPermission(ctx *gin.Context) bool {
 	}
 
 	p := &Permission{}
-	gorn.DB.First(p, "model = ? and group_id = ? ", model, u.GroupId)
+	gorn.DB.First(p, "module = ? and group_id = ? ", module, u.GroupId)
 
 	if access == "create" && p.Create {
 		return true

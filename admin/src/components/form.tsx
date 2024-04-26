@@ -226,8 +226,9 @@ const toJson = (f: any) => {
 }
 
 export default function Form({ children, ...props }: any) {
-	const dataContext = useContext(DataContext) as Array<any>
-	const baseUri = dataContext[2]?.baseUri
+	const dataContext = useContext(DataContext) as any
+	
+	const baseUri = dataContext?.baseUri
 
 	const [alertText, setAlertText] = useState(null)
 	const [alertType, setAlertType] = useState('')

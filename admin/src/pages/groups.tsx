@@ -22,29 +22,38 @@ export function SearchForm({ ...props }) {
 export function MainForm({ ...props }) {
     let edit = props.edit
     const { t } = useTranslation();
-    const models: any = [
-        t("User"),
-        t("Group"),
-        t("Menu"),
-        t("Setting"),
-        t("Media"),
-        t("Post"),
-        t("Page"),
-        t("Comment"),
+    const dataContext = useContext(DataContext) as any
+    const menu = dataContext.menu[0]
+    if (menu?.current) {
+
+        menu?.current.querySelectorAll("a").each(function (this: any) {
+            console.log(this?.href)
+        })
+    }
+
+    const modules: any = [
+        ("users"),
+        ("groups"),
+        ("menus"),
+        ("settings"),
+        ("medias"),
+        ("posts"),
+        ("pages"),
+        ("comments"),
     ]
 
     const permissions = [
-        t("Create"),
-        t("Update"),
-        t("View"),
-        t("Delete"),
+        ("Create"),
+        ("Update"),
+        ("View"),
+        ("Delete"),
     ]
 
     const toModelIndex = (permissions: any) => {
         let ret: any = {}
         for (let k in permissions) {
             let v = permissions[k]
-            ret[v.model] = v
+            ret[v.module] = v
         }
         return ret
     }
@@ -57,8 +66,8 @@ export function MainForm({ ...props }) {
         })
     }
 
-    const checkAllModel = (e: any, model: string) => {
-        document.querySelectorAll("." + model).each(function (this: any) {
+    const checkAllModel = (e: any, module: string) => {
+        document.querySelectorAll("." + module).each(function (this: any) {
             this.checked = e.target.checked
         })
     }
@@ -78,13 +87,13 @@ export function MainForm({ ...props }) {
                         <Checkbox onChange={(e: any) => { checkAll(e, per) }}>{t("All")}</Checkbox>
                     </List.Th>)}
                 </List.Tr>
-                {models.map((model: string) => <List.Tr key={model}>
+                {modules.map((module: string) => <List.Tr key={module}>
                     <List.Th>
-                        {model}
-                        <br /><Checkbox onChange={(e: any) => { checkAllModel(e, model) }}>{t("All")}</Checkbox>
+                        {module}
+                        <br /><Checkbox onChange={(e: any) => { checkAllModel(e, module) }}>{t("All")}</Checkbox>
                     </List.Th>
                     {permissions.map((per: string) =>
-                        <List.Th key={model + per}><Checkbox defaultChecked={permissionArray[model.toLocaleLowerCase()]?permissionArray[model.toLocaleLowerCase()][per.toLocaleLowerCase()]:false} className={per + " " + model} name={"permission[" + model.toLocaleLowerCase() + "][" + per.toLocaleLowerCase() + "]"} id={model + per}>{per}</Checkbox></List.Th>
+                        <List.Th key={module + per}><Checkbox defaultChecked={permissionArray[module.toLocaleLowerCase()] ? permissionArray[module.toLocaleLowerCase()][per.toLocaleLowerCase()] : false} className={per + " " + module} name={"permission[" + module.toLocaleLowerCase() + "][" + per.toLocaleLowerCase() + "]"} id={module + per}>{per}</Checkbox></List.Th>
                     )}
                 </List.Tr>
                 )}
@@ -99,8 +108,8 @@ export function Index() {
     const route = "/groups"
     const title = "Group"
 
-    const dataContext = useContext(DataContext) as Array<any>
-    const data = dataContext[0]
+    const dataContext = useContext(DataContext) as any
+    const data = dataContext.data[0]
 
     const [edit, setEdit] = useState<any>({})
     const editModal = useState(false)

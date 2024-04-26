@@ -18,9 +18,9 @@ const ThemeIcon = ({ ...props }) => {
 }
 export default function Nav() {
 
-    const context = useContext(DataContext) as Array<any>
-    const data = context[3]
-    const [theme, setTheme] = context[5]
+    const context = useContext(DataContext) as any
+    const data = context.data
+    const [theme, setTheme] = context.theme
     const { t } = useTranslation()
 
     return <nav className="fixed z-30 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">

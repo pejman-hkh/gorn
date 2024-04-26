@@ -58,8 +58,8 @@ export function Index() {
     const route = "/medias"
     const title = "Media"
 
-    const dataContext = useContext(DataContext) as Array<any>
-    const data = dataContext[0]
+    const dataContext = useContext(DataContext) as any
+    const data = dataContext.data[0]
 
     const [edit, setEdit] = useState<any>({})
     const editModal = useState(false)

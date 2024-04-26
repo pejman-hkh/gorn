@@ -21,10 +21,9 @@ function MenuText({ children, ...props }: any) {
     return <span {...props} className="ltr:ml-3 rtl:mr-3" sidebar-toggle-item="true">{children}</span>
 }
 function MenuLink({ children, ...props }: any) {
-    const context = useContext(DataContext) as Array<any>
-    const data = context[3]
-
-    console.log(data.authUser.group.permissions)
+    const context = useContext(DataContext) as any
+    const data = context.mainData
+    console.log(data)
     const [className, setClassName] = useState("")
     const ref = useRef<any>(null)
     useEffect(() => {
@@ -91,8 +90,8 @@ function MenuChilds({ children, ...props }: any) {
 
 function LangItem({ children, ...props }: any) {
     const { i18n } = useTranslation()
-    const dataContext = useContext(DataContext) as Array<any>
-    const setDirection = dataContext[4][1]
+    const dataContext = useContext(DataContext) as any
+    const setDirection = dataContext.direction[1]
     const res: any = resources
 
     const handler = () => {
@@ -124,6 +123,10 @@ export default function Side() {
         Icon = Svg.Usa
     }
 
+    const menus = useRef<any>(null)
+    const dataContext = useContext(DataContext) as any
+    const setMenu = dataContext.menu[1]
+    setMenu(menus)
     const langBtn = useRef<any>(null)
     return <aside id="sidebar"
         className="fixed top-0 ltr:left-0 rtl:right-0 z-20 flex flex-col flex-shrink-0 hidden w-64 h-full pt-16 font-normal duration-75 lg:flex transition-width"
@@ -132,7 +135,7 @@ export default function Side() {
             className="relative flex flex-col flex-1 min-h-0 pt-0 bg-white ltr:border-r rtl:border-l border-gray-200 dark:bg-gray-800 dark:border-gray-700">
             <div className="flex flex-col flex-1 pt-5 pb-4 overflow-y-auto">
                 <div className="flex-1 mb-10 px-3 space-y-1 bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
-                    <ul className="pb-2 space-y-2">
+                    <ul className="pb-2 space-y-2" ref={menus}>
                         <MenuItem>
                             <MenuSearch></MenuSearch>
                         </MenuItem>

@@ -4,7 +4,7 @@ type Permission struct {
 	ID      uint
 	UserID  uint   `json:"user_id"`
 	GroupID uint   `json:"group_id"`
-	Model   string `json:"model"`
+	Module  string `json:"module"`
 	View    bool   `json:"view"`
 	Update  bool   `json:"update"`
 	Create  bool   `json:"create"`

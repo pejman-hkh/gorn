@@ -81,13 +81,20 @@ func (c *BaseController) ParentEdit(ctx *gin.Context, model any) {
 
 func (c *BaseController) Search(ctx *gin.Context, list any, search []string) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
-		search := ctx.Query("search")
-		sql := ""
-		sql = "title like ? "
-		bind := []string{}
-		bind = append(bind, "%"+search+"%")
+		if ctx.Query("search") == "" {
+			return db
+		}
 
-		if search != "" {
+		sql := ""
+		bind := make(map[string]any)
+		pre := ""
+		for _, v := range search {
+			sql += pre + "" + v + " like @" + v
+			bind[v] = "%" + ctx.Query("search") + "%"
+			pre = " or "
+		}
+
+		if sql != "" {
 			return db.Where(sql, bind)
 		}
 		return db

@@ -26,7 +26,7 @@ export default function useRouter(baseUri:string, dataCallback: () => any, route
   const value = dataCallback()
 
   const [path, setPath] = useState(getPathName())
-  const setData = value[1]
+  const setData = value.data[1]
 
   useEffect(() => {
 

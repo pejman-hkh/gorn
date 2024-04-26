@@ -71,8 +71,8 @@ export function Index() {
     const route = "/post/posts"
     const title = "Post"
 
-    const dataContext = useContext(DataContext) as Array<any>
-    const data = dataContext[0]
+    const dataContext = useContext(DataContext) as any
+    const data = dataContext.data[0]
 
     const [edit, setEdit] = useState<any>({})
     const editModal = useState(false)

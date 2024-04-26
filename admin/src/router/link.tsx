@@ -2,8 +2,8 @@ import { useContext } from "react";
 import { DataContext } from "./data";
 
 export default function Link({ children, ...props }: any) {
-    const dataContext = useContext(DataContext) as Array<any>
-    const baseUri = dataContext[2]?.baseUri
+    const dataContext = useContext(DataContext) as any
+    const baseUri = dataContext?.baseUri
 
     function handleClick(e: any) {
 

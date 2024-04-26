@@ -21,16 +21,16 @@ func (g *Group) SetPermission(userid uint, groupid uint, body map[string]any) {
 
 	permissions := body["permission"].(map[string]any)
 	fmt.Print(permissions)
-	for model, permission := range permissions {
+	for module, permission := range permissions {
 		per := Permission{}
-		check := gorn.DB.Where("group_id = ? and model = ? ", groupid, model).First(&per)
+		check := gorn.DB.Where("group_id = ? and module = ? ", groupid, module).First(&per)
 		if check.RowsAffected == 0 {
 			per = Permission{}
 		}
 
 		per.GroupID = groupid
 		per.UserID = userid
-		per.Model = model
+		per.Module = module
 		if permission.(map[string]any)["create"] == "on" {
 			per.Create = true
 		} else {

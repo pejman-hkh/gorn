@@ -4,11 +4,11 @@ import Side from "../side";
 import { DataContext } from "../../router/data";
 
 export default function Auth({ children }:any) {
-    const dataContext = useContext(DataContext) as Array<any>
-	const direction = dataContext[4]
-	const dark = dataContext[5]
+    const dataContext = useContext(DataContext) as any
+	const direction = dataContext.direction
+	const theme = dataContext.theme
 
-    return <div dir={direction[0]} className={dark[0]}>
+    return <div dir={direction[0]} className={theme[0]}>
         <Nav></Nav>
         <div className="flex pt-16 overflow-hidden bg-gray-50 dark:bg-gray-900">
 
