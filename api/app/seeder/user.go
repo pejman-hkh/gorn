@@ -14,6 +14,7 @@ func InitUser() {
 		user.Password = "admin"
 		user.IsAdmin = true
 		user.IsMain = true
+		user.Status = 1
 		gorn.DB.Save(&user)
 	}
 }

@@ -23,8 +23,8 @@ type User struct {
 	IsAdmin         bool        `json:"is_admin"`
 	IsMain          bool        `json:"is_main"`
 	Status          uint8       `json:"status" gorm:"index:idx_status"`
-	UserID          uint        `json:"user_id" gorm:"index"`
-	GroupID         uint        `json:"group_id" gorm:"index"`
+	UserId          uint        `json:"user_id" gorm:"index"`
+	GroupId         uint        `json:"group_id" gorm:"index"`
 	Group           Group       `json:"group"`
 	User            hmodel.User `json:"user"`
 }
@@ -55,7 +55,7 @@ func (u *User) HasPermission(ctx *gin.Context) bool {
 	}
 
 	p := &Permission{}
-	gorn.DB.First(p, "model = ? and group_id = ? ", model, u.GroupID)
+	gorn.DB.First(p, "model = ? and group_id = ? ", model, u.GroupId)
 
 	if access == "create" && p.Create {
 		return true

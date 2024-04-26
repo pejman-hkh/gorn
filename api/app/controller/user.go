@@ -8,7 +8,17 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/copier"
 )
+
+type UserForm struct {
+	Name    string `form:"name" binding:"required"`
+	Email   string `form:"email" binding:"required,email"`
+	Status  uint8  `form:"status"`
+	IsAdmin bool   `form:"is_admin"`
+	IsMain  bool   `form:"is_main"`
+	GroupID uint   `form:"group_id"`
+}
 
 type UserController struct {
 	BaseController
@@ -26,7 +36,12 @@ func (c *UserController) InitRoutes(r *gin.RouterGroup) {
 	{
 		g.GET("", c.Index)
 		g.GET("/index", c.Index)
-
+		g.GET("/create", c.Create)
+		g.POST("/create", c.Store)
+		g.GET("/:id/edit", c.Edit)
+		g.POST("/:id", c.Update)
+		g.DELETE("/:id", c.Destroy)
+		g.POST("/actions", c.Actions)
 	}
 
 	g = r.Group("admin")
@@ -120,4 +135,98 @@ func (c *UserController) LoginPost(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": gorn.T(ctx, "Logined successfully"), "data": map[string]any{"auth": auth, "redirect": "/admin/dashboard"}})
+}
+
+func (c *UserController) Edit(ctx *gin.Context) {
+	model := model.User{}
+	c.ParentEdit(ctx, &model)
+}
+
+func (c *UserController) Update(ctx *gin.Context) {
+	var body UserForm
+
+	if err := ctx.ShouldBind(&body); err != nil {
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": gorn.T(ctx, "Complete required fields"), "data": err.Error()})
+		return
+	}
+
+	authUser, _ := ctx.Get("authUser")
+	user := model.User{}
+	gorn.DB.First(&user, ctx.Param("id"))
+
+	copier.Copy(&user, &body)
+	user.UserId = authUser.(*model.User).ID
+
+	save := user.Save(&user)
+	if save.Error != nil {
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": fmt.Sprintf("Error on save: %v", save.Error)})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": gorn.T(ctx, "Saved successfully"), "data": map[string]any{"model": user}})
+}
+
+func (c *UserController) Create(ctx *gin.Context) {
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "data": map[string]any{"model": model.User{}}})
+}
+
+func (c *UserController) Store(ctx *gin.Context) {
+	var body UserForm
+
+	if err := ctx.ShouldBind(&body); err != nil {
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": gorn.T(ctx, "Complete required fields"), "data": err.Error()})
+		return
+	}
+
+	if ctx.PostForm("password") != ctx.PostForm("repassword") {
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": gorn.T(ctx, "Password sould be same")})
+	}
+
+	user := &model.User{}
+	check := gorn.DB.First(user, "email = ?", body.Email)
+
+	if check.RowsAffected != 0 {
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": gorn.T(ctx, "This user exists !")})
+		return
+	}
+
+	authUser, _ := ctx.Get("authUser")
+
+	//user := &model.User{}
+	copier.Copy(user, body)
+	user.UserId = authUser.(*model.User).ID
+	user.Password = ctx.PostForm("password")
+	save := user.Save(user)
+
+	if save.Error != nil {
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": fmt.Sprintf("Error on save: %v", save.Error)})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": gorn.T(ctx, "Saved successfully")})
+}
+
+func (c *UserController) Destroy(ctx *gin.Context) {
+	user := model.User{}
+	gorn.DB.First(&user, ctx.Param("id"))
+	user.Delete(&user)
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": gorn.T(ctx, "Deleted successfully")})
+}
+
+func (c *UserController) Actions(ctx *gin.Context) {
+
+	type Actions struct {
+		Action string `form:"action" binding:"required"`
+		Ids    []uint `form:"ids[]" binding:"required"`
+	}
+	var body Actions
+	if err := ctx.ShouldBind(&body); err != nil {
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": gorn.T(ctx, "Complete required fields"), "data": err.Error()})
+		return
+	}
+
+	ids := body.Ids
+	user := model.User{}
+	gorn.DB.Delete(&user, ids)
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": gorn.T(ctx, "Deleted successfully")})
 }

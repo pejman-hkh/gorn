@@ -45,12 +45,25 @@ func InArray(str string, arr []string) bool {
 	return false
 }
 
+var files map[string][]byte
+
+func getFile(file string) []byte {
+	files = make(map[string][]byte)
+	if val, ok := files[file]; ok {
+		return val
+	}
+
+	byt, _ := ioutil.ReadFile(file)
+	files[file] = byt
+	return byt
+}
+
 func T(ctx *gin.Context, str string) string {
 	lang := "en"
 	if ctx.PostForm("lang") != "" {
 		lang = ctx.PostForm("lang")
 	}
-	byt, _ := ioutil.ReadFile("lang/" + lang + ".json")
+	byt := getFile("lang/" + lang + ".json")
 
 	var data map[string]string
 	if err := json.Unmarshal(byt, &data); err != nil {

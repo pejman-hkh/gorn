@@ -50,9 +50,20 @@ function SearchForm({ ...props }) {
     </Grid.Wrapper>
 }
 
+export function EditForm({ ...props }) {
+    return <MainForm {...props} disablePassword={true} />
+}
+
 export function MainForm({ ...props }) {
     let edit = props.edit
     const { t } = useTranslation();
+
+    const password = props?.disablePassword ? "" : <><Grid.Col6>
+        <Input type="text" name="password" defaultValue={edit?.password}>{t("Password")}</Input>
+    </Grid.Col6>
+        <Grid.Col6>
+            <Input type="text" name="repassword">{t("Re-Password")}</Input>
+        </Grid.Col6></>
 
     return <Grid.Wrapper key={edit?.id} {...props}>
         <Grid.Col6>
@@ -61,13 +72,7 @@ export function MainForm({ ...props }) {
         <Grid.Col6>
             <Input type="text" name="email" defaultValue={edit?.email}>{t("Email")}</Input>
         </Grid.Col6>
-        <Grid.Col6>
-            <Input type="text" name="password" defaultValue={edit?.password}>{t("Password")}</Input>
-        </Grid.Col6>
-        <Grid.Col6>
-            <Input type="text" name="repassword">{t("Re-Password")}</Input>
-        </Grid.Col6>
-
+        {password}
         <Grid.Col6>
             <Select name="status" title={t("Status")} defaultValue={edit?.status}>
                 <option value="1">{t("Enable")}</option>
@@ -92,10 +97,38 @@ export function MainForm({ ...props }) {
 
         <Grid.Col6>
 
-            <SelectSearch title={t("Group")} path="/admin/groups" name="group_id" edit={edit} defaultValue={edit?.group_id} />
+            <SelectSearch title={t("Group")} path="/admin/groups" name="group_id" edit={edit} defaultValue={edit?.group_id}>
+                <option>{t("Select")}</option>
+            </SelectSearch>
 
         </Grid.Col6>
     </Grid.Wrapper>
+}
+
+const LoginButton = () => {
+    const { t } = useTranslation();
+    const id = 'delete' + Math.random()
+    return <><button data-tooltip-target={id} type="button" className="bg-blue-400 inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg">
+        <svg className="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"  fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14v3m4-6V7a3 3 0 1 1 6 0v4M5 11h10a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1Z" />
+        </svg>
+    </button>
+        <List.Tooltip id={id}>{t("Login")}</List.Tooltip>
+    </>
+}
+
+const PasswordButton = () => {
+    const { t } = useTranslation();
+    const id = 'delete' + Math.random()
+    return <><button data-tooltip-target={id} type="button" className="bg-blue-400 inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg">
+        <svg className="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width={24} height={24} fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14v3m-3-6V7a3 3 0 1 1 6 0v4m-8 0h10a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1Z" />
+        </svg>
+
+
+    </button>
+        <List.Tooltip id={id}>{t("Change Password")}</List.Tooltip>
+    </>
 }
 
 export function Index() {
@@ -185,6 +218,8 @@ export function Index() {
                                 <List.ButtonDelete onClick={() => { deleteModal[1](true); setEdit(item) }}>
 
                                 </List.ButtonDelete>
+                                <LoginButton />
+                                <PasswordButton />
                             </List.TdAction>
                         </List.Tr>
                     ))}
@@ -194,7 +229,7 @@ export function Index() {
         </Form>
         <Pagination pagination={data?.data?.pagination} module={route}></Pagination>
 
-        <List.Modals {...{ SearchForm, method, title, route, edit, MainForm, addModal, editModal, searchModal, deleteModal, deleteAllModal, listForm }}></List.Modals >
+        <List.Modals {...{ EditForm, SearchForm, method, title, route, edit, MainForm, addModal, editModal, searchModal, deleteModal, deleteAllModal, listForm }}></List.Modals >
 
     </>
 }

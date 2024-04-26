@@ -21,6 +21,10 @@ function MenuText({ children, ...props }: any) {
     return <span {...props} className="ltr:ml-3 rtl:mr-3" sidebar-toggle-item="true">{children}</span>
 }
 function MenuLink({ children, ...props }: any) {
+    const context = useContext(DataContext) as Array<any>
+    const data = context[3]
+
+    console.log(data.authUser.group.permissions)
     const [className, setClassName] = useState("")
     const ref = useRef<any>(null)
     useEffect(() => {

@@ -55,7 +55,18 @@ func (a *BaseModel) Delete(model any) *gorm.DB {
 	log.UserId = reflect.Indirect(ref).FieldByName("UserId").Interface().(uint)
 	log.Module = table
 	log.Action = "delete"
-	log.Description = reflect.Indirect(ref).FieldByName("Title").Interface().(string)
+	field := reflect.Indirect(ref).FieldByName("Title")
+	title := ""
+	if field.IsValid() {
+		title = field.String()
+
+	} else {
+		name := reflect.Indirect(ref).FieldByName("Title")
+		if name.IsValid() {
+			title = name.String()
+		}
+	}
+	log.Description = title
 	gorn.DB.Save(&log)
 
 	return ret

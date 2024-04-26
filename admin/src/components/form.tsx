@@ -118,8 +118,9 @@ export function SelectSearch({ children, ...props }: any) {
 
 			data?.data?.list.map((item: any) => {
 				list.push({ value: item.id, label: item.title })
-				if (props?.edit?.id == item.id)
+				if (props?.edit?.id == item.id) {
 					setSelected({ value: item.id, label: item.title })
+				}
 			})
 
 			setList(list)
@@ -240,8 +241,8 @@ export default function Form({ children, ...props }: any) {
 
 		const dataForm = new FormData(e.target);
 		dataForm.append("lang", i18n.language)
-		if (!submitted)
-			return;
+		// if (!submitted)
+		// 	return;
 		const method = props.method?.toLowerCase() ?? "post";
 		if (method == "get") {
 			let to = props.action + '?' + new URLSearchParams((dataForm as any) || {})
