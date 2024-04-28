@@ -1,6 +1,8 @@
 import Guest from './components/layout/guest'
 import Layout from './components/layout/auth'
 import * as Categories from './shop/categories'
+import * as Variants from './shop/variants'
+import * as Products from './shop/products'
 import * as PostCategories from './post/categories'
 import * as PostType from './post/types'
 import * as PostPost from './post/posts'
@@ -29,6 +31,8 @@ import { resources } from './i18n'
 let routes = {
   '/': [Guest, Login],
   '/shop/categories': [Layout, Categories.Index],
+  '/shop/products': [Layout, Products.Index],
+  '/shop/variants': [Layout, Variants.Index],
   '/post/categories': [Layout, PostCategories.Index],
   '/post/types': [Layout, PostType.Index],
   '/post/posts': [Layout, PostPost.Index],
@@ -72,7 +76,7 @@ export default function App({ ...props }) {
     }
   }
 
-  const content = useRouter(baseUri, dataContext, routes, () => {
+  const content = useRouter( dataContext, routes, () => {
     loading.current.classList.remove('hidden')
   }, () => {
     loading.current.classList.add('hidden')

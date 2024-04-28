@@ -13,27 +13,28 @@ import (
 	"github.com/jinzhu/copier"
 )
 
-type CategoryForm struct {
-	Title       string `form:"title" binding:"required"`
-	Url         string `form:"url" binding:"required"`
-	CategoryId  uint   `form:"category_id"`
-	Status      uint8  `form:"status"`
-	Description string `form:"description"`
-	Priority    uint8  `form:"priority"`
-	Lang        string `form:"lang"`
+type ProductForm struct {
+	Title        string `form:"title" binding:"required"`
+	Url          string `form:"url" binding:"required"`
+	CategoryId   uint   `form:"category_id"`
+	Status       uint8  `form:"status"`
+	Values       string `form:"values"`
+	ShortContent string `form:"short_content"`
+	Content      string `form:"content"`
+	Lang         string `form:"lang"`
 }
 
-type CategoryController struct {
+type ProductController struct {
 	controller.BaseController
 }
 
-func InitCategory(r *gin.RouterGroup) {
-	index := &CategoryController{}
+func InitProduct(r *gin.RouterGroup) {
+	index := &ProductController{}
 	index.InitRoutes(r)
 }
 
-func (c *CategoryController) InitRoutes(r *gin.RouterGroup) {
-	g := r.Group("admin/shop/categories")
+func (c *ProductController) InitRoutes(r *gin.RouterGroup) {
+	g := r.Group("admin/shop/products")
 	g.Use(middle.IsAdmin())
 	{
 		g.GET("", c.Index)
@@ -47,8 +48,8 @@ func (c *CategoryController) InitRoutes(r *gin.RouterGroup) {
 	}
 }
 
-func (c *CategoryController) Index(ctx *gin.Context) {
-	list := []shopModel.ShopCategory{}
+func (c *ProductController) Index(ctx *gin.Context) {
+	list := []shopModel.ShopProduct{}
 	var p gorn.Paginator
 	search := []string{"title", "url"}
 	asearch := map[string]string{"title": "like", "url": "like"}
@@ -65,13 +66,13 @@ func (c *CategoryController) Index(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"status": 1, "data": map[string]any{"list": list, "pagination": p}})
 }
 
-func (c *CategoryController) Edit(ctx *gin.Context) {
-	model := shopModel.ShopCategory{}
+func (c *ProductController) Edit(ctx *gin.Context) {
+	model := shopModel.ShopProduct{}
 	c.ParentEdit(ctx, &model)
 }
 
-func (c *CategoryController) Update(ctx *gin.Context) {
-	var body CategoryForm
+func (c *ProductController) Update(ctx *gin.Context) {
+	var body ProductForm
 
 	if err := ctx.ShouldBind(&body); err != nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": gorn.T(ctx, "Complete required fields"), "data": err.Error()})
@@ -80,27 +81,27 @@ func (c *CategoryController) Update(ctx *gin.Context) {
 
 	user, _ := ctx.Get("authUser")
 	authUser := user.(*model.User)
-	category := shopModel.ShopCategory{}
-	gorn.DB.First(&category, ctx.Param("id"))
+	product := shopModel.ShopProduct{}
+	gorn.DB.First(&product, ctx.Param("id"))
 
-	copier.Copy(&category, &body)
-	category.UserId = authUser.ID
+	copier.Copy(&product, &body)
+	product.UserId = authUser.ID
 
-	save := category.Save(category)
+	save := product.Save(product)
 	if save.Error != nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": fmt.Sprintf("Error on save: %v", save.Error)})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": gorn.T(ctx, "Saved successfully"), "data": map[string]any{"model": category}})
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": gorn.T(ctx, "Saved successfully"), "data": map[string]any{"model": product}})
 }
 
-func (c *CategoryController) Create(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, gin.H{"status": 1, "data": map[string]any{"model": shopModel.ShopCategory{}}})
+func (c *ProductController) Create(ctx *gin.Context) {
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "data": map[string]any{"model": shopModel.ShopProduct{}}})
 }
 
-func (c *CategoryController) Store(ctx *gin.Context) {
-	var body CategoryForm
+func (c *ProductController) Store(ctx *gin.Context) {
+	var body ProductForm
 
 	if err := ctx.ShouldBind(&body); err != nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": gorn.T(ctx, "Complete required fields"), "data": err.Error()})
@@ -110,11 +111,11 @@ func (c *CategoryController) Store(ctx *gin.Context) {
 	user, _ := ctx.Get("authUser")
 	authUser := user.(*model.User)
 
-	category := &shopModel.ShopCategory{}
-	copier.Copy(category, body)
-	category.UserId = authUser.ID
+	product := &shopModel.ShopProduct{}
+	copier.Copy(product, body)
+	product.UserId = authUser.ID
 
-	save := category.Save(category)
+	save := product.Save(product)
 
 	if save.Error != nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": fmt.Sprintf("Error on save: %v", save.Error)})
@@ -124,14 +125,14 @@ func (c *CategoryController) Store(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": gorn.T(ctx, "Saved successfully")})
 }
 
-func (c *CategoryController) Destroy(ctx *gin.Context) {
-	category := shopModel.ShopCategory{}
-	gorn.DB.First(&category, ctx.Param("id"))
-	gorn.DB.Delete(&category)
+func (c *ProductController) Destroy(ctx *gin.Context) {
+	product := shopModel.ShopProduct{}
+	gorn.DB.First(&product, ctx.Param("id"))
+	gorn.DB.Delete(&product)
 	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": gorn.T(ctx, "Deleted successfully")})
 }
 
-func (c *CategoryController) Actions(ctx *gin.Context) {
+func (c *ProductController) Actions(ctx *gin.Context) {
 
 	type Actions struct {
 		Action string `form:"action" binding:"required"`
@@ -144,7 +145,7 @@ func (c *CategoryController) Actions(ctx *gin.Context) {
 	}
 
 	ids := body.Ids
-	category := shopModel.ShopCategory{}
-	gorn.DB.Delete(&category, ids)
+	product := shopModel.ShopProduct{}
+	gorn.DB.Delete(&product, ids)
 	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": gorn.T(ctx, "Deleted successfully")})
 }

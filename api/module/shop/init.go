@@ -10,8 +10,12 @@ import (
 
 func Init(g *gin.RouterGroup) {
 	shopController.InitCategory(g)
+	shopController.InitVariant(g)
+	shopController.InitProduct(g)
 }
 
 func Migirations() {
 	gorn.DB.AutoMigrate(shopModel.ShopCategory{})
+	gorn.DB.AutoMigrate(shopModel.ShopVariant{})
+	gorn.DB.AutoMigrate(shopModel.ShopProduct{})
 }

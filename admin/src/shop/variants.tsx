@@ -1,7 +1,7 @@
 import Pagination from "../components/pagination"
 import * as List from "../components/list"
 import * as Grid from "../components/grid"
-import Form, { Editor, Input, Select, SelectSearch, Textarea } from "../components/form"
+import Form, { Input, Select, SelectSearch, Textarea } from "../components/form"
 import { useContext, useRef, useState } from "react"
 import { DataContext } from "../router/data"
 import Link from "../router/link"
@@ -17,15 +17,15 @@ export function MainForm({ ...props }) {
 
     return <Grid.Wrapper key={edit?.id} {...props}>
         <Grid.Col6>
-            <Input type="text" name="title" defaultValue={edit?.title}>{t("Title")}</Input>
-        </Grid.Col6>
-        <Grid.Col6>
-            <Input type="text" name="url" defaultValue={edit?.url}>{t("Url")}</Input>
-        </Grid.Col6>
-        <Grid.Col6>
-            <Input type="text" name="priority" defaultValue={edit?.priority}>{t("Priority")}</Input>
+            <SelectSearch title={t("Category")} path="/admin/shop/categories" name="category_id" edit={edit} defaultValue={edit?.category_id}>
+                <option value="0">{t("Select")}</option>
+            </SelectSearch>
         </Grid.Col6>
 
+
+        <Grid.Col6>
+            <Input type="text" name="title" defaultValue={edit?.title}>{t("Title")}</Input>
+        </Grid.Col6>
 
         <Grid.Col6>
             <Select name="status" title={t("Status")} defaultValue={edit?.status}>
@@ -33,14 +33,9 @@ export function MainForm({ ...props }) {
                 <option value="0">{t("Disable")}</option>
             </Select>
         </Grid.Col6>
-        <Grid.Col6>
-            <SelectSearch title={t("Parent Category")} path="/admin/shop/categories" name="category_id" edit={edit} defaultValue={edit?.category_id}>
-                <option value="0">{t("Main")}</option>
-            </SelectSearch>
-        </Grid.Col6>
- 
+
         <Grid.Span6>
-            <Editor noeditor={props?.noeditor || false} name="description" title={t("Description")} defaultValue={edit?.description || ""} />
+            <Textarea rows={4} name="values" defaultValue={edit?.values || ""}>{t("Values")}</Textarea>
         </Grid.Span6>
 
     </Grid.Wrapper>
@@ -48,8 +43,8 @@ export function MainForm({ ...props }) {
 
 export function Index() {
 
-    const route = "/shop/categories"
-    const title = "Category"
+    const route = "/shop/variants"
+    const title = "Variant"
 
     const dataContext = useContext(DataContext) as any
     const data = dataContext.data[0]

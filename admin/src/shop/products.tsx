@@ -1,7 +1,7 @@
 import Pagination from "../components/pagination"
 import * as List from "../components/list"
 import * as Grid from "../components/grid"
-import Form, { Editor, Input, Select, SelectSearch, Textarea } from "../components/form"
+import Form, { Input, Select, Editor, SelectSearch } from "../components/form"
 import { useContext, useRef, useState } from "react"
 import { DataContext } from "../router/data"
 import Link from "../router/link"
@@ -10,22 +10,33 @@ import { useTranslation } from 'react-i18next';
 import * as BreadCrumb from "../components/breadcrumb"
 
 
+export function SearchForm() {
+    return <MainForm noeditor="true" />
+}
 
 export function MainForm({ ...props }) {
     let edit = props.edit
     const { t } = useTranslation();
 
+    const typeSelect = useState<any>({})
+    const selected = typeSelect[0]
+
     return <Grid.Wrapper key={edit?.id} {...props}>
+
+
+        <Grid.Col6>
+            <SelectSearch default={true} title={t("Category")} path={"/admin/shop/categories"} name="category_id" edit={edit} defaultValue={edit?.category_id}>
+            <option value="">{t("Select")}</option>
+            </SelectSearch>
+        </Grid.Col6>
+
+
         <Grid.Col6>
             <Input type="text" name="title" defaultValue={edit?.title}>{t("Title")}</Input>
         </Grid.Col6>
         <Grid.Col6>
             <Input type="text" name="url" defaultValue={edit?.url}>{t("Url")}</Input>
         </Grid.Col6>
-        <Grid.Col6>
-            <Input type="text" name="priority" defaultValue={edit?.priority}>{t("Priority")}</Input>
-        </Grid.Col6>
-
 
         <Grid.Col6>
             <Select name="status" title={t("Status")} defaultValue={edit?.status}>
@@ -33,14 +44,20 @@ export function MainForm({ ...props }) {
                 <option value="0">{t("Disable")}</option>
             </Select>
         </Grid.Col6>
+
         <Grid.Col6>
-            <SelectSearch title={t("Parent Category")} path="/admin/shop/categories" name="category_id" edit={edit} defaultValue={edit?.category_id}>
-                <option value="0">{t("Main")}</option>
-            </SelectSearch>
+            <Select name="comment_allow" title={t("Has Comment")} defaultValue={edit?.comment_allow}>
+                <option value="true">{t("Has")}</option>
+                <option value="false">{t("Doesn't have")}</option>
+            </Select>
         </Grid.Col6>
- 
+
         <Grid.Span6>
-            <Editor noeditor={props?.noeditor || false} name="description" title={t("Description")} defaultValue={edit?.description || ""} />
+            <Editor noeditor={props?.noeditor || false} name="short_content" title={t("Short Content")} defaultValue={edit?.short_content || ""} />
+        </Grid.Span6>
+
+        <Grid.Span6>
+            <Editor noeditor={props?.noeditor || false} name="content" title={t("Content")} defaultValue={edit?.content || ""} />
         </Grid.Span6>
 
     </Grid.Wrapper>
@@ -48,8 +65,8 @@ export function MainForm({ ...props }) {
 
 export function Index() {
 
-    const route = "/shop/categories"
-    const title = "Category"
+    const route = "/shop/products"
+    const title = "Product"
 
     const dataContext = useContext(DataContext) as any
     const data = dataContext.data[0]
@@ -59,6 +76,7 @@ export function Index() {
     const searchModal = useState(false)
     const addModal = useState(false)
     const deleteModal = useState(false)
+    const mediaModal = useState(false)
     const deleteAllModal = useState(false)
     const [actionValue, setActionValue] = useState("")
 
@@ -69,9 +87,8 @@ export function Index() {
     }
 
     const listForm = useRef<any>(null)
+
     const { t } = useTranslation();
-
-
     const ModuleBreadcrumb = <BreadCrumb.Item to="/shop/dashboard">{t("Shop")}</BreadCrumb.Item>
 
     return <>
@@ -88,6 +105,8 @@ export function Index() {
                         </List.Th>
                         <List.Th width="20%">{t("Title")}</List.Th>
                         <List.Th>{t("User")}</List.Th>
+                        <List.Th>{t("Type")}</List.Th>
+                        <List.Th>{t("Attachments")}</List.Th>
                         <List.Th>{t("Url")}</List.Th>
                         <List.Th>{t("Status")}</List.Th>
                         <List.Th>{t("Date")}</List.Th>
@@ -107,6 +126,9 @@ export function Index() {
 
 
                             <List.Td><Link to={"/users?id=" + item?.user?.id}>{item?.user?.name}</Link></List.Td>
+                            <List.Td><Link to={"/post/types?id=" + item?.type?.id}>{item?.type?.title}</Link></List.Td>
+                            <List.Td><Link to={"/medias?module=" + encodeURIComponent( route.substr(1) )+ "&item_id=" + item?.id}>{t("Attachments")}</Link></List.Td>
+
                             <List.TdText>
                                 {item.url}
                             </List.TdText>
@@ -121,12 +143,9 @@ export function Index() {
                                 {item.updated_at != item.created_at ? <DateTime time={item.updated_at} /> : ""}
                             </List.Td>
                             <List.TdAction>
-                                <List.ButtonEdit onClick={(e: any) => editHandler(e, item)}>
-
-                                </List.ButtonEdit>
-                                <List.ButtonDelete onClick={() => { deleteModal[1](true); setEdit(item) }}>
-
-                                </List.ButtonDelete>
+                                <List.ButtonFile onClick={() => { mediaModal[1](true); setEdit(item) }}></List.ButtonFile>
+                                <List.ButtonEdit onClick={(e: any) => editHandler(e, item)}></List.ButtonEdit>
+                                <List.ButtonDelete onClick={() => { deleteModal[1](true); setEdit(item) }}></List.ButtonDelete>
                             </List.TdAction>
                         </List.Tr>
                     ))}
@@ -136,7 +155,7 @@ export function Index() {
         </Form>
         <Pagination pagination={data?.data?.pagination} module={route}></Pagination>
 
-        <List.Modals {...{ title, route, edit, MainForm, addModal, editModal, searchModal, deleteModal, deleteAllModal, listForm }}></List.Modals >
+        <List.Modals {...{ mediaModal, SearchForm, title, route, edit, MainForm, addModal, editModal, searchModal, deleteModal, deleteAllModal, listForm }}></List.Modals >
 
     </>
 }

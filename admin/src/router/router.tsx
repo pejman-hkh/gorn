@@ -21,9 +21,9 @@ function getPathName() {
     pathName += '/'
   return pathName
 }
-export default function useRouter(baseUri: string, dataContext: any, routes: any, beforeLoad: any, afterLoad: any) {
+export default function useRouter( dataContext: any, routes: any, beforeLoad: any, afterLoad: any) {
   const ref = useRef(false);
-
+  const baseUri = dataContext.baseUri
   const [path, setPath] = useState(getPathName())
   const setData = dataContext.data[1]
   const [access, setAccess] = dataContext.access
