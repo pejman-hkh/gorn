@@ -11,18 +11,18 @@ import { ContentState, convertFromHTML, convertToRaw, EditorState } from 'draft-
 
 export function Alert({ children, ...props }: any) {
 
-	let className = 'hidden'
+	let className: string = "hidden"
+
 
 	if (props.type == "danger") {
-		className = 'alert p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400'
+		className = ('alert p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400')
 	} else if (props.type == "success") {
-		className = 'alert p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400'
+		className = ('alert p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400')
+	} else if (props.type == "hidden") {
+		className = ("hidden")
 	}
 
-	if (props?.alertclass)
-		className += ' ' + props.alertclass;
-
-	return <div className={className} ref={props?.fref} role="alert">{children}</div>
+	return <div className={props?.alertclass + " " + className} ref={props?.fref} role="alert">{children}</div>
 }
 
 export function Label({ children, ...props }: any) {
@@ -227,7 +227,7 @@ const toJson = (f: any) => {
 
 export default function Form({ children, ...props }: any) {
 	const dataContext = useContext(DataContext) as any
-	
+
 	const baseUri = dataContext?.baseUri
 
 	const [alertText, setAlertText] = useState(null)
@@ -321,6 +321,10 @@ export default function Form({ children, ...props }: any) {
 				}
 			})
 	}
+
+	useEffect(() => {
+		setAlertType("hidden")
+	}, [props?.action])
 
 	return <form ref={props.fref} {...props} className={props?.disableclass ? "" : (props?.className ? props?.className : " mt-8 space-y-6")} onSubmit={submitHandler}><Alert alertclass={props?.alertclass} fref={alertElement} type={alertType}>{alertText}</Alert>{children}</form>
 }

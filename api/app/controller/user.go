@@ -150,12 +150,28 @@ func (c *UserController) Update(ctx *gin.Context) {
 		return
 	}
 
-	authUser, _ := ctx.Get("authUser")
+	authUser1, _ := ctx.Get("authUser")
+	authUser := authUser1.(*model.User)
 	user := model.User{}
 	gorn.DB.First(&user, ctx.Param("id"))
 
+	if !authUser.IsMain && user.IsMain {
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": gorn.T(ctx, "You cannot update main user!")})
+		return
+	}
+
+	if !authUser.IsMain && body.IsMain {
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": gorn.T(ctx, "You cannot create main user!")})
+		return
+	}
+
+	if authUser.ID == user.ID {
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": gorn.T(ctx, "You cannot update yourself!")})
+		return
+	}
+
 	copier.Copy(&user, &body)
-	user.UserId = authUser.(*model.User).ID
+	user.UserId = authUser.ID
 
 	save := user.Save(&user)
 	if save.Error != nil {
@@ -178,8 +194,14 @@ func (c *UserController) Store(ctx *gin.Context) {
 		return
 	}
 
+	pass := ctx.PostForm("password")
+	if pass == "" || len(pass) < 6 {
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": gorn.T(ctx, "Password should be greater than 6 character")})
+		return
+	}
 	if ctx.PostForm("password") != ctx.PostForm("repassword") {
-		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": gorn.T(ctx, "Password sould be same")})
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": gorn.T(ctx, "Password should be same!")})
+		return
 	}
 
 	user := &model.User{}
@@ -190,11 +212,17 @@ func (c *UserController) Store(ctx *gin.Context) {
 		return
 	}
 
-	authUser, _ := ctx.Get("authUser")
+	authUser1, _ := ctx.Get("authUser")
+	authUser := authUser1.(*model.User)
+
+	if !authUser.IsMain && body.IsMain {
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": gorn.T(ctx, "No main user could not create the main user !")})
+		return
+	}
 
 	//user := &model.User{}
 	copier.Copy(user, body)
-	user.UserId = authUser.(*model.User).ID
+	user.UserId = authUser.ID
 	user.Password = ctx.PostForm("password")
 	save := user.Save(user)
 

@@ -29,6 +29,8 @@ func (gr *Gorn) Init() {
 		DisableForeignKeyConstraintWhenMigrating: true,
 	})
 
+	//DB.Set("gorm:auto_preload", true)
+
 	// sqlDB, _ := DB.DB()
 	// sqlDB.SetMaxIdleConns(10)
 	// sqlDB.SetMaxOpenConns(100)

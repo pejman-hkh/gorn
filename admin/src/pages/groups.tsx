@@ -24,23 +24,18 @@ export function MainForm({ ...props }) {
     const { t } = useTranslation();
     const dataContext = useContext(DataContext) as any
     const menu = dataContext.menu[0]
+    let modules: any = []
     if (menu?.current) {
 
         menu?.current.querySelectorAll("a").each(function (this: any) {
-            console.log(this?.href)
+            const arr: any = (this?.href.split("/"))
+            arr.shift()
+            arr.shift()
+            arr.shift()
+            arr.shift()
+            modules.push(arr.join("/"))
         })
     }
-
-    const modules: any = [
-        ("users"),
-        ("groups"),
-        ("menus"),
-        ("settings"),
-        ("medias"),
-        ("posts"),
-        ("pages"),
-        ("comments"),
-    ]
 
     const permissions = [
         ("Create"),
@@ -82,18 +77,21 @@ export function MainForm({ ...props }) {
             <List.Table>
                 <List.Tr>
                     <List.Th></List.Th>{permissions.map((per: string) => <List.Th>
-                        {per}
+                        {t(per)}
                         <br />
+                       
                         <Checkbox onChange={(e: any) => { checkAll(e, per) }}>{t("All")}</Checkbox>
                     </List.Th>)}
                 </List.Tr>
                 {modules.map((module: string) => <List.Tr key={module}>
-                    <List.Th>
-                        {module}
-                        <br /><Checkbox onChange={(e: any) => { checkAllModel(e, module) }}>{t("All")}</Checkbox>
-                    </List.Th>
+                    <List.Td>
+                        {t(module)}
+                        <br /><Checkbox onChange={(e: any) => { checkAllModel(e, module.replace("/","_")) }}>{t("All")}</Checkbox>
+                        <input type="hidden" name={"permission["+module.toLocaleLowerCase()+"][default]"} value="1" />
+                    </List.Td>
                     {permissions.map((per: string) =>
-                        <List.Th key={module + per}><Checkbox defaultChecked={permissionArray[module.toLocaleLowerCase()] ? permissionArray[module.toLocaleLowerCase()][per.toLocaleLowerCase()] : false} className={per + " " + module} name={"permission[" + module.toLocaleLowerCase() + "][" + per.toLocaleLowerCase() + "]"} id={module + per}>{per}</Checkbox></List.Th>
+                        <List.Th key={module + per}>
+                            <Checkbox defaultChecked={permissionArray[module.toLocaleLowerCase()] ? permissionArray[module.toLocaleLowerCase()][per.toLocaleLowerCase()] : false} className={per + " " + module.replace("/", "_")} name={"permission[" + module.toLocaleLowerCase() + "][" + per.toLocaleLowerCase() + "]"} id={module + per}>{t(per)}</Checkbox></List.Th>
                     )}
                 </List.Tr>
                 )}

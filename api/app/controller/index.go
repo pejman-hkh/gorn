@@ -3,6 +3,7 @@ package controller
 import (
 	"gorn/app/middle"
 	"gorn/app/model"
+	"gorn/gorn"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -35,7 +36,12 @@ func (c *IndexController) Data(ctx *gin.Context) {
 	user, _ := ctx.Get("authUser")
 	set := make(map[string]any)
 	if user != nil {
-		set["authUser"] = user.(*model.User)
+		authUser := user.(*model.User)
+		group := model.Group{}
+		group.ID = authUser.GroupId
+		gorn.DB.Preload("Permissions").First(&group)
+		set["authUser"] = authUser
+		set["group"] = group
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"status": 1, "data": set})

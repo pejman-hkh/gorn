@@ -97,16 +97,16 @@ export function MainForm({ ...props }) {
         </Grid.Col6>
 
         <Grid.Col6>
-            <Select name="is_admin" title={t("Is Admin")} defaultValue={edit?.isadmin}>
-                <option value="1">{t("Admin")}</option>
-                <option value="0">{t("User")}</option>
+            <Select name="is_admin" title={t("Is Admin")} defaultValue={edit?.is_admin}>
+                <option value="true">{t("Admin")}</option>
+                <option value="false">{t("User")}</option>
             </Select>
         </Grid.Col6>
 
         <Grid.Col6>
-            <Select name="is_main" title={t("Is Main")} defaultValue={edit?.ismain}>
-                <option value="1">{t("Main")}</option>
-                <option value="0">{t("Not main")}</option>
+            <Select name="is_main" title={t("Is Main")} defaultValue={edit?.is_main}>
+                <option value="false">{t("Not main")}</option>
+                <option value="true">{t("Main")}</option>
             </Select>
         </Grid.Col6>
 

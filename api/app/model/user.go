@@ -40,19 +40,32 @@ func (u *User) HasPermission(ctx *gin.Context) bool {
 
 	pr := strings.Split(route, "/")
 	access := ""
-	module := pr[1]
-	if pr[2] == ":id" {
+
+	last := pr[len(pr)-1]
+
+	if last == ":id" {
 		if ctx.Request.Method == "POST" {
 			access = "update"
 		} else if ctx.Request.Method == "DELETE" {
 			access = "delete"
 		}
 
-	} else if pr[2] == "create" {
+	} else if last == "create" {
 		access = "create"
-	} else if pr[2] == "index" || pr[2] == "" {
-		access = "list"
+	} else if last == "index" {
+		access = "view"
+	} else {
+		access = "view"
 	}
+
+	module := ""
+	if access == "view" && last != "index" {
+		module = strings.Join(pr[4:], "/")
+	} else {
+		module = strings.Join(pr[4:len(pr)-1], "/")
+	}
+
+	fmt.Printf("aaaaaaaaaaaaaaaaaaaaaaaaaaaa %s %s", module, access)
 
 	p := &Permission{}
 	gorn.DB.First(p, "module = ? and group_id = ? ", module, u.GroupId)
@@ -61,9 +74,9 @@ func (u *User) HasPermission(ctx *gin.Context) bool {
 		return true
 	} else if access == "delete" && p.Update {
 		return true
-	} else if access == "edit" && p.Update {
+	} else if access == "update" && p.Update {
 		return true
-	} else if access == "list" && p.View {
+	} else if access == "view" && p.View {
 		return true
 	}
 
@@ -128,6 +141,6 @@ func (u *User) Check(tokenString string) bool {
 		}
 	}
 
-	gorn.DB.First(u, claims["sub"])
+	gorn.DB.Preload("Group").First(u, claims["sub"])
 	return true
 }

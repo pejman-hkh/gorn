@@ -101,4 +101,9 @@ export default {
     "Priority" : "ترتیب",
     "Type" : "نوع",
     "Parent Category" : "دسته بندی اصلی",
+    "shop/settings" : "فروش / تنظیمات",
+    "shop/warranties" : "فروش / گارانتی",
+    "Change Password" : "تغییر رمز عبور",
+    "Change {{title}} Password" : "تغییر رمز عبور {{title}}",
+    "Toggle dark mode" : "تغییر حالت قالب",
 }

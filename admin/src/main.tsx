@@ -9,8 +9,6 @@ Api("/admin/data").then((mainData) => {
     ReactDOM.createRoot(document.getElementById('root')!).render(
       <App data={fetchData} mainData={mainData} />
     )
-  }).catch(() => {
-    window.location.href = ('/admin/login')
   })
 })
 

@@ -2,12 +2,13 @@ package middle
 
 import (
 	"gorn/app/model"
+	"gorn/gorn"
 
 	"github.com/gin-gonic/gin"
 )
 
 func AccessDenied(ctx *gin.Context) {
-	ctx.JSON(403, gin.H{"status": 0, "msg": "403 access denied"})
+	ctx.JSON(403, gin.H{"status": 0, "msg": gorn.T(ctx, "403 access denied")})
 	ctx.Abort()
 }
 

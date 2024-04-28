@@ -3,11 +3,20 @@ import Link from "../router/link"
 
 import * as Svg from "./svg"
 import { resources } from "../i18n"
-import { useContext, useEffect, useRef, useState } from "react"
+import { useContext, useEffect, useLayoutEffect, useRef, useState } from "react"
 import { DataContext } from "../router/data"
 
 function MenuItem({ children, ...props }: any) {
-    return <li className="rtl:mr-3" {...props}>{children}</li>
+    const ref = useRef<any>(null)
+    const [className, setClass ] = useState<string>("hidden")
+    useEffect(() => {
+        if( ref.current.querySelectorAll("a").length == 0 ) {
+            setClass("hidden")
+        } else {
+            setClass("")
+        }
+    }, [])
+    return <li ref={ref} className={className+" rtl:mr-3"} {...props}>{children}</li>
 }
 function MenuSvg({ children, ...props }: any) {
     return <svg {...props}
@@ -20,23 +29,47 @@ function MenuSvg({ children, ...props }: any) {
 function MenuText({ children, ...props }: any) {
     return <span {...props} className="ltr:ml-3 rtl:mr-3" sidebar-toggle-item="true">{children}</span>
 }
+
+let permissions: any = {}
+
+function getPermissions(data: any) {
+    if (Object.keys(permissions).length > 0) {
+        return permissions
+    }
+
+    for (let x in data.group.permissions) {
+        let v = data.group.permissions[x]
+        permissions[v.module] = v;
+    }
+    return permissions
+}
+
 function MenuLink({ children, ...props }: any) {
-    const context = useContext(DataContext) as any
-    const data = context.mainData
-    console.log(data)
     const [className, setClassName] = useState("")
     const ref = useRef<any>(null)
+    const context = useContext(DataContext) as any
+    const data = context.mainData
+    const permissoin = getPermissions(data)
+    const per = permissoin[props.to.substr(1)]
+    let mclass: string = ""
+    if (data.authUser.is_main == 0 && !per.view) {
+        return <></>
+    }
+
     useEffect(() => {
-        if( props.to == window.location.pathname.replace(/\/admin/, "")) {
+        if (props.to == window.location.pathname.replace(/\/admin/, "")) {
             const ul = ref.current?.parentElement.parentElement
             ul.classList.remove("hidden")
             setClassName("bg-gray-100 dark:bg-gray-700 ")
         } else {
             setClassName("")
         }
+
     }, [window.location.href])
+
+
     return <Link fref={ref} {...props} to={props.to}
-        className={className+"flex items-center p-2 text-base text-gray-900 rounded-lg hover:bg-gray-100 group dark:text-gray-200 dark:hover:bg-gray-700"}>
+        className={mclass+className + "flex items-center p-2 text-base text-gray-900 rounded-lg hover:bg-gray-100 group dark:text-gray-200 dark:hover:bg-gray-700"}>
         {children}
     </Link>
 }

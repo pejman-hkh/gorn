@@ -21,13 +21,12 @@ function getPathName() {
     pathName += '/'
   return pathName
 }
-export default function useRouter(baseUri:string, dataCallback: () => any, routes: any, beforeLoad:any, afterLoad:any) {
+export default function useRouter(baseUri: string, dataContext: any, routes: any, beforeLoad: any, afterLoad: any) {
   const ref = useRef(false);
-  const value = dataCallback()
 
   const [path, setPath] = useState(getPathName())
-  const setData = value.data[1]
-
+  const setData = dataContext.data[1]
+  const [access, setAccess] = dataContext.access
   useEffect(() => {
 
     if (!ref.current) {
@@ -52,27 +51,43 @@ export default function useRouter(baseUri:string, dataCallback: () => any, route
 
 
       window.addEventListener("updatedatacontext", () => {
-        Api(window.location.pathname).then(function (fetchData) {
+        Api(window.location.pathname).then(function (fetchData:any) {
+          if (fetchData.status == 403) {
+            setAccess(false)
+            afterLoad()
+            return
+          }
+          setAccess(true)
           setData(fetchData)
-        }).catch(function() {
-          window.location.href = ('/admin/login')
+          afterLoad()
         })
       })
-
+      
       window.addEventListener("locationchange", () => {
         beforeLoad()
-        Api(window.location.pathname).then(function (fetchData) {
+        Api(window.location.pathname).then(function (fetchData:any) {
+          if (fetchData.status == 403) {
+            setAccess(false)
+            afterLoad()
+            return
+          }
+          
+          setAccess(true)
           setData(fetchData)
           setPath(getPathName())
           afterLoad()
-        }).catch(function() {
-          window.location.href = ('/admin/login')
         })
-       
+
       })
       ref.current = true;
     }
   }, [])
+
+  if (!access) {
+    let val = routes["403"]
+    const content = RouteTo(val[0], val[1])
+    return <DataContext.Provider value={dataContext}>{content}</DataContext.Provider>
+  }
 
   let content
   let routeFound = false
@@ -82,7 +97,7 @@ export default function useRouter(baseUri:string, dataCallback: () => any, route
     if (route.substr(-1) != '/')
       route += '/'
 
-    if (path == baseUri+route) {
+    if (path == baseUri + route) {
       content = RouteTo(val[0], val[1])
       routeFound = true
       break
@@ -94,5 +109,5 @@ export default function useRouter(baseUri:string, dataCallback: () => any, route
     content = RouteTo(val[0], val[1])
   }
 
-  return <DataContext.Provider value={value}>{content}</DataContext.Provider>
+  return <DataContext.Provider value={dataContext}>{content}</DataContext.Provider>
 }

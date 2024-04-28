@@ -1,7 +1,6 @@
 package model
 
 import (
-	"fmt"
 	"gorn/app/hmodel"
 	"gorn/gorn"
 )
@@ -20,7 +19,7 @@ func (g *Group) SetPermission(userid uint, groupid uint, body map[string]any) {
 	}
 
 	permissions := body["permission"].(map[string]any)
-	fmt.Print(permissions)
+
 	for module, permission := range permissions {
 		per := Permission{}
 		check := gorn.DB.Where("group_id = ? and module = ? ", groupid, module).First(&per)

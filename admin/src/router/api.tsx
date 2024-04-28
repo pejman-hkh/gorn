@@ -37,9 +37,8 @@ export default function Api(path: string) {
             res = await data.json();
         }
 
-
         if (data?.status == 403) {
-            return Promise.reject(new Error("" + data?.status));
+            return Promise.resolve({"status": 403});
         }
 
         window.scrollTo(0, 0);

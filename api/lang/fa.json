@@ -1,5 +1,15 @@
 {
-	"Saved successfully" : "با موفقیت ذخیره شد",
-	"Deleted successfully" : "حذف شد",
-	"Complete required fields" : "موارد مورد نیاز را تکمیل کنید"
+	"Saved successfully": "با موفقیت ذخیره شد",
+	"Deleted successfully": "حذف شد",
+	"Complete required fields": "موارد مورد نیاز را تکمیل کنید",
+	"403 access denied": "403 شما به این قسمت دسترسی ندارید",
+	"You cannot update yourself!": "کاربری خودتان را نمیتوانید ویرایش کنید",
+	"You cannot update main user!": "کاربر اصلی را نمیتوانید ویرایش کنید",
+	"Password should be greater than 6 character": "رمز عبور باید بیش از ۶ کاراکتر باشد",
+	"No main user could not create the main user !": "کاربر غیر اصلی نمیتوانید کاربر اصلی ایجاد کند",
+	"This user exists !": "این کاربر وجود دارد",
+	"You cannot create main user!": "نمیتوانید کاربر اصلی ایجاد کنید",
+	"Password should be same!": "رمز عبور ها باید یکسان باشند",
+	"": "",
+	"end": "end"
 }
