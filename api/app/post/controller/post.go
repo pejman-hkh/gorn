@@ -14,15 +14,17 @@ import (
 )
 
 type PostForm struct {
-	Title       string `form:"title" binding:"required"`
-	Url         string `form:"url" binding:"required"`
-	PostId      uint   `form:"post_id"`
-	Status      uint8  `form:"status"`
-	Description string `form:"description"`
-	Priority    uint8  `form:"priority"`
-	TypeId      uint8  `form:"type_id"`
-	CategoryId  uint8  `form:"category_id"`
-	Lang        string `form:"lang"`
+	Title        string `form:"title" binding:"required"`
+	Url          string `form:"url" binding:"required"`
+	PostId       uint   `form:"post_id"`
+	Status       uint8  `form:"status"`
+	Content      string `form:"content"`
+	ShortContent string `form:"short_content"`
+	Priority     uint8  `form:"priority"`
+	TypeId       uint8  `form:"type_id"`
+	CategoryId   uint8  `form:"category_id"`
+	Lang         string `form:"lang"`
+	CommentAllow bool   `form:"comment_allow"`
 }
 
 type PostController struct {

@@ -118,7 +118,7 @@ export function SelectSearch({ children, ...props }: any) {
 
 			data?.data?.list.map((item: any) => {
 				list.push({ value: item.id, label: item.title })
-				if (props?.edit?.id == item.id) {
+				if (props?.defaultValue == item.id) {
 					setSelected({ value: item.id, label: item.title })
 				}
 			})

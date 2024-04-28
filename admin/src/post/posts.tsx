@@ -49,9 +49,9 @@ export function MainForm({ ...props }) {
         </Grid.Col6>
 
         <Grid.Col6>
-            <Select name="has_comment" title={t("Has Comment")} defaultValue={edit?.has_comment}>
-                <option value="1">{t("Has")}</option>
-                <option value="0">{t("Doesn't have")}</option>
+            <Select name="comment_allow" title={t("Has Comment")} defaultValue={edit?.comment_allow}>
+                <option value="true">{t("Has")}</option>
+                <option value="false">{t("Doesn't have")}</option>
             </Select>
         </Grid.Col6>
 

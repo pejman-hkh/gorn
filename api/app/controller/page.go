@@ -12,11 +12,13 @@ import (
 )
 
 type PageForm struct {
-	Title   string `form:"title" binding:"required"`
-	Url     string `form:"url" binding:"required"`
-	Status  uint8  `form:"status"`
-	Content string `form:"content"`
-	Lang    string `form:"lang"`
+	Title        string `form:"title" binding:"required"`
+	Url          string `form:"url" binding:"required"`
+	Status       uint8  `form:"status"`
+	Content      string `form:"content"`
+	ShortContent string `form:"short_content"`
+	Lang         string `form:"lang"`
+	CommentAllow bool   `form:"comment_allow"`
 }
 
 type PageController struct {
