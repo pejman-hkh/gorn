@@ -1,16 +1,17 @@
 package shopController
 
 import (
+	"encoding/json"
 	"fmt"
 	"gorn/app/controller"
 	"gorn/app/middle"
 	"gorn/app/model"
 	"gorn/gorn"
 	shopModel "gorn/module/shop/model"
+	"io"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/copier"
 )
 
 type ProductForm struct {
@@ -21,7 +22,7 @@ type ProductForm struct {
 	Values       string `form:"values"`
 	ShortContent string `form:"short_content"`
 	Content      string `form:"content"`
-	Lang         string `form:"lang"`
+	Stock        uint   `form:"stock"`
 }
 
 type ProductController struct {
@@ -53,7 +54,7 @@ func (c *ProductController) Index(ctx *gin.Context) {
 	var p gorn.Paginator
 	search := []string{"title", "url"}
 	asearch := map[string]string{"title": "like", "url": "like"}
-	result := gorn.DB.Preload("User").Scopes(c.Lang(ctx, &list)).Scopes(c.Search(ctx, &list, search)).Scopes(c.AdvancedSearch(ctx, &list, asearch)).Scopes(p.Paginate(ctx, &list)).Order("Id desc").Find(&list)
+	result := gorn.DB.Preload("User").Scopes(c.Search(ctx, &list, search)).Scopes(c.AdvancedSearch(ctx, &list, asearch)).Scopes(p.Paginate(ctx, &list)).Order("Id desc").Find(&list)
 	if result.Error != nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": result.Error})
 		return
@@ -72,10 +73,16 @@ func (c *ProductController) Edit(ctx *gin.Context) {
 }
 
 func (c *ProductController) Update(ctx *gin.Context) {
-	var body ProductForm
+	byt, _ := io.ReadAll(ctx.Request.Body)
 
-	if err := ctx.ShouldBind(&body); err != nil {
-		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": gorn.T(ctx, "Complete required fields"), "data": err.Error()})
+	var body map[string]any
+	if err := json.Unmarshal(byt, &body); err != nil {
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": fmt.Sprintf("Error on save: %s", err.Error())})
+		return
+	}
+
+	if body["title"] == "" || body["url"] == "" {
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": gorn.T(ctx, "Complete required fields")})
 		return
 	}
 
@@ -84,7 +91,7 @@ func (c *ProductController) Update(ctx *gin.Context) {
 	product := shopModel.ShopProduct{}
 	gorn.DB.First(&product, ctx.Param("id"))
 
-	copier.Copy(&product, &body)
+	//copier.Copy(&product, &body)
 	product.UserId = authUser.ID
 
 	save := product.Save(product)
@@ -101,10 +108,16 @@ func (c *ProductController) Create(ctx *gin.Context) {
 }
 
 func (c *ProductController) Store(ctx *gin.Context) {
-	var body ProductForm
+	byt, _ := io.ReadAll(ctx.Request.Body)
 
-	if err := ctx.ShouldBind(&body); err != nil {
-		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": gorn.T(ctx, "Complete required fields"), "data": err.Error()})
+	var body map[string]any
+	if err := json.Unmarshal(byt, &body); err != nil {
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": fmt.Sprintf("Error on save: %s", err.Error())})
+		return
+	}
+
+	if body["title"] == "" || body["url"] == "" {
+		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": gorn.T(ctx, "Complete required fields")})
 		return
 	}
 
@@ -112,7 +125,12 @@ func (c *ProductController) Store(ctx *gin.Context) {
 	authUser := user.(*model.User)
 
 	product := &shopModel.ShopProduct{}
-	copier.Copy(product, body)
+	product.Title = body["title"].(string)
+	product.Url = body["url"].(string)
+	product.CategoryId = body["category_id"].(uint)
+	product.Stock = body["stock"].(uint)
+
+	//copier.Copy(product, body)
 	product.UserId = authUser.ID
 
 	save := product.Save(product)

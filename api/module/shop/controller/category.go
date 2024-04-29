@@ -20,7 +20,6 @@ type CategoryForm struct {
 	Status      uint8  `form:"status"`
 	Description string `form:"description"`
 	Priority    uint8  `form:"priority"`
-	Lang        string `form:"lang"`
 }
 
 type CategoryController struct {
@@ -38,6 +37,7 @@ func (c *CategoryController) InitRoutes(r *gin.RouterGroup) {
 	{
 		g.GET("", c.Index)
 		g.GET("/index", c.Index)
+		g.GET("/param", c.Param)
 		g.GET("/create", c.Create)
 		g.POST("/create", c.Store)
 		g.GET("/:id/edit", c.Edit)
@@ -47,12 +47,21 @@ func (c *CategoryController) InitRoutes(r *gin.RouterGroup) {
 	}
 }
 
+func (c *CategoryController) Param(ctx *gin.Context) {
+	category := shopModel.ShopCategory{}
+	categories := []shopModel.ShopParamCategory{}
+	gorn.DB.Order("Id desc").First(&category)
+	gorn.DB.Preload("Questions").Where("category_id = ? ", category.ID).Order("Id desc").Find(&categories)
+
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "data": map[string]any{"data": category, "categories": categories}})
+}
+
 func (c *CategoryController) Index(ctx *gin.Context) {
 	list := []shopModel.ShopCategory{}
 	var p gorn.Paginator
 	search := []string{"title", "url"}
 	asearch := map[string]string{"title": "like", "url": "like"}
-	result := gorn.DB.Preload("User").Scopes(c.Lang(ctx, &list)).Scopes(c.Search(ctx, &list, search)).Scopes(c.AdvancedSearch(ctx, &list, asearch)).Scopes(p.Paginate(ctx, &list)).Order("Id desc").Find(&list)
+	result := gorn.DB.Preload("User").Scopes(c.Search(ctx, &list, search)).Scopes(c.AdvancedSearch(ctx, &list, asearch)).Scopes(p.Paginate(ctx, &list)).Order("Id desc").Find(&list)
 	if result.Error != nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": result.Error})
 		return

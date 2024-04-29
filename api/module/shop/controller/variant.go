@@ -18,7 +18,6 @@ type VariantForm struct {
 	CategoryId uint   `form:"category_id"`
 	Status     uint8  `form:"status"`
 	Values     string `form:"values"`
-	Lang       string `form:"lang"`
 }
 
 type VariantController struct {
@@ -50,7 +49,7 @@ func (c *VariantController) Index(ctx *gin.Context) {
 	var p gorn.Paginator
 	search := []string{"title", "url"}
 	asearch := map[string]string{"title": "like", "url": "like"}
-	result := gorn.DB.Preload("User").Scopes(c.Lang(ctx, &list)).Scopes(c.Search(ctx, &list, search)).Scopes(c.AdvancedSearch(ctx, &list, asearch)).Scopes(p.Paginate(ctx, &list)).Order("Id desc").Find(&list)
+	result := gorn.DB.Preload("User").Scopes(c.Search(ctx, &list, search)).Scopes(c.AdvancedSearch(ctx, &list, asearch)).Scopes(p.Paginate(ctx, &list)).Order("Id desc").Find(&list)
 	if result.Error != nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": result.Error})
 		return

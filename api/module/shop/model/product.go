@@ -7,7 +7,6 @@ import (
 
 type ShopProduct struct {
 	model.BaseModel
-	Lang         string       `gorm:"size:20;index" json:"lang"`
 	Title        string       `gorm:"size:255" json:"title"`
 	Url          string       `gorm:"size:255;index:url_idx" json:"url"`
 	UserId       uint         `gorm:"index" json:"user_id"`
@@ -18,4 +17,5 @@ type ShopProduct struct {
 	Content      string       `json:"content"`
 	CommentAllow bool         `json:"comment_allow"`
 	Category     ShopCategory `json:"category"`
+	Stock        uint         `json:"stock"`
 }

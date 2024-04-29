@@ -138,6 +138,7 @@ export function SelectSearch({ children, ...props }: any) {
 		placeholder={t("Group")}
 		onChange={(item: any) => {
 			setSelected(item);
+			props?.onChange(item)
 		}}
 		onInputChange={InputHandler}
 		value={selected}

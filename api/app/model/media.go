@@ -6,7 +6,6 @@ import (
 
 type Media struct {
 	BaseModel
-	Lang        string      `gorm:"size:20;index" json:"lang"`
 	File        string      `gorm:"size:255" json:"file"`
 	Size        uint        `json:"size"`
 	UserId      uint        `gorm:"index" json:"user_id"`

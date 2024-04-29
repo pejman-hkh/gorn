@@ -23,7 +23,6 @@ type PostForm struct {
 	Priority     uint8  `form:"priority"`
 	TypeId       uint8  `form:"type_id"`
 	CategoryId   uint8  `form:"category_id"`
-	Lang         string `form:"lang"`
 	CommentAllow bool   `form:"comment_allow"`
 }
 
@@ -56,7 +55,7 @@ func (c *PostController) Index(ctx *gin.Context) {
 	var p gorn.Paginator
 	search := []string{"title", "url"}
 	asearch := map[string]string{"title": "like", "url": "like", "status": "=", "post_id": "=", "type_id": "=", "category_id": "="}
-	result := gorn.DB.Preload("User").Scopes(c.Lang(ctx, &list)).Preload("Category").Preload("Type").Scopes(c.Search(ctx, &list, search)).Scopes(c.AdvancedSearch(ctx, &list, asearch)).Scopes(p.Paginate(ctx, &list)).Order("Id desc").Find(&list)
+	result := gorn.DB.Preload("User").Preload("Category").Preload("Type").Scopes(c.Search(ctx, &list, search)).Scopes(c.AdvancedSearch(ctx, &list, asearch)).Scopes(p.Paginate(ctx, &list)).Order("Id desc").Find(&list)
 	if result.Error != nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": result.Error})
 		return

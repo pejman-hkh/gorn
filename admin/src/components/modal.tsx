@@ -88,11 +88,12 @@ export function Modal({ children, ...props }: any) {
         setShow(false)
     }
 
-    
+    const size = props?.size??"max-w-4xl"
+    const zindex = props?.zindex??"z-40"
     return <>
-        <div modal-backdrop="1" className={modalShow + " bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40"}></div>
+        <div modal-backdrop="1" className={modalShow + " bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 "+zindex}></div>
         <div ref={modal} {...props} onClick={clickHandler} className={modalShow + " fixed left-0 right-0 z-50 mt-5 mb-5 justify-center overflow-x-hidden overflow-y-auto top-4 md:inset-0 h-modal sm:h-full flex"}>
-            <div className="relative w-full h-full max-w-4xl px-4 md:h-auto">
+            <div className={size+" relative w-full h-full px-4 md:h-auto"}>
 
                 <div className="relative bg-white rounded-lg shadow dark:bg-gray-800">
 

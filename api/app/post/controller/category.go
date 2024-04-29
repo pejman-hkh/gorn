@@ -21,7 +21,6 @@ type CategoryForm struct {
 	Status      uint8  `form:"status"`
 	Description string `form:"description"`
 	Priority    uint8  `form:"priority"`
-	Lang        string `form:"lang"`
 }
 
 type CategoryController struct {
@@ -53,7 +52,7 @@ func (c *CategoryController) Index(ctx *gin.Context) {
 	var p gorn.Paginator
 	search := []string{"title", "url"}
 	asearch := map[string]string{"title": "like", "url": "like", "status": "=", "category_id": "=", "type_id": "="}
-	result := gorn.DB.Preload("User").Scopes(c.Lang(ctx, &list)).Preload("Type").Scopes(c.Search(ctx, &list, search)).Scopes(c.AdvancedSearch(ctx, &list, asearch)).Scopes(p.Paginate(ctx, &list)).Order("Id desc").Find(&list)
+	result := gorn.DB.Preload("User").Preload("Type").Scopes(c.Search(ctx, &list, search)).Scopes(c.AdvancedSearch(ctx, &list, asearch)).Scopes(p.Paginate(ctx, &list)).Order("Id desc").Find(&list)
 	if result.Error != nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": result.Error})
 		return

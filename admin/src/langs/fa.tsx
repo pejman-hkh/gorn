@@ -72,7 +72,7 @@ export default {
     "Variant" : "معیار قیمت",
     "Price" : "قیمت ها",
     "Category" : "دسته بندی",
-    "Product" : "محصولات",
+    "Product" : "محصول",
     "Parameter" : "پارامتر ها",
     "Gallery" : "گالری تصاویر",
     "Brand" : "برند",

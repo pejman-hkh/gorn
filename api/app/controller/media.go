@@ -18,7 +18,6 @@ type MediaForm struct {
 	Description string `form:"description"`
 	Module      string `form:"module"`
 	ItemId      uint   `form:"item_id"`
-	Lang        string `form:"lang"`
 }
 
 type MediaController struct {

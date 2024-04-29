@@ -307,11 +307,10 @@ export default function Side() {
                             <MenuChilds id="dropdown-shop">
                                 <MenuItem><MenuLink to="/shop/dashboard">{t("Dashboard")}</MenuLink></MenuItem>
                                 <MenuItem><MenuLink to="/shop/orders">{t("Order")}</MenuLink></MenuItem>
-                                <MenuItem><MenuLink to="/shop/variants">{t("Variant")}</MenuLink></MenuItem>
+                            
                                 <MenuItem><MenuLink to="/shop/categories">{t("Category")}</MenuLink></MenuItem>
                                 <MenuItem><MenuLink to="/shop/products">{t("Product")}</MenuLink></MenuItem>
                                 <MenuItem><MenuLink to="/shop/params">{t("Parameter")}</MenuLink></MenuItem>
-                                <MenuItem><MenuLink to="/shop/galleries">{t("Gallery")}</MenuLink></MenuItem>
                                 <MenuItem><MenuLink to="/shop/brands">{t("Brand")}</MenuLink></MenuItem>
                                 <MenuItem><MenuLink to="/shop/warranties">{t("Warranty")}</MenuLink></MenuItem>
                                 <MenuItem><MenuLink to="/shop/settings">{t("Setting")}</MenuLink></MenuItem>

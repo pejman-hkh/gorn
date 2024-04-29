@@ -4,7 +4,6 @@ import "gorn/app/hmodel"
 
 type Page struct {
 	BaseModel
-	Lang         string      `gorm:"size:20;index" json:"lang"`
 	Title        string      `gorm:"size:255" json:"title"`
 	Url          string      `gorm:"size:255;index:url_idx" json:"url"`
 	Content      string      `json:"content"`

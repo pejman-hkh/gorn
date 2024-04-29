@@ -7,7 +7,6 @@ import (
 
 type ShopVariant struct {
 	model.BaseModel
-	Lang       string      `gorm:"size:20;index" json:"lang"`
 	Title      string      `gorm:"size:255" json:"title"`
 	UserId     uint        `gorm:"index" json:"user_id"`
 	CategoryId uint        `gorm:"index"`
