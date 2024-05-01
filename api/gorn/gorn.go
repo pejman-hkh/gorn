@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"reflect"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gofor-little/env"
@@ -35,6 +36,11 @@ func (gr *Gorn) Init() {
 	// sqlDB.SetMaxIdleConns(10)
 	// sqlDB.SetMaxOpenConns(100)
 	// sqlDB.SetConnMaxLifetime(time.Hour)
+}
+
+func Atoi(str any) int {
+	a, _ := strconv.Atoi(str.(string))
+	return a
 }
 
 func InArray(str string, arr []string) bool {

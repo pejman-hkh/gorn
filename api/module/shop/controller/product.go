@@ -54,7 +54,7 @@ func (c *ProductController) Index(ctx *gin.Context) {
 	var p gorn.Paginator
 	search := []string{"title", "url"}
 	asearch := map[string]string{"title": "like", "url": "like"}
-	result := gorn.DB.Preload("User").Scopes(c.Search(ctx, &list, search)).Scopes(c.AdvancedSearch(ctx, &list, asearch)).Scopes(p.Paginate(ctx, &list)).Order("Id desc").Find(&list)
+	result := gorn.DB.Preload("User").Preload("Params").Preload("Params.Answer").Scopes(c.Search(ctx, &list, search)).Scopes(c.AdvancedSearch(ctx, &list, asearch)).Scopes(p.Paginate(ctx, &list)).Order("Id desc").Find(&list)
 	if result.Error != nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": result.Error})
 		return
@@ -93,8 +93,18 @@ func (c *ProductController) Update(ctx *gin.Context) {
 
 	//copier.Copy(&product, &body)
 	product.UserId = authUser.ID
+	product.Title = body["title"].(string)
+	product.Url = body["url"].(string)
+	product.Content = body["content"].(string)
+	product.ShortContent = body["short_content"].(string)
+	product.CategoryId = uint(gorn.Atoi(body["category_id"]))
+	product.Stock = uint(gorn.Atoi(body["stock"]))
+	product.UserId = authUser.ID
 
 	save := product.Save(product)
+
+	product.SaveQuestions(authUser.ID, product.ID, body)
+
 	if save.Error != nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": fmt.Sprintf("Error on save: %v", save.Error)})
 		return
@@ -127,13 +137,12 @@ func (c *ProductController) Store(ctx *gin.Context) {
 	product := &shopModel.ShopProduct{}
 	product.Title = body["title"].(string)
 	product.Url = body["url"].(string)
-	product.CategoryId = body["category_id"].(uint)
-	product.Stock = body["stock"].(uint)
-
-	//copier.Copy(product, body)
+	product.CategoryId = uint(gorn.Atoi(body["category_id"]))
+	product.Stock = uint(gorn.Atoi(body["stock"]))
 	product.UserId = authUser.ID
 
 	save := product.Save(product)
+	product.SaveQuestions(authUser.ID, product.ID, body)
 
 	if save.Error != nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": fmt.Sprintf("Error on save: %v", save.Error)})

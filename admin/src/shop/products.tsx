@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import * as BreadCrumb from "../components/breadcrumb"
 import Api from "../router/api"
 
+import CreatableSelect from 'react-select/creatable';
 
 export function SearchForm() {
     return <MainForm noeditor="true" />
@@ -29,15 +30,35 @@ function ButtonPrice({ children, ...props }: any) {
     </>
 }
 
+function paramsToQuestionIdIndex(params: any) {
+    let ret: any = {}
+    for (const x in params) {
+        const v = params[x]
+        ret[v.question_id] = v
+    }
+    return ret
+}
+
 export function MainForm({ ...props }) {
     let edit = props.edit
     const { t } = useTranslation();
     const [categories, setCategories] = useState<any>([])
+    const params = paramsToQuestionIdIndex(edit?.params)
+
+    const toOption = (options:any) => {
+        let ret: any = []
+        for( const x in options ) {
+            let v = options[x]
+            ret.push({label:v.title, value:v.title})
+        }
+        return ret
+    }
 
     return <Grid.Wrapper key={edit?.id} {...props}>
 
         <Grid.Span6>
             <SelectSearch onChange={(item: any) => {
+                if (!item?.value) return
                 Api("admin/shop/categories/param?nopage=true&id=" + encodeURIComponent(item?.value)).then((data: any) => {
                     let list: any[] = []
                     data?.data?.categories.map((item: any) => {
@@ -87,18 +108,23 @@ export function MainForm({ ...props }) {
 
         <Grid.Span6>
             {categories?.map((category: any) => {
-                return <Grid.Wrapper className="border-t border-gray-200 p-5">
+                return <Grid.Wrapper key={'category-' + category.id} className="border-t border-gray-200 p-5">
                     <Grid.Span6> <h1 className="mt-2 text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">{category.title}</h1></Grid.Span6>
                     {category.questions.map((question: any) => {
-                        return <Grid.Col6>
-                            <Input type="text" name={"question["+question?.id+"]"}>{question.title}</Input>
+                        return <Grid.Col6 key={'question-' + question.id}>
+                            {/*<Input type="text" name={"question['" + question?.id + "']"} defaultValue={params[question?.id]?.answer?.title}>{question.title}</Input>*/}
+
+                            {/* <SelectSearch isClearable={true} default={true} title={question.title} name={"question['" + question?.id + "']"} edit={edit} defaultValue={params[question?.id]?.answer?.title}>
+                                <option value="">{t("Select")}</option>
+                                {question?.answers.map((answer:any) => <option key={'answer-'+answer.id} value={answer.id}>{answer.title}</option>)}
+                            </SelectSearch> */}
+
+                            <CreatableSelect name={"question['" + question?.id + "']"} styles={{ control: (styles) => ({ ...styles, borderColor: "#D1D5DB", backgroundColor: "#F9FAFB" }) }} isClearable options={toOption(question?.answers)} defaultValue={{value : params[question?.id]?.answer?.title, label: params[question?.id]?.answer?.title}} />
                         </Grid.Col6>
                     })}
                 </Grid.Wrapper>
             })}
         </Grid.Span6>
-
-
     </Grid.Wrapper>
 }
 
@@ -130,7 +156,7 @@ export function Index() {
     const { t } = useTranslation();
     const ModuleBreadcrumb = <BreadCrumb.Item to="/shop/dashboard">{t("Shop")}</BreadCrumb.Item>
 
-    const method = "json"    
+    const method = "json"
     return <>
         <List.BreadCrumb {...{ ModuleBreadcrumb, title, route, setActionValue, deleteAllModal, addModal, setEdit, searchModal }}></List.BreadCrumb>
 

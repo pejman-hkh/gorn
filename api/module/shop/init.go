@@ -14,6 +14,7 @@ func Init(g *gin.RouterGroup) {
 	shopController.InitProduct(g)
 	shopController.InitParamCategory(g)
 	shopController.InitParamQuestion(g)
+	shopController.InitParamAnswer(g)
 }
 
 func Migirations() {
@@ -23,4 +24,5 @@ func Migirations() {
 	gorn.DB.AutoMigrate(shopModel.ShopParamCategory{})
 	gorn.DB.AutoMigrate(shopModel.ShopParamQuestion{})
 	gorn.DB.AutoMigrate(shopModel.ShopParamAnswer{})
+	gorn.DB.AutoMigrate(shopModel.ShopParam{})
 }

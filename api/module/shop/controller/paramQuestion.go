@@ -47,7 +47,7 @@ func (c *ParamQuestionController) Index(ctx *gin.Context) {
 	var p gorn.Paginator
 	search := []string{"title"}
 	asearch := map[string]string{"title": "like", "category_id": "="}
-	result := gorn.DB.Preload("User").Scopes(c.Search(ctx, &list, search)).Scopes(c.AdvancedSearch(ctx, &list, asearch)).Scopes(p.Paginate(ctx, &list)).Order("Id desc").Find(&list)
+	result := gorn.DB.Preload("User").Preload("Answers").Scopes(c.Search(ctx, &list, search)).Scopes(c.AdvancedSearch(ctx, &list, asearch)).Scopes(p.Paginate(ctx, &list)).Order("Id desc").Find(&list)
 	if result.Error != nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": result.Error})
 		return

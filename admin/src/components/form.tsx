@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useGoTo, useRouterUpdateDataContext } from "../router/router";
 import { DataContext } from "../router/data";
 import ReactSelect from 'react-select';
@@ -76,7 +76,7 @@ export function SelectSearch({ children, ...props }: any) {
 	let timeOut: number;
 
 	const InputHandler = (inputValue: any) => {
-		if (!inputValue) {
+		if (!inputValue && !props?.path) {
 			return
 		}
 
@@ -99,37 +99,50 @@ export function SelectSearch({ children, ...props }: any) {
 	}
 
 	useEffect(() => {
-
 		//if (props?.edit?.id || props?.default) {
 		setIsLoading(true)
-		const path = props.path.match(/\?/) ? props.path + "&" : props.path + "?";
+		const childs: any[] = React.Children.toArray(children)
 
-		Api(path + "nopage=true").then((data: any) => {
-			let list: any[] = []
+		let list: any[] = []
 
-			const childs: any[] = Array.isArray(children) ? children : [children]
-			childs.map((item: any) => {
-				if (item?.props) {
-					list.push({ value: item?.props?.value, label: item?.props?.children })
+		childs.map((item: any, i) => {
+			if (item?.props) {
+				list.push({ value: item?.props?.value, label: item?.props?.children })
+				if (props?.defaultValue == item?.props?.value) {
 					setSelected({ value: item?.props?.value, label: item?.props?.children })
+				} else {
+					if (i == 0)
+						setSelected({ value: item?.props?.value, label: item?.props?.children })
 				}
+			}
+		})
+
+		if (props?.path) {
+			const path = props.path.match(/\?/) ? props.path + "&" : props.path + "?";
+			Api(path + "nopage=true").then((data: any) => {
+				data?.data?.list.map((item: any) => {
+					list.push({ value: item.id, label: item.title })
+					if (props?.defaultValue == item.id) {
+						setSelected({ value: item.id, label: item.title })
+					}
+				})
+
+				setList(list)
+				setIsLoading(false)
 
 			})
-
-			data?.data?.list.map((item: any) => {
-				list.push({ value: item.id, label: item.title })
-				if (props?.defaultValue == item.id) {
-					setSelected({ value: item.id, label: item.title })
-				}
-			})
-
+		} else {
 			setList(list)
 			setIsLoading(false)
+		}
 
-		})
 		//}
 	}, [props.path])
 
+	useEffect(() => {
+		if (props?.onChange)
+			props?.onChange(selected)
+	}, [selected])
 	const { t } = useTranslation()
 
 	return <><Label htmlFor={props?.id}>{props.title}</Label><ReactSelect {...props}
@@ -138,7 +151,6 @@ export function SelectSearch({ children, ...props }: any) {
 		placeholder={t("Group")}
 		onChange={(item: any) => {
 			setSelected(item);
-			props?.onChange(item)
 		}}
 		onInputChange={InputHandler}
 		value={selected}
