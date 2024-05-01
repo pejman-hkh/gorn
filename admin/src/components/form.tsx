@@ -102,9 +102,7 @@ export function SelectSearch({ children, ...props }: any) {
 		//if (props?.edit?.id || props?.default) {
 		setIsLoading(true)
 		const childs: any[] = React.Children.toArray(children)
-
 		let list: any[] = []
-
 		childs.map((item: any, i) => {
 			if (item?.props) {
 				list.push({ value: item?.props?.value, label: item?.props?.children })
@@ -248,7 +246,7 @@ export default function Form({ children, ...props }: any) {
 
 	const { i18n } = useTranslation();
 
-	let submitted = true;
+	//let submitted = true;
 	const alertElement = useRef(0);
 	function submitHandler(e: any) {
 		e.preventDefault();
@@ -273,7 +271,7 @@ export default function Form({ children, ...props }: any) {
 			submit.innerHTML = 'Loading ...';
 		}
 
-		submitted = false;
+		//submitted = false;
 
 		let action = (props.action ? props.action : getPathName())
 
@@ -308,7 +306,7 @@ export default function Form({ children, ...props }: any) {
 				if (fetchData.data?.auth)
 					localStorage.setItem('auth', fetchData.data?.auth);
 
-				submitted = true;
+				//submitted = true;
 				if (fetchData.data?.redirect) window.location.href = fetchData.data.redirect;
 
 				if (fetchData.status == 1)

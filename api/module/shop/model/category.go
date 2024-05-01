@@ -12,7 +12,8 @@ type ShopCategory struct {
 	UserId      uint   `gorm:"index" json:"user_id"`
 	CategoryId  uint   `gorm:"index"`
 	Priority    uint
-	Status      uint8       `json:"status" gorm:"index:status_idx"`
-	User        hmodel.User `json:"user"`
-	Description string      `json:"description"`
+	Status      uint8         `json:"status" gorm:"index:status_idx"`
+	User        hmodel.User   `json:"user"`
+	Description string        `json:"description"`
+	Variants    []ShopVariant `gorm:"foreignKey:CategoryId" json:"variants"`
 }

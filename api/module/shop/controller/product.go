@@ -99,6 +99,7 @@ func (c *ProductController) Update(ctx *gin.Context) {
 	product.ShortContent = body["short_content"].(string)
 	product.CategoryId = uint(gorn.Atoi(body["category_id"]))
 	product.Stock = uint(gorn.Atoi(body["stock"]))
+	product.Status = uint8(gorn.Atoi(body["status"]))
 	product.UserId = authUser.ID
 
 	save := product.Save(product)
@@ -139,6 +140,7 @@ func (c *ProductController) Store(ctx *gin.Context) {
 	product.Url = body["url"].(string)
 	product.CategoryId = uint(gorn.Atoi(body["category_id"]))
 	product.Stock = uint(gorn.Atoi(body["stock"]))
+	product.Status = uint8(gorn.Atoi(body["status"]))
 	product.UserId = authUser.ID
 
 	save := product.Save(product)

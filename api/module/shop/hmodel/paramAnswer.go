@@ -1,7 +1,9 @@
 package hshopModel
 
+import "gorn/app/model"
+
 type ShopParamAnswer struct {
-	ID         uint   `gorm:"primarykey" json:"id"`
+	model.BaseModel
 	Title      string `json:"title"`
 	QuestionId uint   `gorm:"index"`
 }

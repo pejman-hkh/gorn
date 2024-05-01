@@ -1,7 +1,7 @@
 import Pagination from "../components/pagination"
 import * as List from "../components/list"
 import * as Grid from "../components/grid"
-import Form, { Input, Select, Editor, SelectSearch } from "../components/form"
+import Form, { Input, Select, Editor, SelectSearch, Label } from "../components/form"
 import { useContext, useRef, useState } from "react"
 import { DataContext } from "../router/data"
 import Link from "../router/link"
@@ -118,7 +118,7 @@ export function MainForm({ ...props }) {
                                 <option value="">{t("Select")}</option>
                                 {question?.answers.map((answer:any) => <option key={'answer-'+answer.id} value={answer.id}>{answer.title}</option>)}
                             </SelectSearch> */}
-
+                            <Label>{question.title}</Label>
                             <CreatableSelect name={"question['" + question?.id + "']"} styles={{ control: (styles) => ({ ...styles, borderColor: "#D1D5DB", backgroundColor: "#F9FAFB" }) }} isClearable options={toOption(question?.answers)} defaultValue={{value : params[question?.id]?.answer?.title, label: params[question?.id]?.answer?.title}} />
                         </Grid.Col6>
                     })}

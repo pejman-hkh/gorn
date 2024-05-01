@@ -50,7 +50,53 @@ export function MainForm({ ...props }) {
 }
 
 const VariantForm = ({ ...props }) => {
-    return <></>
+    const [category, setCategory] = props?.category
+    const { t } = useTranslation();
+    const [variants, setVariants] = useState<any>([])
+    const [check, setCheck] = useState(0)
+
+    useEffect(() => {
+        Api("admin/shop/categories?nopage=true&id=" + encodeURIComponent(category?.id)).then((data: any) => {
+            let list: any[] = []
+            data?.data?.list[0]?.variants.map((item: any) => {
+                list.push(item)
+            })
+            setVariants(list)
+        })
+    }, [check, category?.id])
+
+    return <>
+        <Form key={category?.id} method="post" action={"shop/variants/create"} alertclass="" success={() => { setCheck(check + 1) }}>
+            <input type="hidden" name="category_id" defaultValue={category?.id} />
+            <Grid.Wrapper key={category?.id}>
+                <Grid.Col6>
+                    <Input type="text" name="title">{t("Title")}</Input>
+                </Grid.Col6>
+                <Grid.Col6>
+                    <Label>&nbsp;</Label>
+                    <Button type="submit">{t("Add Variant")}</Button>
+                </Grid.Col6>
+            </Grid.Wrapper>
+        </Form>
+
+        <Grid.Span6>
+            <List.Table>
+                <List.Tbody>
+
+                    {variants.map((item: any) => {
+                        return <List.Tr>
+                            <List.Td>
+                                {item.title}
+                            </List.Td>
+                            <List.Td width="10%">
+                                <List.ButtonDelete ></List.ButtonDelete>
+                            </List.Td>
+                        </List.Tr>
+                    })}
+                </List.Tbody>
+            </List.Table>
+        </Grid.Span6>
+    </>
 }
 
 const ParamsForm = ({ ...props }) => {
@@ -70,38 +116,51 @@ const ParamsForm = ({ ...props }) => {
             setCategories(list)
         })
     }, [check, edit?.id])
-    return <><Form key={edit?.id} method="post" action={"shop/param/categories/create"} alertclass="" success={() => { setCheck(check + 1) }}>
-        <input type="hidden" name="category_id" defaultValue={edit?.id} />
-        <Grid.Wrapper key={edit?.id} {...props}>
-            <Grid.Col6>
-                <Input type="text" name="title">{t("Title")}</Input>
-            </Grid.Col6>
-            <Grid.Col6>
-                <Label>&nbsp;</Label>
-                <Button onClick={() => { }} type="submit">{t("Add Category")}</Button>
-            </Grid.Col6>
 
-            <Grid.Span6>
-                <List.Table>
-                    <List.Tbody>
 
-                        {categories.map((item: any) => {
-                            return <List.Tr>
-                                <List.Td>
+    const [action, setAction] = useState("")
+    useEffect(() => {
+        deleteForm?.current.requestSubmit()
+    }, [action])
+    const deleteForm = useRef<any>(null)
 
-                                    {item.title}
-                                </List.Td>
-                                <List.Td width="20%">
-                                    <Button color="gray" nopd={true} onClick={() => { questionModal[1](true); setCategory(item) }} type="button" className="px-2 py-1 ltr:mr-2 rtl:ml-2 bg-gray-500">{t("Add Question")}</Button>
-                                    <List.ButtonDelete ></List.ButtonDelete>
-                                </List.Td>
-                            </List.Tr>
-                        })}
-                    </List.Tbody>
-                </List.Table>
-            </Grid.Span6>
-        </Grid.Wrapper >
-    </Form>
+
+    return <>
+        <Form fref={deleteForm} key={Math.random()} method="delete" action={action} success={() => { setCheck(check + 1) }}>
+        </Form>
+
+        <Form key={edit?.id} method="post" action={"shop/param/categories/create"} alertclass="" success={() => { setCheck(check + 1) }}>
+            <input type="hidden" name="category_id" defaultValue={edit?.id} />
+            <Grid.Wrapper key={edit?.id} {...props}>
+                <Grid.Col6>
+                    <Input type="text" name="title">{t("Title")}</Input>
+                </Grid.Col6>
+                <Grid.Col6>
+                    <Label>&nbsp;</Label>
+                    <Button onClick={() => { }} type="submit">{t("Add Category")}</Button>
+                </Grid.Col6>
+
+                <Grid.Span6>
+                    <List.Table>
+                        <List.Tbody>
+
+                            {categories.map((item: any) => {
+                                return <List.Tr>
+                                    <List.Td>
+
+                                        {item.title}
+                                    </List.Td>
+                                    <List.Td width="20%">
+                                        <Button color="gray" nopd={true} onClick={() => { questionModal[1](true); setCategory(item) }} type="button" className="px-2 py-1 ltr:mr-2 rtl:ml-2 bg-gray-500">{t("Add Question")}</Button>
+                                        <List.ButtonDelete onClick={() => { setAction('/shop/param/categories/' + item?.id) }}></List.ButtonDelete>
+                                    </List.Td>
+                                </List.Tr>
+                            })}
+                        </List.Tbody>
+                    </List.Table>
+                </Grid.Span6>
+            </Grid.Wrapper >
+        </Form>
     </>
 }
 
@@ -123,18 +182,28 @@ const QuestionForm = ({ ...props }) => {
         })
     }, [check, category?.id])
 
-    return <><Form key={category?.id} method="post" action={"shop/param/questions/create"} alertclass="" success={() => { setCheck(check + 1) }}>
-        <input type="hidden" name="category_id" defaultValue={category?.id} />
-        <Grid.Wrapper key={category?.id}>
-            <Grid.Col6>
-                <Input type="text" name="title">{t("Title")}</Input>
-            </Grid.Col6>
-            <Grid.Col6>
-                <Label>&nbsp;</Label>
-                <Button type="submit">{t("Add Question")}</Button>
-            </Grid.Col6>
-        </Grid.Wrapper>
-    </Form>
+    const [action, setAction] = useState("")
+    useEffect(() => {
+        deleteForm?.current.requestSubmit()
+    }, [action])
+    const deleteForm = useRef<any>(null)
+
+    return <>
+        <Form fref={deleteForm} key={Math.random()} method="delete" action={action} success={() => { setCheck(check + 1) }}>
+        </Form>
+
+        <Form key={category?.id} method="post" action={"shop/param/questions/create"} alertclass="" success={() => { setCheck(check + 1) }}>
+            <input type="hidden" name="category_id" defaultValue={category?.id} />
+            <Grid.Wrapper key={category?.id}>
+                <Grid.Col6>
+                    <Input type="text" name="title">{t("Title")}</Input>
+                </Grid.Col6>
+                <Grid.Col6>
+                    <Label>&nbsp;</Label>
+                    <Button type="submit">{t("Add Question")}</Button>
+                </Grid.Col6>
+            </Grid.Wrapper>
+        </Form>
 
         <Grid.Span6>
             <List.Table>
@@ -148,7 +217,7 @@ const QuestionForm = ({ ...props }) => {
                             </List.Td>
                             <List.Td width="10%">
                                 <Button color="gray" nopd={true} onClick={() => { answerModal[1](true); setQuestion(item) }} type="button" className="px-2 py-1 ltr:mr-2 rtl:ml-2 bg-gray-500">{t("Add Answer")}</Button>
-                                <List.ButtonDelete ></List.ButtonDelete>
+                                <List.ButtonDelete onClick={() => { setAction('/shop/param/questions/' + item?.id) }}></List.ButtonDelete>
                             </List.Td>
                         </List.Tr>
                     })}
@@ -175,18 +244,27 @@ const AnswerForm = ({ ...props }) => {
         })
     }, [check, question?.id])
 
-    return <><Form key={question?.id} method="post" action={"shop/param/answers/create"} alertclass="" success={() => { setCheck(check + 1) }}>
-        <input type="hidden" name="question_id" defaultValue={question?.id} />
-        <Grid.Wrapper key={question?.id}>
-            <Grid.Col6>
-                <Input type="text" name="title">{t("Title")}</Input>
-            </Grid.Col6>
-            <Grid.Col6>
-                <Label>&nbsp;</Label>
-                <Button type="submit">{t("Add Answer")}</Button>
-            </Grid.Col6>
-        </Grid.Wrapper>
-    </Form>
+    const [action, setAction] = useState("")
+    useEffect(() => {
+        deleteForm?.current.requestSubmit()
+    }, [action])
+    const deleteForm = useRef<any>(null)
+    return <>
+        <Form fref={deleteForm} key={Math.random()} method="delete" action={action} success={() => { setCheck(check + 1) }}>
+        </Form>
+
+        <Form key={question?.id} method="post" action={"shop/param/answers/create"} alertclass="" success={() => { setCheck(check + 1) }}>
+            <input type="hidden" name="question_id" defaultValue={question?.id} />
+            <Grid.Wrapper key={question?.id}>
+                <Grid.Col6>
+                    <Input type="text" name="title">{t("Title")}</Input>
+                </Grid.Col6>
+                <Grid.Col6>
+                    <Label>&nbsp;</Label>
+                    <Button type="submit">{t("Add Answer")}</Button>
+                </Grid.Col6>
+            </Grid.Wrapper>
+        </Form>
 
         <Grid.Span6>
             <List.Table>
@@ -200,7 +278,7 @@ const AnswerForm = ({ ...props }) => {
                             </List.Td>
                             <List.Td width="10%">
 
-                                <List.ButtonDelete ></List.ButtonDelete>
+                                <List.ButtonDelete onClick={() => { setAction('/shop/param/answers/' + item?.id) }}></List.ButtonDelete>
                             </List.Td>
                         </List.Tr>
                     })}
@@ -318,7 +396,7 @@ export function Index() {
                                 {item.updated_at != item.created_at ? <DateTime time={item.updated_at} /> : ""}
                             </List.Td>
                             <List.TdAction>
-                                <VariantButton onClick={() => { variantModal[1](true); setEdit(item) }}></VariantButton>
+                                <VariantButton onClick={() => { variantModal[1](true); category[1](item) }}></VariantButton>
                                 <ParamsButton onClick={() => { paramsModal[1](true); setEdit(item) }}></ParamsButton>
                                 <List.ButtonEdit onClick={(e: any) => editHandler(e, item)}></List.ButtonEdit>
                                 <List.ButtonDelete onClick={() => { deleteModal[1](true); setEdit(item) }}></List.ButtonDelete>
@@ -335,7 +413,7 @@ export function Index() {
 
         <Modal.Modal title={t("Add Variant")} show={variantModal}>
             <Modal.Content>
-                <VariantForm edit={edit} />
+                <VariantForm category={category} />
             </Modal.Content>
         </Modal.Modal>
 
@@ -347,13 +425,13 @@ export function Index() {
 
         <Modal.Modal title={t("Add Question")} show={questionModal} size="max-w-3xl" zindex="z-50">
             <Modal.Content>
-                <QuestionForm {...{ questionModal, answerModal, category, question } } />
+                <QuestionForm {...{ questionModal, answerModal, category, question }} />
             </Modal.Content>
         </Modal.Modal>
 
         <Modal.Modal title={t("Add Answer")} show={answerModal} size="max-w-2xl" zindex="z-50">
             <Modal.Content>
-                <AnswerForm {...{ category, question } } />
+                <AnswerForm {...{ category, question }} />
             </Modal.Content>
         </Modal.Modal>
 
