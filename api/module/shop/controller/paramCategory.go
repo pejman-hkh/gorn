@@ -15,6 +15,7 @@ import (
 
 type ParamCategoryForm struct {
 	Title      string `form:"title" binding:"required"`
+	Name       string `form:"name" binding:"required"`
 	CategoryId uint   `form:"category_id"`
 }
 

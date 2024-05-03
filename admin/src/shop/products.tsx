@@ -2,7 +2,7 @@ import Pagination from "../components/pagination"
 import * as List from "../components/list"
 import * as Grid from "../components/grid"
 import Form, { Input, Select, Editor, SelectSearch, Label } from "../components/form"
-import { useContext, useRef, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { DataContext } from "../router/data"
 import Link from "../router/link"
 import DateTime from "../components/date"
@@ -11,9 +11,92 @@ import * as BreadCrumb from "../components/breadcrumb"
 import Api from "../router/api"
 
 import CreatableSelect from 'react-select/creatable';
+import * as Modal from "../components/modal"
+import Button from "../components/button"
 
 export function SearchForm() {
     return <MainForm noeditor="true" />
+}
+
+const PriceForm = ({ ...props }) => {
+    const edit = props?.edit
+
+    const { t } = useTranslation();
+    const [variants, setVariants] = useState<any>([])
+    const [prices, setPrices] = useState<any>([])
+    const [check, setCheck] = useState(0)
+
+    useEffect(() => {
+        const category = edit?.category
+        console.log(category)
+        Api("admin/shop/categories?nopage=true&id=" + encodeURIComponent(category?.id)).then((data: any) => {
+            let list: any[] = []
+            data?.data?.list[0]?.variants.map((item: any) => {
+                list.push(item)
+            })
+            setVariants(list)
+        })
+
+        Api("admin/shop/products?nopage=true&id=" + encodeURIComponent(edit?.id)).then((data: any) => {
+            let list: any[] = []
+            data?.data?.list[0]?.prices.map((item: any) => {
+                list.push(item)
+            })
+            setPrices(list)
+        })
+    }, [edit?.id, check])
+
+    const [action, setAction] = useState("")
+    useEffect(() => {
+        deleteForm?.current.requestSubmit()
+    }, [action])
+    const deleteForm = useRef<any>(null)
+
+    return <>
+        <Form fref={deleteForm} key={Math.random()} method="delete" action={action} success={() => { setCheck(check + 1) }}>
+        </Form>
+        <Form key={edit?.id} method="post" action={"shop/prices/create"} alertclass="" success={() => { setCheck(check + 1) }}>
+            <input type="hidden" name="product_id" defaultValue={edit?.id} />
+            <Grid.Wrapper key={edit?.id}>
+                <Grid.Span6>
+                    <Input type="text" name="title">{t("Title")}</Input>
+                </Grid.Span6>
+
+                {variants.map((item: any) => {
+                    return <Grid.Col6>
+                        <input type="hidden" name="variant_id[]" value={item.id} />
+                        <Input type="text" name="variant[]">{item.title}</Input>
+                    </Grid.Col6>
+                })}
+
+                <Grid.Span6>
+                    <Input type="text" name="price">{t("Price")}</Input>
+                </Grid.Span6>
+                <Grid.Col6>
+                    <Label>&nbsp;</Label>
+                    <Button type="submit">{t("Add Price")}</Button>
+                </Grid.Col6>
+            </Grid.Wrapper>
+        </Form>
+
+        <Grid.Span6>
+            <List.Table>
+                <List.Tbody>
+
+                    {prices.map((item: any) => {
+                        return <List.Tr>
+                            <List.Td>
+                                {item.title}
+                            </List.Td>
+                            <List.Td width="10%">
+                                <List.ButtonDelete onClick={() => { setAction('/shop/prices/' + item?.id) }}></List.ButtonDelete>
+                            </List.Td>
+                        </List.Tr>
+                    })}
+                </List.Tbody>
+            </List.Table>
+        </Grid.Span6>
+    </>
 }
 
 function ButtonPrice({ children, ...props }: any) {
@@ -45,11 +128,11 @@ export function MainForm({ ...props }) {
     const [categories, setCategories] = useState<any>([])
     const params = paramsToQuestionIdIndex(edit?.params)
 
-    const toOption = (options:any) => {
+    const toOption = (options: any) => {
         let ret: any = []
-        for( const x in options ) {
+        for (const x in options) {
             let v = options[x]
-            ret.push({label:v.title, value:v.title})
+            ret.push({ label: v.title, value: v.title })
         }
         return ret
     }
@@ -119,7 +202,7 @@ export function MainForm({ ...props }) {
                                 {question?.answers.map((answer:any) => <option key={'answer-'+answer.id} value={answer.id}>{answer.title}</option>)}
                             </SelectSearch> */}
                             <Label>{question.title}</Label>
-                            <CreatableSelect name={"question['" + question?.id + "']"} styles={{ control: (styles) => ({ ...styles, borderColor: "#D1D5DB", backgroundColor: "#F9FAFB" }) }} isClearable options={toOption(question?.answers)} defaultValue={{value : params[question?.id]?.answer?.title, label: params[question?.id]?.answer?.title}} />
+                            <CreatableSelect name={"question['" + question?.id + "']"} styles={{ control: (styles) => ({ ...styles, borderColor: "#D1D5DB", backgroundColor: "#F9FAFB" }) }} isClearable options={toOption(question?.answers)} defaultValue={{ value: params[question?.id]?.answer?.title, label: params[question?.id]?.answer?.title }} />
                         </Grid.Col6>
                     })}
                 </Grid.Wrapper>
@@ -143,6 +226,7 @@ export function Index() {
     const deleteModal = useState(false)
     const mediaModal = useState(false)
     const deleteAllModal = useState(false)
+    const priceModal = useState(false)
     const [actionValue, setActionValue] = useState("")
 
     const editHandler = (e: any, item: any) => {
@@ -155,6 +239,8 @@ export function Index() {
 
     const { t } = useTranslation();
     const ModuleBreadcrumb = <BreadCrumb.Item to="/shop/dashboard">{t("Shop")}</BreadCrumb.Item>
+
+    const category = useState<any>({})
 
     const method = "json"
     return <>
@@ -209,7 +295,7 @@ export function Index() {
                                 {item.updated_at != item.created_at ? <DateTime time={item.updated_at} /> : ""}
                             </List.Td>
                             <List.TdAction>
-                                <ButtonPrice onClick={() => { mediaModal[1](true); setEdit(item) }}></ButtonPrice>
+                                <ButtonPrice onClick={() => { priceModal[1](true); setEdit(item) }}></ButtonPrice>
                                 <List.ButtonFile onClick={() => { mediaModal[1](true); setEdit(item) }}></List.ButtonFile>
                                 <List.ButtonEdit onClick={(e: any) => editHandler(e, item)}></List.ButtonEdit>
                                 <List.ButtonDelete onClick={() => { deleteModal[1](true); setEdit(item) }}></List.ButtonDelete>
@@ -224,6 +310,12 @@ export function Index() {
         <Pagination pagination={data?.data?.pagination} module={route}></Pagination>
 
         <List.Modals {...{ method, mediaModal, SearchForm, title, route, edit, MainForm, addModal, editModal, searchModal, deleteModal, deleteAllModal, listForm }}></List.Modals >
+
+        <Modal.Modal title={t("Add Price")} show={priceModal} size="max-w-2xl" zindex="z-50">
+            <Modal.Content>
+                <PriceForm {...{ edit }} />
+            </Modal.Content>
+        </Modal.Modal>
 
     </>
 }

@@ -21,6 +21,7 @@ type ShopProduct struct {
 	Category     ShopCategory `json:"category"`
 	Stock        uint         `json:"stock"`
 	Params       []ShopParam  `gorm:"foreignKey:ProductId" json:"params"`
+	Prices       []ShopPrice  `gorm:"foreignKey:ProductId" json:"prices"`
 }
 
 func (g *ShopProduct) SaveQuestions(userid uint, productid uint, body map[string]any) {

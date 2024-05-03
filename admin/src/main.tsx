@@ -11,4 +11,3 @@ Api("/admin/data").then((mainData) => {
     )
   })
 })
-

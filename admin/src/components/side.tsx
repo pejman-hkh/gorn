@@ -308,7 +308,7 @@ export default function Side() {
                                 <MenuItem><MenuLink to="/shop/dashboard">{t("Dashboard")}</MenuLink></MenuItem>
                                 <MenuItem><MenuLink to="/shop/orders">{t("Order")}</MenuLink></MenuItem>
                             
-                                <MenuItem><MenuLink to="/shop/categories">{t("Category")}</MenuLink></MenuItem>
+                                <MenuItem><MenuLink to="/shop/categories?category_id=0">{t("Category")}</MenuLink></MenuItem>
                                 <MenuItem><MenuLink to="/shop/products">{t("Product")}</MenuLink></MenuItem>
                                 <MenuItem><MenuLink to="/shop/params">{t("Parameter")}</MenuLink></MenuItem>
                                 <MenuItem><MenuLink to="/shop/brands">{t("Brand")}</MenuLink></MenuItem>

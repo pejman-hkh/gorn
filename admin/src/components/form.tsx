@@ -75,11 +75,28 @@ export function SelectSearch({ children, ...props }: any) {
 	let sendRequest = false
 	let timeOut: number;
 
+	const getDefaultList = (childs: any) => {
+		let list: any[] = []
+		childs.map((item: any, i: number) => {
+			if (item?.props) {
+				list.push({ value: item?.props?.value, label: item?.props?.children })
+				if (props?.defaultValue == item?.props?.value) {
+					setSelected({ value: item?.props?.value, label: item?.props?.children })
+				} else {
+					if (i == 0)
+						setSelected({ value: item?.props?.value, label: item?.props?.children })
+				}
+			}
+		})
+		return list
+	}
 	const InputHandler = (inputValue: any) => {
-		if (!inputValue && !props?.path) {
+		if (!inputValue || inputValue == "" || !props?.path ) {
 			return
 		}
-
+		
+		const childs: any[] = React.Children.toArray(children)
+		let list: any[] = getDefaultList(childs)
 		if (!sendRequest) {
 			clearTimeout(timeOut);
 			setIsLoading(true)
@@ -87,7 +104,7 @@ export function SelectSearch({ children, ...props }: any) {
 				sendRequest = true;
 				const path = props.path.match(/\?/) ? props.path + "&" : props.path + "?";
 				Api(path + "nopage=true&search=" + encodeURIComponent(inputValue)).then((data: any) => {
-					let list: any[] = []
+				
 					data?.data?.list.map((item: any) => {
 						list.push({ value: item.id, label: item.title })
 					})
@@ -99,25 +116,16 @@ export function SelectSearch({ children, ...props }: any) {
 	}
 
 	useEffect(() => {
+
 		//if (props?.edit?.id || props?.default) {
 		setIsLoading(true)
 		const childs: any[] = React.Children.toArray(children)
-		let list: any[] = []
-		childs.map((item: any, i) => {
-			if (item?.props) {
-				list.push({ value: item?.props?.value, label: item?.props?.children })
-				if (props?.defaultValue == item?.props?.value) {
-					setSelected({ value: item?.props?.value, label: item?.props?.children })
-				} else {
-					if (i == 0)
-						setSelected({ value: item?.props?.value, label: item?.props?.children })
-				}
-			}
-		})
-
+		let list: any[] = getDefaultList(childs)
 		if (props?.path) {
-			const path = props.path.match(/\?/) ? props.path + "&" : props.path + "?";
-			Api(path + "nopage=true").then((data: any) => {
+			let path = props.path.match(/\?/) ? props.path + "&" : props.path + "?";
+			path += "nopage=true"
+
+			Api( path ).then((data: any) => {
 				data?.data?.list.map((item: any) => {
 					list.push({ value: item.id, label: item.title })
 					if (props?.defaultValue == item.id) {

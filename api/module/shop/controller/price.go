@@ -13,23 +13,24 @@ import (
 	"github.com/jinzhu/copier"
 )
 
-type ParamQuestionForm struct {
-	Title      string `form:"title" binding:"required"`
-	Name       string `form:"name" binding:"required"`
-	CategoryId uint   `form:"category_id"`
+type PriceForm struct {
+	Title     string `form:"title" binding:"required"`
+	ProductId uint   `form:"product_id"`
+	Status    uint8  `form:"status"`
+	Price     uint   `form:"price"`
 }
 
-type ParamQuestionController struct {
+type PriceController struct {
 	controller.BaseController
 }
 
-func InitParamQuestion(r *gin.RouterGroup) {
-	index := &ParamQuestionController{}
+func InitPrice(r *gin.RouterGroup) {
+	index := &PriceController{}
 	index.InitRoutes(r)
 }
 
-func (c *ParamQuestionController) InitRoutes(r *gin.RouterGroup) {
-	g := r.Group("admin/shop/param/questions")
+func (c *PriceController) InitRoutes(r *gin.RouterGroup) {
+	g := r.Group("admin/shop/prices")
 	g.Use(middle.IsAdmin())
 	{
 		g.GET("", c.Index)
@@ -43,12 +44,12 @@ func (c *ParamQuestionController) InitRoutes(r *gin.RouterGroup) {
 	}
 }
 
-func (c *ParamQuestionController) Index(ctx *gin.Context) {
-	list := []shopModel.ShopParamQuestion{}
+func (c *PriceController) Index(ctx *gin.Context) {
+	list := []shopModel.ShopPrice{}
 	var p gorn.Paginator
-	search := []string{"title"}
-	asearch := map[string]string{"title": "like", "category_id": "="}
-	result := gorn.DB.Preload("User").Preload("Answers").Scopes(c.Search(ctx, &list, search)).Scopes(c.AdvancedSearch(ctx, &list, asearch)).Scopes(p.Paginate(ctx, &list)).Order("Id desc").Find(&list)
+	search := []string{"title", "url"}
+	asearch := map[string]string{"title": "like", "url": "like"}
+	result := gorn.DB.Preload("User").Scopes(c.Search(ctx, &list, search)).Scopes(c.AdvancedSearch(ctx, &list, asearch)).Scopes(p.Paginate(ctx, &list)).Order("Id desc").Find(&list)
 	if result.Error != nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": result.Error})
 		return
@@ -61,13 +62,13 @@ func (c *ParamQuestionController) Index(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"status": 1, "data": map[string]any{"list": list, "pagination": p}})
 }
 
-func (c *ParamQuestionController) Edit(ctx *gin.Context) {
-	model := shopModel.ShopParamQuestion{}
+func (c *PriceController) Edit(ctx *gin.Context) {
+	model := shopModel.ShopPrice{}
 	c.ParentEdit(ctx, &model)
 }
 
-func (c *ParamQuestionController) Update(ctx *gin.Context) {
-	var body ParamQuestionForm
+func (c *PriceController) Update(ctx *gin.Context) {
+	var body PriceForm
 
 	if err := ctx.ShouldBind(&body); err != nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": gorn.T(ctx, "Complete required fields"), "data": err.Error()})
@@ -76,27 +77,27 @@ func (c *ParamQuestionController) Update(ctx *gin.Context) {
 
 	user, _ := ctx.Get("authUser")
 	authUser := user.(*model.User)
-	question := shopModel.ShopParamQuestion{}
-	gorn.DB.First(&question, ctx.Param("id"))
+	price := shopModel.ShopPrice{}
+	gorn.DB.First(&price, ctx.Param("id"))
 
-	copier.Copy(&question, &body)
-	question.UserId = authUser.ID
+	copier.Copy(&price, &body)
+	price.UserId = authUser.ID
 
-	save := question.Save(question)
+	save := price.Save(price)
 	if save.Error != nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": fmt.Sprintf("Error on save: %v", save.Error)})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": gorn.T(ctx, "Saved successfully"), "data": map[string]any{"model": question}})
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": gorn.T(ctx, "Saved successfully"), "data": map[string]any{"model": price}})
 }
 
-func (c *ParamQuestionController) Create(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, gin.H{"status": 1, "data": map[string]any{"model": shopModel.ShopParamQuestion{}}})
+func (c *PriceController) Create(ctx *gin.Context) {
+	ctx.JSON(http.StatusOK, gin.H{"status": 1, "data": map[string]any{"model": shopModel.ShopPrice{}}})
 }
 
-func (c *ParamQuestionController) Store(ctx *gin.Context) {
-	var body ParamQuestionForm
+func (c *PriceController) Store(ctx *gin.Context) {
+	var body PriceForm
 
 	if err := ctx.ShouldBind(&body); err != nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": gorn.T(ctx, "Complete required fields"), "data": err.Error()})
@@ -106,11 +107,21 @@ func (c *ParamQuestionController) Store(ctx *gin.Context) {
 	user, _ := ctx.Get("authUser")
 	authUser := user.(*model.User)
 
-	question := &shopModel.ShopParamQuestion{}
-	copier.Copy(question, body)
-	question.UserId = authUser.ID
-
-	save := question.Save(question)
+	price := &shopModel.ShopPrice{}
+	copier.Copy(price, body)
+	price.UserId = authUser.ID
+	save := price.Save(price)
+	variants := ctx.PostFormArray("variant[]")
+	variantIds := ctx.PostFormArray("variant_id[]")
+	for k, v := range variants {
+		item := shopModel.ShopPriceItem{}
+		item.Title = v
+		item.VariantId = uint(gorn.Atoi(variantIds[k]))
+		item.ProductId = uint(gorn.Atoi(ctx.PostForm("product_id")))
+		item.PriceId = price.ID
+		item.UserId = authUser.ID
+		item.Save(&item)
+	}
 
 	if save.Error != nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": fmt.Sprintf("Error on save: %v", save.Error)})
@@ -120,14 +131,14 @@ func (c *ParamQuestionController) Store(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": gorn.T(ctx, "Saved successfully")})
 }
 
-func (c *ParamQuestionController) Destroy(ctx *gin.Context) {
-	question := shopModel.ShopParamQuestion{}
-	gorn.DB.First(&question, ctx.Param("id"))
-	gorn.DB.Delete(&question)
+func (c *PriceController) Destroy(ctx *gin.Context) {
+	price := shopModel.ShopPrice{}
+	gorn.DB.First(&price, ctx.Param("id"))
+	gorn.DB.Delete(&price)
 	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": gorn.T(ctx, "Deleted successfully")})
 }
 
-func (c *ParamQuestionController) Actions(ctx *gin.Context) {
+func (c *PriceController) Actions(ctx *gin.Context) {
 
 	type Actions struct {
 		Action string `form:"action" binding:"required"`
@@ -140,7 +151,7 @@ func (c *ParamQuestionController) Actions(ctx *gin.Context) {
 	}
 
 	ids := body.Ids
-	question := shopModel.ShopParamQuestion{}
-	gorn.DB.Delete(&question, ids)
+	price := shopModel.ShopPrice{}
+	gorn.DB.Delete(&price, ids)
 	ctx.JSON(http.StatusOK, gin.H{"status": 1, "msg": gorn.T(ctx, "Deleted successfully")})
 }

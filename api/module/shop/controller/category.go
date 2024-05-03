@@ -60,7 +60,7 @@ func (c *CategoryController) Index(ctx *gin.Context) {
 	list := []shopModel.ShopCategory{}
 	var p gorn.Paginator
 	search := []string{"title", "url"}
-	asearch := map[string]string{"title": "like", "url": "like"}
+	asearch := map[string]string{"title": "like", "url": "like", "category_id": "="}
 	result := gorn.DB.Preload("User").Preload("Variants").Scopes(c.Search(ctx, &list, search)).Scopes(c.AdvancedSearch(ctx, &list, asearch)).Scopes(p.Paginate(ctx, &list)).Order("Id desc").Find(&list)
 	if result.Error != nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": 0, "msg": result.Error})

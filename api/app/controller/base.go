@@ -125,25 +125,28 @@ func (c *BaseController) AdvancedSearch(ctx *gin.Context, list any, asearch map[
 		sql := ""
 		bind := make(map[string]any)
 		pre := ""
-		for k, v := range asearch {
-			search := ctx.Query(k)
-			if search == "" {
-				continue
-			}
-
-			if v == "like" {
-				sql += pre + k + " like @" + k
-				bind[k] = "%" + search + "%"
-			} else if v == "=" {
-				sql += pre + k + " = @" + k
-				bind[k] = search
-			}
-			pre = " and "
-		}
 
 		if ctx.Query("id") != "" {
-			sql = pre + " id = @id "
+			sql += pre + " id = @id "
 			bind["id"] = ctx.Query("id")
+			pre = " and "
+		} else {
+
+			for k, v := range asearch {
+				search := ctx.Query(k)
+				if search == "" {
+					continue
+				}
+
+				if v == "like" {
+					sql += pre + k + " like @" + k
+					bind[k] = "%" + search + "%"
+				} else if v == "=" {
+					sql += pre + k + " = @" + k
+					bind[k] = search
+				}
+				pre = " and "
+			}
 		}
 
 		if sql != "" {

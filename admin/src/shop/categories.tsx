@@ -2,7 +2,7 @@ import Pagination from "../components/pagination"
 import * as List from "../components/list"
 import * as Grid from "../components/grid"
 import Form, { Editor, Input, Label, Select, SelectSearch, Textarea } from "../components/form"
-import { useContext, useEffect, useRef, useState } from "react"
+import { useContext, useEffect, useLayoutEffect, useRef, useState } from "react"
 import { DataContext } from "../router/data"
 import Link from "../router/link"
 import DateTime from "../components/date"
@@ -42,6 +42,13 @@ export function MainForm({ ...props }) {
             </SelectSearch>
         </Grid.Col6>
 
+        <Grid.Col6>
+            <Select name="status" title={t("Copy Parameters")} defaultValue={edit?.status}>
+                <option value="1">{t("Copy")}</option>
+                <option value="0">{t("Not Copy")}</option>
+            </Select>
+        </Grid.Col6>
+
         <Grid.Span6>
             <Editor noeditor={props?.noeditor || false} name="description" title={t("Description")} defaultValue={edit?.description || ""} />
         </Grid.Span6>
@@ -49,13 +56,14 @@ export function MainForm({ ...props }) {
     </Grid.Wrapper>
 }
 
-const VariantForm = ({ ...props }) => {
+const VariantSection = ({ ...props }) => {
     const [category, setCategory] = props?.category
     const { t } = useTranslation();
     const [variants, setVariants] = useState<any>([])
     const [check, setCheck] = useState(0)
 
     useEffect(() => {
+        if (!category?.id) return
         Api("admin/shop/categories?nopage=true&id=" + encodeURIComponent(category?.id)).then((data: any) => {
             let list: any[] = []
             data?.data?.list[0]?.variants.map((item: any) => {
@@ -65,7 +73,16 @@ const VariantForm = ({ ...props }) => {
         })
     }, [check, category?.id])
 
+    const [action, setAction] = useState("")
+    useEffect(() => {
+        if (deleteForm?.current && action)
+            deleteForm?.current.requestSubmit()
+    }, [action])
+    const deleteForm = useRef<any>(null)
+
     return <>
+        <Form fref={deleteForm} key={Math.random()} method="delete" action={action} success={() => { setCheck(check + 1) }}>
+        </Form>
         <Form key={category?.id} method="post" action={"shop/variants/create"} alertclass="" success={() => { setCheck(check + 1) }}>
             <input type="hidden" name="category_id" defaultValue={category?.id} />
             <Grid.Wrapper key={category?.id}>
@@ -89,7 +106,7 @@ const VariantForm = ({ ...props }) => {
                                 {item.title}
                             </List.Td>
                             <List.Td width="10%">
-                                <List.ButtonDelete ></List.ButtonDelete>
+                                <List.ButtonDelete onClick={() => { setAction('/shop/variants/' + item?.id) }}></List.ButtonDelete>
                             </List.Td>
                         </List.Tr>
                     })}
@@ -99,15 +116,40 @@ const VariantForm = ({ ...props }) => {
     </>
 }
 
-const ParamsForm = ({ ...props }) => {
+const CategoryForm = ({ ...props }) => {
+    let edit = props?.edit
+    let category = props?.category
+    let [check, setCheck] = props?.check
+    const { t } = useTranslation();
+
+    return <Form key={category?.id} method="post" action={category?.id ? "shop/param/categories/" + category?.id : "shop/param/categories/create"} alertclass="" success={() => { setCheck(check + 1) }}>
+        <input type="hidden" name="category_id" defaultValue={edit?.id} />
+        <Grid.Wrapper key={edit?.id} {...props}>
+            <Grid.Col6>
+                <Input type="text" name="title" defaultValue={category?.title}>{t("Title")}</Input>
+            </Grid.Col6>
+            <Grid.Col6>
+                <Input type="text" name="name" defaultValue={category?.name}>{t("Name")}</Input>
+            </Grid.Col6>
+            <Grid.Col6>
+                <Button onClick={() => { }} type="submit">{t("Save Parameter Category")}</Button>
+            </Grid.Col6>
+        </Grid.Wrapper>
+    </Form>
+}
+
+const ParamsSection = ({ ...props }) => {
     let edit = props.edit
     const { t } = useTranslation();
     const [categories, setCategories] = useState<any>([])
     const [check, setCheck] = useState(0)
+    const editModal = useState<boolean>(false)
     const questionModal = props?.questionModal
     const [category, setCategory] = props?.category
 
     useEffect(() => {
+
+        if (!edit?.id) return
         Api("admin/shop/param/categories?nopage=true&category_id=" + encodeURIComponent(edit?.id)).then((data: any) => {
             let list: any[] = []
             data?.data?.list.map((item: any) => {
@@ -120,7 +162,8 @@ const ParamsForm = ({ ...props }) => {
 
     const [action, setAction] = useState("")
     useEffect(() => {
-        deleteForm?.current.requestSubmit()
+        if (deleteForm?.current && action)
+            deleteForm?.current.requestSubmit()
     }, [action])
     const deleteForm = useRef<any>(null)
 
@@ -129,50 +172,78 @@ const ParamsForm = ({ ...props }) => {
         <Form fref={deleteForm} key={Math.random()} method="delete" action={action} success={() => { setCheck(check + 1) }}>
         </Form>
 
-        <Form key={edit?.id} method="post" action={"shop/param/categories/create"} alertclass="" success={() => { setCheck(check + 1) }}>
-            <input type="hidden" name="category_id" defaultValue={edit?.id} />
-            <Grid.Wrapper key={edit?.id} {...props}>
-                <Grid.Col6>
-                    <Input type="text" name="title">{t("Title")}</Input>
-                </Grid.Col6>
-                <Grid.Col6>
-                    <Label>&nbsp;</Label>
-                    <Button onClick={() => { }} type="submit">{t("Add Category")}</Button>
-                </Grid.Col6>
+        <CategoryForm {...{ check: [check, setCheck], edit }} />
 
-                <Grid.Span6>
-                    <List.Table>
-                        <List.Tbody>
+        <Modal.Modal backstyle={{ top: "-25px" }} title={t("Edit Category")} show={editModal} size="max-w-2xl" zindex="z-50">
+            <Modal.Content>
+                <CategoryForm {...{ check: [check, setCheck], category, edit }} />
+            </Modal.Content>
+        </Modal.Modal>
 
-                            {categories.map((item: any) => {
-                                return <List.Tr>
-                                    <List.Td>
+        <Grid.Wrapper>
+            <Grid.Span6>
+                <List.Table>
+                    <List.Tbody>
 
-                                        {item.title}
-                                    </List.Td>
-                                    <List.Td width="20%">
-                                        <Button color="gray" nopd={true} onClick={() => { questionModal[1](true); setCategory(item) }} type="button" className="px-2 py-1 ltr:mr-2 rtl:ml-2 bg-gray-500">{t("Add Question")}</Button>
+                        {categories.map((item: any) => {
+                            return <List.Tr>
+                                <List.Td>
+
+                                    {item.title}
+                                </List.Td>
+                                <List.Td width="20%">
+                                    <div className="flex items-center">
+
+                                        <Button color="gray" nopd={true} onClick={() => { questionModal[1](true); setCategory(item) }} type="button" className="px-2 py-2 ltr:mr-2 rtl:ml-2 bg-gray-500">{t("Add Question")}</Button>
                                         <List.ButtonDelete onClick={() => { setAction('/shop/param/categories/' + item?.id) }}></List.ButtonDelete>
-                                    </List.Td>
-                                </List.Tr>
-                            })}
-                        </List.Tbody>
-                    </List.Table>
-                </Grid.Span6>
-            </Grid.Wrapper >
-        </Form>
+                                        <List.ButtonEdit onClick={() => { editModal[1](true); setCategory(item); }}></List.ButtonEdit>
+                                    </div>
+                                </List.Td>
+                            </List.Tr>
+                        })}
+                    </List.Tbody>
+                </List.Table>
+            </Grid.Span6>
+        </Grid.Wrapper >
+
     </>
 }
 
 const QuestionForm = ({ ...props }) => {
-    let [category, setCategory] = props?.category
+    let category = props.category
+    let question = props.question
+    let [check, setCheck] = props?.check
+    const { t } = useTranslation();
+
+    return <Form key={question?.id} method="post" action={question?.id ? "shop/param/questions/" + question?.id : "shop/param/questions/create"} alertclass="" success={() => { setCheck(check + 1) }}>
+        <input type="hidden" name="category_id" defaultValue={category?.id} />
+        <Grid.Wrapper key={category?.id}>
+            <Grid.Col6>
+                <Input type="text" name="title" defaultValue={question?.title || ""}>{t("Title")}</Input>
+            </Grid.Col6>
+            <Grid.Col6>
+                <Input type="text" name="name" defaultValue={question?.name || ""}>{t("Name")}</Input>
+            </Grid.Col6>
+            <Grid.Col6>
+
+                <Button type="submit">{t("Save Question")}</Button>
+            </Grid.Col6>
+        </Grid.Wrapper>
+    </Form>
+}
+
+const QuestionSection = ({ ...props }) => {
+    let [category, _setCategory] = props?.category
     let [question, setQuestion] = props?.question
     const { t } = useTranslation();
     const [questions, setQuestions] = useState<any>([])
     const [check, setCheck] = useState(0)
     const answerModal = props?.answerModal
+    const editModal = useState<boolean>(false)
 
     useEffect(() => {
+        if (!category?.id) return
+
         Api("admin/shop/param/questions?nopage=true&category_id=" + encodeURIComponent(category?.id)).then((data: any) => {
             let list: any[] = []
             data?.data?.list.map((item: any) => {
@@ -184,7 +255,8 @@ const QuestionForm = ({ ...props }) => {
 
     const [action, setAction] = useState("")
     useEffect(() => {
-        deleteForm?.current.requestSubmit()
+        if (deleteForm?.current && action)
+            deleteForm?.current.requestSubmit()
     }, [action])
     const deleteForm = useRef<any>(null)
 
@@ -192,18 +264,13 @@ const QuestionForm = ({ ...props }) => {
         <Form fref={deleteForm} key={Math.random()} method="delete" action={action} success={() => { setCheck(check + 1) }}>
         </Form>
 
-        <Form key={category?.id} method="post" action={"shop/param/questions/create"} alertclass="" success={() => { setCheck(check + 1) }}>
-            <input type="hidden" name="category_id" defaultValue={category?.id} />
-            <Grid.Wrapper key={category?.id}>
-                <Grid.Col6>
-                    <Input type="text" name="title">{t("Title")}</Input>
-                </Grid.Col6>
-                <Grid.Col6>
-                    <Label>&nbsp;</Label>
-                    <Button type="submit">{t("Add Question")}</Button>
-                </Grid.Col6>
-            </Grid.Wrapper>
-        </Form>
+        <QuestionForm {...{ category, check: [check, setCheck] }} />
+
+        <Modal.Modal backstyle={{ top: "-25px" }} title={t("Edit Question")} show={editModal} size="max-w-2xl" zindex="z-50">
+            <Modal.Content>
+                <QuestionForm {...{ check: [check, setCheck], question, category }} />
+            </Modal.Content>
+        </Modal.Modal>
 
         <Grid.Span6>
             <List.Table>
@@ -216,8 +283,12 @@ const QuestionForm = ({ ...props }) => {
                                 {item.title}
                             </List.Td>
                             <List.Td width="10%">
-                                <Button color="gray" nopd={true} onClick={() => { answerModal[1](true); setQuestion(item) }} type="button" className="px-2 py-1 ltr:mr-2 rtl:ml-2 bg-gray-500">{t("Add Answer")}</Button>
-                                <List.ButtonDelete onClick={() => { setAction('/shop/param/questions/' + item?.id) }}></List.ButtonDelete>
+                                <div className="flex items-center">
+
+                                    <Button color="gray" nopd={true} onClick={() => { answerModal[1](true); setQuestion(item) }} type="button" className="px-2 py-2 ltr:mr-2 rtl:ml-2 bg-gray-500">{t("Add Answer")}</Button>
+                                    <List.ButtonDelete onClick={() => { setAction('/shop/param/questions/' + item?.id) }}></List.ButtonDelete>
+                                    <List.ButtonEdit onClick={() => { editModal[1](true); setQuestion(item) }}></List.ButtonEdit>
+                                </div>
                             </List.Td>
                         </List.Tr>
                     })}
@@ -227,14 +298,37 @@ const QuestionForm = ({ ...props }) => {
     </>
 }
 
-
 const AnswerForm = ({ ...props }) => {
-    let [question, setQuestion] = props?.question
+    let question = props.question
+    let answer = props.answer
+    let [check, setCheck] = props?.check
+    const { t } = useTranslation();
+
+    return <Form key={answer?.id} method="post" action={answer?.id?"shop/param/answers/"+answer?.id:"shop/param/answers/create"} alertclass="" success={() => { setCheck(check + 1) }}>
+        <input type="hidden" name="question_id" defaultValue={question?.id} />
+        <Grid.Wrapper key={question?.id}>
+            <Grid.Col6>
+                <Input type="text" name="title" defaultValue={answer?.title}>{t("Title")}</Input>
+            </Grid.Col6>
+            <Grid.Span6>
+                <Button type="submit">{t("Save Answer")}</Button>
+            </Grid.Span6>
+        </Grid.Wrapper>
+    </Form>
+
+}
+
+const AnswerSection = ({ ...props }) => {
+    let [question, _setQuestion] = props?.question
     const { t } = useTranslation();
     const [answers, setAnswers] = useState<any>([])
+    const [answer, setAnswer] = useState<any>({})
     const [check, setCheck] = useState(0)
+    const editModal = useState<boolean>(false)
 
     useEffect(() => {
+        if (!question?.id) return
+
         Api("admin/shop/param/questions?nopage=true&id=" + encodeURIComponent(question?.id)).then((data: any) => {
             let list: any[] = []
             data?.data?.list[0]?.answers.map((item: any) => {
@@ -246,25 +340,20 @@ const AnswerForm = ({ ...props }) => {
 
     const [action, setAction] = useState("")
     useEffect(() => {
-        deleteForm?.current.requestSubmit()
+        if (deleteForm?.current && action)
+            deleteForm?.current.requestSubmit()
     }, [action])
     const deleteForm = useRef<any>(null)
     return <>
         <Form fref={deleteForm} key={Math.random()} method="delete" action={action} success={() => { setCheck(check + 1) }}>
         </Form>
-
-        <Form key={question?.id} method="post" action={"shop/param/answers/create"} alertclass="" success={() => { setCheck(check + 1) }}>
-            <input type="hidden" name="question_id" defaultValue={question?.id} />
-            <Grid.Wrapper key={question?.id}>
-                <Grid.Col6>
-                    <Input type="text" name="title">{t("Title")}</Input>
-                </Grid.Col6>
-                <Grid.Col6>
-                    <Label>&nbsp;</Label>
-                    <Button type="submit">{t("Add Answer")}</Button>
-                </Grid.Col6>
-            </Grid.Wrapper>
-        </Form>
+        <AnswerForm {...{ question, check: [check, setCheck] }} />
+  
+        <Modal.Modal backstyle={{ top: "-25px" }} title={t("Edit Answer")} show={editModal} size="max-w-2xl" zindex="z-50">
+            <Modal.Content>
+                <AnswerForm {...{ check: [check, setCheck], question, answer }} />
+            </Modal.Content>
+        </Modal.Modal>
 
         <Grid.Span6>
             <List.Table>
@@ -277,8 +366,8 @@ const AnswerForm = ({ ...props }) => {
                                 {item.title}
                             </List.Td>
                             <List.Td width="10%">
-
                                 <List.ButtonDelete onClick={() => { setAction('/shop/param/answers/' + item?.id) }}></List.ButtonDelete>
+                                <List.ButtonEdit onClick={() => { editModal[1](true); setAnswer(item) }}></List.ButtonEdit>
                             </List.Td>
                         </List.Tr>
                     })}
@@ -323,6 +412,7 @@ export function Index() {
     const data = dataContext.data[0]
 
     const [edit, setEdit] = useState<any>({})
+    const [item, setItem] = useState<any>({})
     const editModal = useState(false)
     const searchModal = useState(false)
     const addModal = useState(false)
@@ -377,7 +467,7 @@ export function Index() {
                             </List.TdCheckbox>
 
                             <List.TdTitle>
-                                {item.title}
+                                <Link to={route + "?category_id=" + item.id}>{item.title}</Link>
                             </List.TdTitle>
 
 
@@ -397,7 +487,7 @@ export function Index() {
                             </List.Td>
                             <List.TdAction>
                                 <VariantButton onClick={() => { variantModal[1](true); category[1](item) }}></VariantButton>
-                                <ParamsButton onClick={() => { paramsModal[1](true); setEdit(item) }}></ParamsButton>
+                                <ParamsButton onClick={() => { paramsModal[1](true); setItem(item) }}></ParamsButton>
                                 <List.ButtonEdit onClick={(e: any) => editHandler(e, item)}></List.ButtonEdit>
                                 <List.ButtonDelete onClick={() => { deleteModal[1](true); setEdit(item) }}></List.ButtonDelete>
                             </List.TdAction>
@@ -413,25 +503,25 @@ export function Index() {
 
         <Modal.Modal title={t("Add Variant")} show={variantModal}>
             <Modal.Content>
-                <VariantForm category={category} />
+                <VariantSection category={category} />
             </Modal.Content>
         </Modal.Modal>
 
         <Modal.Modal title={t("Add Parameters")} show={paramsModal}>
             <Modal.Content>
-                <ParamsForm edit={edit} questionModal={questionModal} category={category} />
+                <ParamsSection edit={item} questionModal={questionModal} category={category} />
             </Modal.Content>
         </Modal.Modal>
 
         <Modal.Modal title={t("Add Question")} show={questionModal} size="max-w-3xl" zindex="z-50">
             <Modal.Content>
-                <QuestionForm {...{ questionModal, answerModal, category, question }} />
+                <QuestionSection {...{ questionModal, answerModal, category, question }} />
             </Modal.Content>
         </Modal.Modal>
 
         <Modal.Modal title={t("Add Answer")} show={answerModal} size="max-w-2xl" zindex="z-50">
             <Modal.Content>
-                <AnswerForm {...{ category, question }} />
+                <AnswerSection {...{ category, question }} />
             </Modal.Content>
         </Modal.Modal>
 

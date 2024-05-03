@@ -68,7 +68,7 @@ export function Index() {
                             </List.TdCheckbox>
 
                             <List.TdTitle>
-                                <Link to={"/"+item.module.replace('_', '/')+"?id="+item.item_id}>{item.module}</Link>
+                                <Link to={"/"+item.module.replace(/_/g, '/')+"?id="+item.item_id}>{item.module}</Link>
                             </List.TdTitle>
                             
                             <List.Td><Link to={"/users?id=" + item?.user?.id}>{item?.user?.name}</Link></List.Td>
