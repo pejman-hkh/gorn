@@ -56,66 +56,6 @@ export function MainForm({ ...props }) {
     </Grid.Wrapper>
 }
 
-const VariantSection = ({ ...props }) => {
-    const [category, setCategory] = props?.category
-    const { t } = useTranslation();
-    const [variants, setVariants] = useState<any>([])
-    const [check, setCheck] = useState(0)
-
-    useEffect(() => {
-        if (!category?.id) return
-        Api("admin/shop/categories?nopage=true&id=" + encodeURIComponent(category?.id)).then((data: any) => {
-            let list: any[] = []
-            data?.data?.list[0]?.variants.map((item: any) => {
-                list.push(item)
-            })
-            setVariants(list)
-        })
-    }, [check, category?.id])
-
-    const [action, setAction] = useState("")
-    useEffect(() => {
-        if (deleteForm?.current && action)
-            deleteForm?.current.requestSubmit()
-    }, [action])
-    const deleteForm = useRef<any>(null)
-
-    return <>
-        <Form fref={deleteForm} key={Math.random()} method="delete" action={action} success={() => { setCheck(check + 1) }}>
-        </Form>
-        <Form key={category?.id} method="post" action={"shop/variants/create"} alertclass="" success={() => { setCheck(check + 1) }}>
-            <input type="hidden" name="category_id" defaultValue={category?.id} />
-            <Grid.Wrapper key={category?.id}>
-                <Grid.Col6>
-                    <Input type="text" name="title">{t("Title")}</Input>
-                </Grid.Col6>
-                <Grid.Col6>
-                    <Label>&nbsp;</Label>
-                    <Button type="submit">{t("Add Variant")}</Button>
-                </Grid.Col6>
-            </Grid.Wrapper>
-        </Form>
-
-        <Grid.Span6>
-            <List.Table>
-                <List.Tbody>
-
-                    {variants.map((item: any) => {
-                        return <List.Tr>
-                            <List.Td>
-                                {item.title}
-                            </List.Td>
-                            <List.Td width="10%">
-                                <List.ButtonDelete onClick={() => { setAction('/shop/variants/' + item?.id) }}></List.ButtonDelete>
-                            </List.Td>
-                        </List.Tr>
-                    })}
-                </List.Tbody>
-            </List.Table>
-        </Grid.Span6>
-    </>
-}
-
 const CategoryForm = ({ ...props }) => {
     let edit = props?.edit
     let category = props?.category
@@ -368,6 +308,66 @@ const AnswerSection = ({ ...props }) => {
                             <List.Td width="10%">
                                 <List.ButtonDelete onClick={() => { setAction('/shop/param/answers/' + item?.id) }}></List.ButtonDelete>
                                 <List.ButtonEdit onClick={() => { editModal[1](true); setAnswer(item) }}></List.ButtonEdit>
+                            </List.Td>
+                        </List.Tr>
+                    })}
+                </List.Tbody>
+            </List.Table>
+        </Grid.Span6>
+    </>
+}
+
+const VariantSection = ({ ...props }) => {
+    const [category, setCategory] = props?.category
+    const { t } = useTranslation();
+    const [variants, setVariants] = useState<any>([])
+    const [check, setCheck] = useState(0)
+
+    useEffect(() => {
+        if (!category?.id) return
+        Api("admin/shop/categories?nopage=true&id=" + encodeURIComponent(category?.id)).then((data: any) => {
+            let list: any[] = []
+            data?.data?.list[0]?.variants.map((item: any) => {
+                list.push(item)
+            })
+            setVariants(list)
+        })
+    }, [check, category?.id])
+
+    const [action, setAction] = useState("")
+    useEffect(() => {
+        if (deleteForm?.current && action)
+            deleteForm?.current.requestSubmit()
+    }, [action])
+    const deleteForm = useRef<any>(null)
+
+    return <>
+        <Form fref={deleteForm} key={Math.random()} method="delete" action={action} success={() => { setCheck(check + 1) }}>
+        </Form>
+        <Form key={category?.id} method="post" action={"shop/variants/create"} alertclass="" success={() => { setCheck(check + 1) }}>
+            <input type="hidden" name="category_id" defaultValue={category?.id} />
+            <Grid.Wrapper key={category?.id}>
+                <Grid.Col6>
+                    <Input type="text" name="title">{t("Title")}</Input>
+                </Grid.Col6>
+                <Grid.Col6>
+                    <Label>&nbsp;</Label>
+                    <Button type="submit">{t("Add Variant")}</Button>
+                </Grid.Col6>
+            </Grid.Wrapper>
+        </Form>
+
+        <Grid.Span6>
+            <List.Table>
+                <List.Tbody>
+
+                    {variants.map((item: any) => {
+                        return <List.Tr>
+                            <List.Td>
+                                {item.title}
+                            </List.Td>
+                            <List.Td width="10%">
+                                <List.ButtonDelete onClick={() => { setAction('/shop/variants/' + item?.id) }}></List.ButtonDelete>
                             </List.Td>
                         </List.Tr>
                     })}
